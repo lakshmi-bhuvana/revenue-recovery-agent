@@ -1,17 +1,6 @@
-# Python
 __pycache__/
-*.py[cod]
-
-# Virtual environments
+*.pyc
 .venv/
 venv/
-env/
-
-# Model artifacts
-models/*.pkl
-
-# Generated datasets
-data/processed/
-
-# Local files
-python
+.env
+*.log
