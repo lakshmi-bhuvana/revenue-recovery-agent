@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Model artifacts
+models/*.pkl
+
+# Generated datasets
+data/processed/
+
+# Local files
+python
