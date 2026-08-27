@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Revenue Recovery Agent</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+
+<body>
+
+<div
+    class="app"
+    id="app"
+>
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                R
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    Recovery AI
+                </strong>
+
+                <small>
+                    Revenue Operations
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- SIDEBAR TOGGLE -->
+
+        <button
+            id="sidebar-toggle"
+            class="sidebar-toggle"
+            type="button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+            ‹
+        </button>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="/"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="/recovery-cases.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◉
+                </span>
+
+                <span class="nav-text">
+                    Recovery Cases
+                </span>
+
+            </a>
+
+
+            <a
+                href="/customers.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◇
+                </span>
+
+                <span class="nav-text">
+                    Customers
+                </span>
+
+            </a>
+
+
+            <a
+                href="/analytics.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◌
+                </span>
+
+                <span class="nav-text">
+                    Analytics
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- SYSTEM STATUS -->
+
+        <div class="sidebar-footer">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="system-status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <span>
+                        AI Agent Active
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main
+        class="main-content"
+        id="main"
+    >
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+
+            <div class="page-title">
+
+                <h1>
+                    Revenue Recovery Dashboard
+                </h1>
+
+                <p>
+                    AI-powered recovery prioritization and
+                    decision intelligence
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+
+                <span class="live-status">
+
+                    <span class="live-dot"></span>
+
+                    <span id="live-text">
+                        Live
+                    </span>
+
+                </span>
+
+
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    id="refresh-button"
+                >
+
+                    ↻
+                    <span>
+                        Refresh
+                    </span>
+
+                </button>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             KPI CARDS
+        ================================================== -->
+
+        <section class="metrics-grid">
+
+
+            <!-- TOTAL REVENUE -->
+
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        Total Revenue at Risk
+                    </span>
+
+                    <div class="metric-card-icon">
+                        ₹
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="metric-card-value"
+                    id="total-risk"
+                >
+                    Loading...
+                </div>
+
+
+                <div class="metric-card-description">
+                    Revenue requiring recovery
+                </div>
+
+            </div>
+
+
+
+            <!-- EXPECTED RECOVERY -->
+
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        Expected Recovery
+                    </span>
+
+                    <div class="metric-card-icon">
+                        ↗
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="metric-card-value"
+                    id="expected-recovery"
+                >
+                    Loading...
+                </div>
+
+
+                <div class="metric-card-description">
+                    AI estimated recovery value
+                </div>
+
+            </div>
+
+
+
+            <!-- RECOVERY RATE -->
+
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        Recovery Rate
+                    </span>
+
+                    <div class="metric-card-icon">
+                        %
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="metric-card-value"
+                    id="recovery-rate"
+                >
+                    —
+                </div>
+
+
+                <div class="metric-card-description">
+                    Historical recovery performance
+                </div>
+
+            </div>
+
+
+
+            <!-- HIGH PRIORITY -->
+
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        High Priority Cases
+                    </span>
+
+                    <div class="metric-card-icon danger">
+                        !
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="metric-card-value"
+                    id="high-priority"
+                >
+                    Loading...
+                </div>
+
+
+                <div class="metric-card-description">
+                    Cases requiring immediate attention
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ANALYTICS
+        ================================================== -->
+
+        <section class="analytics-grid">
+
+
+            <!-- RECOVERY OVERVIEW -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Overview
+                        </h3>
+
+                        <p>
+                            AI decision distribution
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overview-content">
+
+
+                    <div class="chart-container">
+
+                        <div
+                            class="placeholder-circle"
+                            id="priority-chart"
+                        >
+
+                            <span>
+                                AI
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-legend">
+
+
+                        <div class="legend-item">
+
+                            <span
+                                class="legend-dot high"
+                            ></span>
+
+                            <span>
+                                High Priority
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span
+                                class="legend-dot medium"
+                            ></span>
+
+                            <span>
+                                Medium Priority
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span
+                                class="legend-dot low"
+                            ></span>
+
+                            <span>
+                                Low Priority
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- RECOVERY STRATEGY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Strategy
+                        </h3>
+
+                        <p>
+                            Recommended agent actions
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="strategy-list">
+
+
+                    <!-- AGGRESSIVE -->
+
+                    <div class="strategy-row">
+
+                        <div class="strategy-info">
+
+                            <strong>
+                                Aggressive Recovery
+                            </strong>
+
+                            <small>
+                                High-value opportunities
+                            </small>
+
+                        </div>
+
+                        <span
+                            id="aggressive-count"
+                            class="strategy-count"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- ASSISTED -->
+
+                    <div class="strategy-row">
+
+                        <div class="strategy-info">
+
+                            <strong>
+                                Assisted Recovery
+                            </strong>
+
+                            <small>
+                                Agent-assisted cases
+                            </small>
+
+                        </div>
+
+                        <span
+                            id="assisted-count"
+                            class="strategy-count"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- STANDARD -->
+
+                    <div class="strategy-row">
+
+                        <div class="strategy-info">
+
+                            <strong>
+                                Standard Recovery
+                            </strong>
+
+                            <small>
+                                Normal payment recovery
+                            </small>
+
+                        </div>
+
+                        <span
+                            id="standard-count"
+                            class="strategy-count"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- LOW COST -->
+
+                    <div class="strategy-row">
+
+                        <div class="strategy-info">
+
+                            <strong>
+                                Low Cost Recovery
+                            </strong>
+
+                            <small>
+                                Low-priority follow-up
+                            </small>
+
+                        </div>
+
+                        <span
+                            id="low-cost-count"
+                            class="strategy-count"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             TOP RECOVERY OPPORTUNITIES
+        ================================================== -->
+
+        <section class="panel opportunities">
+
+
+            <div class="panel-header">
+
+
+                <div>
+
+                    <h3>
+                        Top Recovery Opportunities
+                    </h3>
+
+                    <p>
+                        Highest expected-value recovery cases
+                    </p>
+
+                </div>
+
+
+                <div class="table-controls">
+
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Search transaction..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Transaction
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Probability
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Strategy
+                            </th>
+
+                            <th>
+                                Channel
+                            </th>
+
+                            <th>
+                                Expected Recovery
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="opportunity-table">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="loading"
+                            >
+                                Loading recovery opportunities...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script src="/js/app.js"></script>
+
+</body>
+</html>
