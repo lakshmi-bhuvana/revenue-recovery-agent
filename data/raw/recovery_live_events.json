@@ -1,0 +1,1354 @@
+{
+  "events": {
+    "demo_persistent_001": {
+      "transaction_id": "demo_persistent_001",
+      "customer_id": "demo_customer_persistent_001",
+      "transaction_amount": 20000.0,
+      "payment_method": "card",
+      "failure_reason": "payment_method_degradation",
+      "retry_count": 0,
+      "customer_transaction_count": 10,
+      "customer_success_rate": 0.95,
+      "payment_method_success_rate": 0.3,
+      "channel": "payment_link",
+      "preferred_channel": "payment_link",
+      "product_interest_score": 0.9,
+      "checkout_progress": 0.95,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "payment_failure",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 20000.0,
+      "recovery_probability": 0.7462,
+      "expected_recovery_value": 14924.0,
+      "customer_intent": 0.92,
+      "customer_reliability": 0.965,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.7999,
+      "priority": "HIGH",
+      "strategy": "assisted_recovery",
+      "recovery_action": "alternative_payment_method",
+      "recommended_channel": "payment_link",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_persistent_001",
+        "customer_id": "demo_customer_persistent_001",
+        "diagnosis": {
+          "diagnosis": "payment_method_degradation",
+          "reason": "Payment failed because the card payment path is showing degraded reliability (30% success rate). An alternative payment method is recommended.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 20000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.95
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.3
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 10
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "payment_link"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.7462,
+          "priority_score": 0.7999,
+          "priority": "HIGH",
+          "recommended_channel": "payment_link",
+          "transaction_amount": 20000.0,
+          "customer_intent": 0.92,
+          "customer_reliability": 0.965,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "channel": "payment_link",
+          "priority": "HIGH",
+          "scenario": "payment_failure"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "alternative_payment_method",
+          "channel": "payment_link",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 20000.0,
+          "execution_detail": "Recovery succeeded through alternative_payment_method using payment_link for payment_failure.",
+          "scenario": "payment_failure",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T15:27:04.234072",
+          "transaction_id": "demo_persistent_001",
+          "customer_id": "demo_customer_persistent_001",
+          "scenario": "payment_failure",
+          "transaction_amount": 20000.0,
+          "diagnosis": "payment_method_degradation",
+          "diagnosis_reason": "The customer's historical payment success is materially higher than the payment method's current success rate.",
+          "recovery_probability": 0.7462,
+          "priority_score": 0.7999,
+          "priority": "HIGH",
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "recommended_channel": "payment_link",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 20000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "payment_failure"
+      }
+    },
+    "demo_metrics_fix_001": {
+      "transaction_id": "demo_metrics_fix_001",
+      "customer_id": "demo_customer_metrics_fix_001",
+      "transaction_amount": 20000.0,
+      "payment_method": "card",
+      "failure_reason": "payment_method_degradation",
+      "retry_count": 0,
+      "customer_transaction_count": 10,
+      "customer_success_rate": 0.95,
+      "payment_method_success_rate": 0.3,
+      "channel": "payment_link",
+      "preferred_channel": "payment_link",
+      "product_interest_score": 0.9,
+      "checkout_progress": 0.95,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "payment_failure",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 20000.0,
+      "recovery_probability": 0.7462,
+      "expected_recovery_value": 14924.0,
+      "customer_intent": 0.92,
+      "customer_reliability": 0.965,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.7999,
+      "priority": "HIGH",
+      "strategy": "assisted_recovery",
+      "recovery_action": "alternative_payment_method",
+      "recommended_channel": "payment_link",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_metrics_fix_001",
+        "customer_id": "demo_customer_metrics_fix_001",
+        "diagnosis": {
+          "diagnosis": "payment_failure",
+          "reason": "The payment transaction failed and requires recovery.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 20000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.95
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.3
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 10
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "payment_link"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.7462,
+          "priority_score": 0.7999,
+          "priority": "HIGH",
+          "recommended_channel": "payment_link",
+          "transaction_amount": 20000.0,
+          "customer_intent": 0.92,
+          "customer_reliability": 0.965,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "channel": "payment_link",
+          "priority": "HIGH",
+          "scenario": "payment_failure"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "alternative_payment_method",
+          "channel": "payment_link",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 20000.0,
+          "execution_detail": "Recovery succeeded through alternative_payment_method using payment_link for payment_failure.",
+          "scenario": "payment_failure",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T15:59:23.558682",
+          "transaction_id": "demo_metrics_fix_001",
+          "customer_id": "demo_customer_metrics_fix_001",
+          "scenario": "payment_failure",
+          "transaction_amount": 20000.0,
+          "diagnosis": "payment_method_degradation",
+          "diagnosis_reason": "The customer's historical payment success is materially higher than the payment method's current success rate.",
+          "recovery_probability": 0.7462,
+          "priority_score": 0.7999,
+          "priority": "HIGH",
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "recommended_channel": "payment_link",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 20000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "payment_failure"
+      }
+    },
+    "demo_final_success_001": {
+      "transaction_id": "demo_final_success_001",
+      "customer_id": "demo_final_customer_001",
+      "transaction_amount": 25000.0,
+      "payment_method": "card",
+      "failure_reason": "payment_method_degradation",
+      "retry_count": 0,
+      "customer_transaction_count": 10,
+      "customer_success_rate": 0.95,
+      "payment_method_success_rate": 0.3,
+      "channel": "payment_link",
+      "preferred_channel": "payment_link",
+      "product_interest_score": 0.9,
+      "checkout_progress": 0.95,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "payment_failure",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 25000.0,
+      "recovery_probability": 0.743,
+      "expected_recovery_value": 18575.0,
+      "customer_intent": 0.92,
+      "customer_reliability": 0.965,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8138,
+      "priority": "HIGH",
+      "strategy": "assisted_recovery",
+      "recovery_action": "alternative_payment_method",
+      "recommended_channel": "payment_link",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_final_success_001",
+        "customer_id": "demo_final_customer_001",
+        "diagnosis": {
+          "diagnosis": "payment_failure",
+          "reason": "The payment transaction failed and requires recovery.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 25000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.95
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.3
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 10
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "payment_link"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.743,
+          "priority_score": 0.8138,
+          "priority": "HIGH",
+          "recommended_channel": "payment_link",
+          "transaction_amount": 25000.0,
+          "customer_intent": 0.92,
+          "customer_reliability": 0.965,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "channel": "payment_link",
+          "priority": "HIGH",
+          "scenario": "payment_failure"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "alternative_payment_method",
+          "channel": "payment_link",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 25000.0,
+          "execution_detail": "Recovery succeeded through alternative_payment_method using payment_link for payment_failure.",
+          "scenario": "payment_failure",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:20:08.075465",
+          "transaction_id": "demo_final_success_001",
+          "customer_id": "demo_final_customer_001",
+          "scenario": "payment_failure",
+          "transaction_amount": 25000.0,
+          "diagnosis": "payment_method_degradation",
+          "diagnosis_reason": "The customer's historical payment success is materially higher than the payment method's current success rate.",
+          "recovery_probability": 0.743,
+          "priority_score": 0.8138,
+          "priority": "HIGH",
+          "strategy": "assisted_recovery",
+          "recovery_action": "alternative_payment_method",
+          "recommended_channel": "payment_link",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 25000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "payment_failure"
+      }
+    },
+    "demo_payment_001": {
+      "transaction_id": "demo_payment_001",
+      "customer_id": "demo_customer_payment_failure",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "bank_decline",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.65,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "payment_failure",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.8386,
+      "expected_recovery_value": 29351.0,
+      "customer_intent": 0.806,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8381,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "retry_payment",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_payment_001",
+        "customer_id": "demo_customer_payment_failure",
+        "diagnosis": {
+          "diagnosis": "payment_failure",
+          "reason": "The payment transaction failed and requires recovery.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.8386,
+          "priority_score": 0.8381,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.806,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "retry_payment",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "payment_failure"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "retry_payment",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure.",
+          "scenario": "payment_failure",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:34.895919",
+          "transaction_id": "demo_payment_001",
+          "customer_id": "demo_customer_payment_failure",
+          "scenario": "payment_failure",
+          "transaction_amount": 35000.0,
+          "diagnosis": "bank_decline",
+          "diagnosis_reason": "The payment was declined by the bank.",
+          "recovery_probability": 0.8386,
+          "priority_score": 0.8381,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "retry_payment",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "payment_failure"
+      }
+    },
+    "demo_checkout_001": {
+      "transaction_id": "demo_checkout_001",
+      "customer_id": "demo_customer_checkout_abandonment",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "customer_abandoned",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.82,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "checkout_abandonment",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.886,
+      "expected_recovery_value": 31010.0,
+      "customer_intent": 0.874,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8683,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "checkout_reminder",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_checkout_001",
+        "customer_id": "demo_customer_checkout_abandonment",
+        "diagnosis": {
+          "diagnosis": "checkout_abandonment",
+          "reason": "Customer showed purchase intent but did not complete checkout.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.886,
+          "priority_score": 0.8683,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.874,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "checkout_reminder",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "checkout_abandonment"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "checkout_reminder",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through checkout_reminder using whatsapp for checkout_abandonment.",
+          "scenario": "checkout_abandonment",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:34.947891",
+          "transaction_id": "demo_checkout_001",
+          "customer_id": "demo_customer_checkout_abandonment",
+          "scenario": "checkout_abandonment",
+          "transaction_amount": 35000.0,
+          "diagnosis": "checkout_abandonment",
+          "diagnosis_reason": "Customer showed purchase intent but did not complete checkout.",
+          "recovery_probability": 0.886,
+          "priority_score": 0.8683,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "checkout_reminder",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "checkout_abandonment"
+      }
+    },
+    "demo_subscription_001": {
+      "transaction_id": "demo_subscription_001",
+      "customer_id": "demo_customer_failed_subscription",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "subscription_payment_failed",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.65,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "failed_subscription",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.8894,
+      "expected_recovery_value": 31129.0,
+      "customer_intent": 0.806,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8559,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "subscription_reactivation",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_subscription_001",
+        "customer_id": "demo_customer_failed_subscription",
+        "diagnosis": {
+          "diagnosis": "subscription_payment_failed",
+          "reason": "A recurring subscription payment failed.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.8894,
+          "priority_score": 0.8559,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.806,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "subscription_reactivation",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "failed_subscription"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "subscription_reactivation",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through subscription_reactivation using whatsapp for failed_subscription.",
+          "scenario": "failed_subscription",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:35.030156",
+          "transaction_id": "demo_subscription_001",
+          "customer_id": "demo_customer_failed_subscription",
+          "scenario": "failed_subscription",
+          "transaction_amount": 35000.0,
+          "diagnosis": "subscription_payment_failure",
+          "diagnosis_reason": "A recurring subscription payment failed.",
+          "recovery_probability": 0.8894,
+          "priority_score": 0.8559,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "subscription_reactivation",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "failed_subscription"
+      }
+    },
+    "demo_b2b_001": {
+      "transaction_id": "demo_b2b_001",
+      "customer_id": "demo_customer_b2b_receivable",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "invoice_overdue",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.65,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "b2b_receivable",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.8803,
+      "expected_recovery_value": 30810.5,
+      "customer_intent": 0.806,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8527,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "send_invoice_reminder",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_b2b_001",
+        "customer_id": "demo_customer_b2b_receivable",
+        "diagnosis": {
+          "diagnosis": "invoice_overdue",
+          "reason": "A B2B receivable is overdue and requires collection follow-up.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.8803,
+          "priority_score": 0.8527,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.806,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "send_invoice_reminder",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "b2b_receivable"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "send_invoice_reminder",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through send_invoice_reminder using whatsapp for b2b_receivable.",
+          "scenario": "b2b_receivable",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:35.064791",
+          "transaction_id": "demo_b2b_001",
+          "customer_id": "demo_customer_b2b_receivable",
+          "scenario": "b2b_receivable",
+          "transaction_amount": 35000.0,
+          "diagnosis": "overdue_receivable",
+          "diagnosis_reason": "An invoice remains unpaid after its due date.",
+          "recovery_probability": 0.8803,
+          "priority_score": 0.8527,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "send_invoice_reminder",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "b2b_receivable"
+      }
+    },
+    "demo_mandate_001": {
+      "transaction_id": "demo_mandate_001",
+      "customer_id": "demo_customer_mandate_failure",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "mandate_failed",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.65,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "mandate_failure",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 0,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.9141,
+      "expected_recovery_value": 31993.5,
+      "customer_intent": 0.806,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8645,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "mandate_reactivation",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_mandate_001",
+        "customer_id": "demo_customer_mandate_failure",
+        "diagnosis": {
+          "diagnosis": "mandate_failed",
+          "reason": "The recurring payment mandate failed and requires recovery.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.9141,
+          "priority_score": 0.8645,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.806,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "mandate_reactivation",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "mandate_failure"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "mandate_reactivation",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through mandate_reactivation using whatsapp for mandate_failure.",
+          "scenario": "mandate_failure",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:35.101471",
+          "transaction_id": "demo_mandate_001",
+          "customer_id": "demo_customer_mandate_failure",
+          "scenario": "mandate_failure",
+          "transaction_amount": 35000.0,
+          "diagnosis": "mandate_failure",
+          "diagnosis_reason": "The recurring payment mandate failed and requires recovery.",
+          "recovery_probability": 0.9141,
+          "priority_score": 0.8645,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "mandate_reactivation",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "mandate_failure"
+      }
+    },
+    "demo_ptp_001": {
+      "transaction_id": "demo_ptp_001",
+      "customer_id": "demo_customer_promise_to_pay",
+      "transaction_amount": 35000.0,
+      "payment_method": "CARD",
+      "failure_reason": "promise_to_pay_due",
+      "retry_count": 0,
+      "customer_transaction_count": 8,
+      "customer_success_rate": 0.88,
+      "payment_method_success_rate": 0.91,
+      "channel": "payment_link",
+      "preferred_channel": "whatsapp",
+      "product_interest_score": 0.91,
+      "checkout_progress": 0.65,
+      "customer_email_available": 1,
+      "customer_phone_available": 1,
+      "scenario": "promise_to_pay",
+      "payment_status": "paid",
+      "revenue_at_risk": 1,
+      "recovery_attempts": 2,
+      "promise_to_pay": 1,
+      "recovered": 1,
+      "money_recovered": 35000.0,
+      "recovery_probability": 0.8778,
+      "expected_recovery_value": 30723.0,
+      "customer_intent": 0.806,
+      "customer_reliability": 0.856,
+      "contactability": 1.0,
+      "recovery_friction": 0.0,
+      "priority_score": 0.8518,
+      "priority": "HIGH",
+      "strategy": "aggressive_recovery",
+      "recovery_action": "follow_up_promise_to_pay",
+      "recommended_channel": "whatsapp",
+      "_agent_result": {
+        "status": "recovered",
+        "transaction_id": "demo_ptp_001",
+        "customer_id": "demo_customer_promise_to_pay",
+        "diagnosis": {
+          "diagnosis": "promise_to_pay_followup",
+          "reason": "A customer promise to pay requires follow-up.",
+          "evidence": [
+            {
+              "field": "transaction_amount",
+              "value": 35000.0
+            },
+            {
+              "field": "customer_success_rate",
+              "value": 0.88
+            },
+            {
+              "field": "payment_method_success_rate",
+              "value": 0.91
+            },
+            {
+              "field": "customer_transaction_count",
+              "value": 8
+            },
+            {
+              "field": "recovery_attempts",
+              "value": 0
+            },
+            {
+              "field": "preferred_channel",
+              "value": "whatsapp"
+            },
+            {
+              "field": "customer_email_available",
+              "value": 1
+            },
+            {
+              "field": "customer_phone_available",
+              "value": 1
+            }
+          ]
+        },
+        "score": {
+          "recovery_probability": 0.8778,
+          "priority_score": 0.8518,
+          "priority": "HIGH",
+          "recommended_channel": "whatsapp",
+          "transaction_amount": 35000.0,
+          "customer_intent": 0.806,
+          "customer_reliability": 0.856,
+          "contactability": 1.0,
+          "recovery_friction": 0.0
+        },
+        "action": {
+          "strategy": "aggressive_recovery",
+          "recovery_action": "follow_up_promise_to_pay",
+          "channel": "whatsapp",
+          "priority": "HIGH",
+          "scenario": "promise_to_pay"
+        },
+        "policy": {
+          "allowed": true,
+          "reason": "action_within_recovery_policy"
+        },
+        "execution": {
+          "execution_status": "simulated",
+          "action": "follow_up_promise_to_pay",
+          "channel": "whatsapp",
+          "attempt_increment": 1,
+          "message_sent": true,
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "execution_detail": "Recovery succeeded through follow_up_promise_to_pay using whatsapp for promise_to_pay.",
+          "scenario": "promise_to_pay",
+          "attempt_count": 2
+        },
+        "stopping": {
+          "stop": true,
+          "reason": "PAYMENT_SUCCESS"
+        },
+        "escalation": {
+          "escalate": false,
+          "escalation_level": "NONE",
+          "reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "audit": {
+          "timestamp": "2026-08-30T22:22:35.131624",
+          "transaction_id": "demo_ptp_001",
+          "customer_id": "demo_customer_promise_to_pay",
+          "scenario": "promise_to_pay",
+          "transaction_amount": 35000.0,
+          "diagnosis": "promise_to_pay_followup",
+          "diagnosis_reason": "A customer promise to pay requires follow-up.",
+          "recovery_probability": 0.8778,
+          "priority_score": 0.8518,
+          "priority": "HIGH",
+          "strategy": "aggressive_recovery",
+          "recovery_action": "follow_up_promise_to_pay",
+          "recommended_channel": "whatsapp",
+          "policy_allowed": true,
+          "policy_reason": "action_within_recovery_policy",
+          "execution_status": "simulated",
+          "recovered": true,
+          "money_recovered": 35000.0,
+          "attempt_increment": 1,
+          "stopped": true,
+          "stopping_reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "escalation_reason": "payment_recovered",
+          "recommended_team": null
+        },
+        "scenario": "promise_to_pay"
+      }
+    }
+  }
+}

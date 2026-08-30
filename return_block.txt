@@ -1,0 +1,8 @@
+    return {
+        "accuracy": accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "roc_auc": auc,
+        "confusion_matrix": cm.tolist(),
+    }

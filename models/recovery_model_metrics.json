@@ -1,0 +1,48 @@
+{
+  "dataset": {
+    "total_at_risk_cases": 1643,
+    "training_samples": 1314,
+    "testing_samples": 329
+  },
+  "models": {
+    "logistic_regression": {
+      "accuracy": 0.7629179331306991,
+      "balanced_accuracy": 0.5070346320346321,
+      "precision": 0.7685185185185185,
+      "recall": 0.9880952380952381,
+      "f1": 0.8645833333333334,
+      "roc_auc": 0.5986394557823129,
+      "pr_auc": 0.8176018006828084,
+      "confusion_matrix": [
+        [
+          2,
+          75
+        ],
+        [
+          3,
+          249
+        ]
+      ]
+    },
+    "random_forest": {
+      "accuracy": 0.6595744680851063,
+      "balanced_accuracy": 0.5568181818181819,
+      "precision": 0.7941176470588235,
+      "recall": 0.75,
+      "f1": 0.7714285714285715,
+      "roc_auc": 0.5805504019789733,
+      "pr_auc": 0.8248570372940465,
+      "confusion_matrix": [
+        [
+          28,
+          49
+        ],
+        [
+          63,
+          189
+        ]
+      ]
+    }
+  },
+  "selected_model": "Logistic Regression"
+}
