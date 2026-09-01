@@ -1,47 +1,952 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Revenue Recovery Dashboard</title><link rel="stylesheet" href="/css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Revenue Recovery Dashboard</title>
+<link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
+
 <div class="app" id="app">
-<aside class="sidebar">
-<div class="logo"><div class="logo-icon">R</div><div class="logo-text"><h2>Recovery AI</h2><span>Revenue Operations</span></div></div>
-<button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" title="Collapse sidebar"><span class="toggle-icon">‹</span></button>
-<nav>
-<a href="/index.html" class="nav-item active"><span class="nav-icon">▦</span><span class="nav-text">Dashboard</span></a>
-<a href="/recovery-cases.html" class="nav-item"><span class="nav-icon">◉</span><span class="nav-text">Recovery Cases</span></a>
-<a href="/customers.html" class="nav-item"><span class="nav-icon">◈</span><span class="nav-text">Customers</span></a>
-<a href="/analytics.html" class="nav-item"><span class="nav-icon">◌</span><span class="nav-text">Analytics</span></a>
-</nav>
-<div class="sidebar-bottom"><div class="system-status"><span class="status-dot"></span><div class="status-text"><strong>System Online</strong><small>AI Agent Active</small></div></div></div>
-</aside>
-<main class="main">
-<header class="topbar"><div><h1>Revenue Recovery Dashboard</h1><p>AI-powered recovery prioritization and decision intelligence</p></div><div class="topbar-right"><span class="last-updated"><span class="live-dot"></span><span id="live-text">Live</span></span><button class="refresh-btn" id="refresh-button" type="button">↻ Refresh</button></div></header>
-<section class="kpi-grid">
-<div class="kpi-card"><div class="kpi-header"><span>Total Revenue at Risk</span><div class="kpi-icon">₹</div></div><h2 id="total-risk">Loading...</h2><p class="kpi-description">Current recovery population value</p></div>
-<div class="kpi-card"><div class="kpi-header"><span>Expected Recovery</span><div class="kpi-icon">↗</div></div><h2 id="expected-recovery">Loading...</h2><p class="kpi-description">AI estimated recovery value</p></div>
-<div class="kpi-card"><div class="kpi-header"><span>Recovery Rate</span><div class="kpi-icon">%</div></div><h2 id="recovery-rate">—</h2><p class="kpi-description">Recovered cases ÷ dataset cases</p></div>
-<div class="kpi-card"><div class="kpi-header"><span>High Priority Cases</span><div class="kpi-icon">!</div></div><h2 id="high-priority">Loading...</h2><p class="kpi-description">Active cases requiring immediate attention</p></div>
-</section>
-<section class="panel overall-metrics-section"><div class="panel-header"><div><h3>Overall Recovery Performance</h3><p>Dataset-wide performance across all 3,000 transactions</p></div></div><div class="overall-metrics-grid">
-<div class="overall-metric-card"><div class="overall-metric-label">Total Transactions</div><div class="overall-metric-value" id="overall-total-cases">—</div><div class="overall-metric-description">All transactions</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Total Transaction Value</div><div class="overall-metric-value" id="overall-total-value">—</div><div class="overall-metric-description">Complete transaction value</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Recovered Cases</div><div class="overall-metric-value" id="overall-recovered-cases">—</div><div class="overall-metric-description">Recovered transactions</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Money Recovered</div><div class="overall-metric-value" id="overall-money-recovered">—</div><div class="overall-metric-description">Recovered revenue</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Overall Recovery Rate</div><div class="overall-metric-value" id="overall-recovery-rate">—</div><div class="overall-metric-description">Cases recovered</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Unrecovered Cases</div><div class="overall-metric-value" id="overall-unrecovered-cases">—</div><div class="overall-metric-description">Cases still needing recovery</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Recovery Value Rate</div><div class="overall-metric-value" id="overall-value-rate">—</div><div class="overall-metric-description">Recovered value ÷ transaction value</div></div>
-<div class="overall-metric-card"><div class="overall-metric-label">Customers</div><div class="overall-metric-value" id="overall-customers">—</div><div class="overall-metric-description">Unique customers</div></div>
-</div></section>
-<section class="analytics-grid">
-<div class="panel"><div class="panel-header"><div><h3>Recovery Overview</h3><p>Active-case priority distribution</p></div></div><div class="chart-placeholder"><div id="priority-chart" class="placeholder-circle"><div class="priority-chart-center"><strong id="priority-total">0</strong><span>Active Cases</span></div></div><div class="chart-legend"><div><span class="legend-dot high"></span>High Priority</div><div><span class="legend-dot medium"></span>Medium Priority</div><div><span class="legend-dot low"></span>Low Priority</div></div></div></div>
-<div class="panel"><div class="panel-header"><div><h3>Recovery Strategy</h3><p>Recommended agent strategy distribution</p></div></div><div class="strategy-list"><div class="strategy-row"><div><strong>Aggressive Recovery</strong><small>High-priority opportunities</small></div><span id="aggressive-count">—</span></div><div class="strategy-row"><div><strong>Assisted Recovery</strong><small>Agent-assisted cases</small></div><span id="assisted-count">—</span></div><div class="strategy-row"><div><strong>Standard Recovery</strong><small>Normal recovery workflow</small></div><span id="standard-count">—</span></div><div class="strategy-row"><div><strong>Low Cost Recovery</strong><small>Low-priority follow-up</small></div><span id="low-cost-count">—</span></div></div></div>
-</section>
-<section class="ai-bar" id="ask-recovery-ai"><div class="ai-bar-header"><div class="ai-bar-title"><div class="ai-bar-icon">✦</div><div><strong>Ask Recovery AI</strong><small>Conversational analysis of current recovery data</small></div></div><span class="ai-bar-status" id="ai-bar-status">Grounded in dashboard data</span></div><form class="ai-bar-form" id="ai-bar-form"><input class="ai-bar-input" id="ai-question" type="text" autocomplete="off" placeholder="Ask a follow-up question..."><button class="ai-bar-button" id="ai-ask-button" type="submit">Ask AI</button></form><div class="ai-suggestions"><button type="button" class="ai-suggestion" onclick="useAIQuestion('What should I prioritize?')">What should I prioritize?</button><button type="button" class="ai-suggestion" onclick="useAIQuestion('Why is revenue at risk?')">Why is revenue at risk?</button><button type="button" class="ai-suggestion" onclick="useAIQuestion('Which strategy is best?')">Which strategy is best?</button><button type="button" class="ai-suggestion" onclick="useAIQuestion('Explain the high priority cases.')">Explain the high priority cases.</button></div><div class="ai-response" id="ai-response"><div id="conversation" class="conversation"></div></div></section>
-<section class="panel opportunities"><div class="panel-header"><div><h3>Top Recovery Opportunities</h3><p>Highest expected-value active recovery cases</p></div><input id="search" class="customer-search" type="text" placeholder="Search transaction..."></div><div class="table-wrapper"><table><thead><tr><th>Transaction</th><th>Amount</th><th>Probability</th><th>Priority</th><th>Strategy</th><th>Channel</th><th>Expected Recovery</th></tr></thead><tbody id="opportunity-table"><tr><td colspan="7" class="loading">Loading recovery opportunities...</td></tr></tbody></table></div></section>
-</main></div>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-mark">R</div>
+
+            <div class="brand-copy">
+                <strong>Recovery AI</strong>
+                <span>Revenue Operations</span>
+            </div>
+        </div>
+
+        <button
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            type="button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+            <span class="toggle-icon">‹</span>
+        </button>
+
+        <nav class="sidebar-nav">
+
+            <a
+                class="nav-item active"
+                href="/"
+            >
+                <span class="nav-icon">▦</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+
+            <a
+                class="nav-item"
+                href="/recovery-cases.html"
+            >
+                <span class="nav-icon">◉</span>
+                <span class="nav-text">Recovery Cases</span>
+            </a>
+
+            <a
+                class="nav-item"
+                href="/customers.html"
+            >
+                <span class="nav-icon">●</span>
+                <span class="nav-text">Customers</span>
+            </a>
+
+            <a
+                class="nav-item"
+                href="/analytics.html"
+            >
+                <span class="nav-icon">◌</span>
+                <span class="nav-text">Analytics</span>
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="status-text">
+                    <strong>System Online</strong>
+                    <small>AI Agent Active</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+            <div class="page-title">
+
+                <h1>
+                    Revenue Recovery Dashboard
+                </h1>
+
+                <p>
+                    AI-powered recovery prioritization and decision intelligence
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <span class="live-status">
+
+                    <span class="live-dot"></span>
+
+                    <span id="live-text">
+                        Live
+                    </span>
+
+                </span>
+
+                <button
+                    class="refresh-btn"
+                    id="refresh-button"
+                    type="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             TOP METRICS
+        ================================================== -->
+
+        <section class="metrics-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-top">
+
+                    <span class="metric-label">
+                        Total Revenue at Risk
+                    </span>
+
+                    <div class="metric-icon">
+                        ₹
+                    </div>
+
+                </div>
+
+                <div
+                    id="total-risk"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+                <div class="metric-desc">
+                    Current recovery population value
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-top">
+
+                    <span class="metric-label">
+                        Expected Recovery
+                    </span>
+
+                    <div class="metric-icon">
+                        ↗
+                    </div>
+
+                </div>
+
+                <div
+                    id="expected-recovery"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+                <div class="metric-desc">
+                    AI-estimated recovery value
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-top">
+
+                    <span class="metric-label">
+                        Recovery Rate
+                    </span>
+
+                    <div class="metric-icon">
+                        %
+                    </div>
+
+                </div>
+
+                <div
+                    id="recovery-rate"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+                <div class="metric-desc">
+                    Recovered cases + dataset cases
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-top">
+
+                    <span class="metric-label">
+                        High Priority Cases
+                    </span>
+
+                    <div class="metric-icon">
+                        !
+                    </div>
+
+                </div>
+
+                <div
+                    id="high-priority"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+                <div class="metric-desc">
+                    Active cases requiring attention
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             OVERALL PERFORMANCE
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Overall Recovery Performance
+                    </h3>
+
+                    <p>
+                        Dataset-wide performance across all transactions
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="performance-grid">
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Total Transactions
+                    </div>
+
+                    <div
+                        id="total-transactions"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        All transactions
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Total Transaction Value
+                    </div>
+
+                    <div
+                        id="total-transaction-value"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Complete transaction value
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Recovered Cases
+                    </div>
+
+                    <div
+                        id="overall-recovered-cases"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Recovered transactions
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Money Recovered
+                    </div>
+
+                    <div
+                        id="overall-money-recovered"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Recovered revenue
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Overall Recovery Rate
+                    </div>
+
+                    <div
+                        id="overall-recovery-rate"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Cases recovered
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Unrecovered Cases
+                    </div>
+
+                    <div
+                        id="overall-unrecovered-cases"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Cases still needing action
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Recovery Value Rate
+                    </div>
+
+                    <div
+                        id="recovery-value-rate"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Recovered value ÷ transaction value
+                    </div>
+
+                </div>
+
+
+                <div class="performance-card">
+
+                    <div class="label">
+                        Customers
+                    </div>
+
+                    <div
+                        id="overall-customers"
+                        class="value"
+                    >
+                        —
+                    </div>
+
+                    <div class="desc">
+                        Unique customers
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ANALYTICS SUMMARY
+        ================================================== -->
+
+        <section class="analytics-grid">
+
+
+            <!-- RECOVERY OVERVIEW -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Overview
+                        </h3>
+
+                        <p>
+                            Active-case priority distribution
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overview-content">
+
+                    <div
+                        class="donut"
+                        id="priority-chart"
+                    >
+
+                        <span id="priority-total">
+                            0
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend">
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot high"></span>
+
+                            <span id="high-legend">
+                                High Priority (—)
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot medium"></span>
+
+                            <span id="medium-legend">
+                                Medium Priority (—)
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span class="legend-dot low"></span>
+
+                            <span id="low-legend">
+                                Low Priority (—)
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECOVERY STRATEGY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Strategy
+                        </h3>
+
+                        <p>
+                            Recommended agent strategy distribution
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="strategy-list">
+
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Aggressive Recovery
+                            </strong>
+
+                            <small>
+                                High-priority opportunities
+                            </small>
+
+                        </div>
+
+                        <div
+                            id="aggressive-count"
+                            class="strategy-count"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Assisted Recovery
+                            </strong>
+
+                            <small>
+                                Agent-assisted cases
+                            </small>
+
+                        </div>
+
+                        <div
+                            id="assisted-count"
+                            class="strategy-count"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Standard Recovery
+                            </strong>
+
+                            <small>
+                                Normal payment recovery
+                            </small>
+
+                        </div>
+
+                        <div
+                            id="standard-count"
+                            class="strategy-count"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Low Cost Recovery
+                            </strong>
+
+                            <small>
+                                Low-priority follow-up
+                            </small>
+
+                        </div>
+
+                        <div
+                            id="low-cost-count"
+                            class="strategy-count"
+                        >
+                            —
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             RECOVERY AI
+        ================================================== -->
+
+        <section class="panel ai-panel">
+
+
+            <div class="ai-header">
+
+                <div class="ai-title">
+
+                    <div class="ai-icon">
+                        ✦
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Ask Recovery AI
+                        </strong>
+
+                        <span>
+                            Ask follow-up questions and keep the conversation going
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <button
+                        class="new-chat"
+                        type="button"
+                        onclick="newAIChat()"
+                    >
+                        New chat
+                    </button>
+
+                    <span
+                        class="ai-status"
+                        id="ai-status"
+                    >
+                        Online
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="ai-chat"
+                class="ai-chat"
+            ></div>
+
+
+            <div class="ai-input">
+
+                <input
+                    id="ai-question"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Ask about revenue risk, priorities, strategy, customers, or this recovery system…"
+                >
+
+                <button
+                    id="ai-ask-button"
+                    class="primary-btn"
+                    type="button"
+                >
+                    Ask AI
+                </button>
+
+            </div>
+
+
+            <div class="ai-suggestions">
+
+                <button
+                    type="button"
+                    onclick="useAIQuestion('What should I prioritize first?')"
+                >
+                    What should I prioritize first?
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="useAIQuestion('Why is revenue at risk?')"
+                >
+                    Why is revenue at risk?
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="useAIQuestion('Which strategy is performing best?')"
+                >
+                    Which strategy is performing best?
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="useAIQuestion('How many high priority cases are there?')"
+                >
+                    How many high priority cases?
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TOP RECOVERY OPPORTUNITIES
+        ================================================== -->
+
+        <section class="panel opportunities">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Top Recovery Opportunities
+                    </h3>
+
+                    <p>
+                        Highest expected-value recovery cases
+                    </p>
+
+                </div>
+
+
+                <div class="table-controls">
+
+                    <input
+                        id="opportunity-search"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="Search transaction…"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Transaction
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Probability
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Strategy
+                            </th>
+
+                            <th>
+                                Channel
+                            </th>
+
+                            <th>
+                                Expected Recovery
+                            </th>
+
+                            <!-- NEW ACTION COLUMN -->
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="opportunity-table">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="loading"
+                            >
+                                Loading recovery opportunities…
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN APP JAVASCRIPT
+========================================================= -->
+
 <script src="/js/app.js"></script>
+
+
+<!-- =========================================================
+     OPPORTUNITY SEARCH
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const input =
+            document.getElementById(
+                "opportunity-search"
+            );
+
+        if (!input) {
+            return;
+        }
+
+        input.addEventListener(
+            "input",
+            () => {
+
+                const query =
+                    input.value
+                        .toLowerCase()
+                        .trim();
+
+                document
+                    .querySelectorAll(
+                        "#opportunity-table tr"
+                    )
+                    .forEach(
+                        row => {
+
+                            const matches =
+                                row.textContent
+                                    .toLowerCase()
+                                    .includes(
+                                        query
+                                    );
+
+                            row.style.display =
+                                matches
+                                    ? ""
+                                    : "none";
+
+                        }
+                    );
+
+            }
+        );
+
+    }
+);
+
+</script>
+
 </body>
 </html>

@@ -3116,6 +3116,259 @@ def get_ai_answer(
 
 
 # ============================================================
+# ============================================================
+# FINAL AGENT OBSERVABILITY / EVALUATION LAYER
+# ============================================================
+
+def _agent_result_parts(event: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
+    result = event.get("_agent_result") if isinstance(event, dict) else None
+    if not isinstance(result, dict):
+        result = {}
+
+    diagnosis = result.get("diagnosis") if isinstance(result.get("diagnosis"), dict) else {}
+    score = result.get("score") if isinstance(result.get("score"), dict) else {}
+    action = result.get("action") if isinstance(result.get("action"), dict) else {}
+    execution = result.get("execution") if isinstance(result.get("execution"), dict) else {}
+    stopping = result.get("stopping") if isinstance(result.get("stopping"), dict) else {}
+    escalation = result.get("escalation") if isinstance(result.get("escalation"), dict) else {}
+    return diagnosis, score, action, execution, stopping, escalation
+
+
+def build_agent_recovery_summary() -> dict[str, Any]:
+    """Aggregate persisted Recovery Agent executions for demo/evaluation.
+
+    These figures describe agent executions stored by this running server.
+    They are deliberately separate from the dataset's historical recovery
+    population so the demo can distinguish predicted risk from agent action.
+    """
+    total_executions = len(PROCESSED_RECOVERY_EVENTS)
+    recovered_executions = 0
+    total_money_recovered = 0.0
+    total_attempts = 0
+    escalation_count = 0
+    actions: dict[str, int] = {}
+    stopping_reasons: dict[str, int] = {}
+    scenarios: dict[str, dict[str, float | int]] = {}
+
+    recent_audits: list[dict[str, Any]] = []
+
+    for transaction_id, event in PROCESSED_RECOVERY_EVENTS.items():
+        if not isinstance(event, dict):
+            continue
+
+        diagnosis, score, action, execution, stopping, escalation = _agent_result_parts(event)
+        scenario = safe_string(
+            result_scenario := (
+                event.get("scenario")
+                or (event.get("_agent_result") or {}).get("scenario")
+                or "payment_failure"
+            )
+        )
+        action_name = safe_string(action.get("recovery_action"), "unknown_action")
+        stop_reason = safe_string(stopping.get("reason"), "NOT_RECORDED")
+        recovered = bool(execution.get("recovered", normalize_bool(event.get("recovered"))))
+        money = safe_float(execution.get("money_recovered", event.get("money_recovered", 0.0)))
+        attempt_count = safe_int(
+            execution.get(
+                "attempt_count",
+                event.get("recovery_attempts", 0),
+            )
+        )
+
+        if recovered:
+            recovered_executions += 1
+        total_money_recovered += money
+        total_attempts += max(0, attempt_count)
+        if bool(escalation.get("escalate", False)):
+            escalation_count += 1
+
+        actions[action_name] = actions.get(action_name, 0) + 1
+        stopping_reasons[stop_reason] = stopping_reasons.get(stop_reason, 0) + 1
+
+        bucket = scenarios.setdefault(
+            scenario,
+            {
+                "executions": 0,
+                "recovered": 0,
+                "money_recovered": 0.0,
+            },
+        )
+        bucket["executions"] += 1
+        bucket["recovered"] += int(recovered)
+        bucket["money_recovered"] += money
+
+        audit = event.get("_agent_result", {}).get("audit") if isinstance(event.get("_agent_result"), dict) else None
+        if isinstance(audit, dict):
+            recent_audits.append({
+                "transaction_id": safe_string(transaction_id),
+                "timestamp": safe_string(audit.get("timestamp")),
+                "scenario": safe_string(audit.get("scenario", scenario)),
+                "diagnosis": safe_string(audit.get("diagnosis")),
+                "recovery_probability": round(safe_float(audit.get("recovery_probability")), 4),
+                "priority": safe_string(audit.get("priority")),
+                "recovery_action": safe_string(audit.get("recovery_action")),
+                "recommended_channel": safe_string(audit.get("recommended_channel")),
+                "execution_status": safe_string(audit.get("execution_status")),
+                "recovered": bool(audit.get("recovered", recovered)),
+                "money_recovered": round(safe_float(audit.get("money_recovered", money)), 2),
+                "attempt_count": safe_int(audit.get("attempt_count", attempt_count)),
+                "stopping_reason": safe_string(audit.get("stopping_reason", stop_reason)),
+                "escalate": bool(audit.get("escalate", False)),
+            })
+
+    ordered_scenarios = []
+    for scenario, values in sorted(scenarios.items()):
+        executions = int(values["executions"])
+        recovered = int(values["recovered"])
+        ordered_scenarios.append({
+            "scenario": scenario,
+            "executions": executions,
+            "recovered": recovered,
+            "recovery_rate": round((recovered / executions * 100) if executions else 0.0, 2),
+            "money_recovered": round(float(values["money_recovered"]), 2),
+        })
+
+    recent_audits = sorted(
+        recent_audits,
+        key=lambda x: x.get("timestamp", ""),
+        reverse=True,
+    )[:20]
+
+    recovery_rate = (
+        recovered_executions / total_executions * 100
+        if total_executions
+        else 0.0
+    )
+
+    average_attempts = (
+        total_attempts / total_executions
+        if total_executions
+        else 0.0
+    )
+
+    return {
+        "total_executions": total_executions,
+        "recovered_executions": recovered_executions,
+        "unrecovered_executions": max(0, total_executions - recovered_executions),
+        "agent_recovery_rate": round(recovery_rate, 2),
+        "money_recovered": round(total_money_recovered, 2),
+        "average_attempts_per_execution": round(average_attempts, 2),
+        "escalations": escalation_count,
+        "actions": [
+            {"action": name, "executions": count}
+            for name, count in sorted(actions.items(), key=lambda x: (-x[1], x[0]))
+        ],
+        "stopping_reasons": [
+            {"reason": name, "cases": count}
+            for name, count in sorted(stopping_reasons.items(), key=lambda x: (-x[1], x[0]))
+        ],
+        "scenario_performance": ordered_scenarios,
+        "recent_audits": recent_audits,
+    }
+
+
+@app.get("/recovery-agent/summary")
+async def recovery_agent_summary_api():
+    """Return measured Recovery Agent execution performance."""
+    return {
+        "success": True,
+        "source": "persisted_recovery_agent_executions",
+        **build_agent_recovery_summary(),
+    }
+
+
+@app.get("/recovery-agent/audit/{transaction_id}")
+async def recovery_agent_audit_api(transaction_id: str):
+    """Return a structured, stage-by-stage audit view for one transaction."""
+    txid = safe_string(transaction_id).strip()
+    if not txid:
+        raise HTTPException(status_code=400, detail="transaction_id is required.")
+
+    event = PROCESSED_RECOVERY_EVENTS.get(txid)
+    if not isinstance(event, dict):
+        raise HTTPException(status_code=404, detail="No persisted Recovery Agent execution found for this transaction.")
+
+    result = event.get("_agent_result")
+    if not isinstance(result, dict):
+        raise HTTPException(status_code=404, detail="Transaction exists but has no persisted Recovery Agent execution.")
+
+    diagnosis, score, action, execution, stopping, escalation = _agent_result_parts(event)
+    policy = result.get("policy") if isinstance(result.get("policy"), dict) else {}
+
+    timeline = [
+        {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": "Revenue-risk event received and evaluated.",
+        },
+        {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": safe_string(diagnosis.get("reason"), "Diagnosis recorded."),
+            "diagnosis": safe_string(diagnosis.get("diagnosis")),
+        },
+        {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": f"Recovery probability {safe_float(score.get('recovery_probability')):.2%}.",
+            "recovery_probability": round(safe_float(score.get("recovery_probability")), 4),
+        },
+        {
+            "stage": "DECIDE",
+            "status": "completed" if policy.get("allowed", True) else "blocked",
+            "detail": safe_string(policy.get("reason"), "Policy decision recorded."),
+            "strategy": safe_string(action.get("strategy")),
+            "recovery_action": safe_string(action.get("recovery_action")),
+        },
+        {
+            "stage": "ACT",
+            "status": safe_string(execution.get("execution_status"), "not_recorded"),
+            "detail": safe_string(execution.get("execution_detail"), "Execution recorded."),
+            "channel": safe_string(execution.get("channel", action.get("channel"))),
+            "attempt_count": safe_int(execution.get("attempt_count", event.get("recovery_attempts", 0))),
+        },
+        {
+            "stage": "MEASURE",
+            "status": "recovered" if bool(execution.get("recovered")) else "not_recovered",
+            "detail": f"Money recovered: {format_inr(safe_float(execution.get('money_recovered')))}.",
+            "money_recovered": round(safe_float(execution.get("money_recovered")), 2),
+        },
+        {
+            "stage": "STOP / ESCALATE",
+            "status": "escalated" if bool(escalation.get("escalate")) else "stopped",
+            "stopping_reason": safe_string(stopping.get("reason"), "NOT_RECORDED"),
+            "escalation_level": safe_string(escalation.get("escalation_level"), "NONE"),
+            "escalation_reason": safe_string(escalation.get("reason")),
+        },
+    ]
+
+    return {
+        "success": True,
+        "transaction_id": txid,
+        "scenario": safe_string(result.get("scenario", event.get("scenario"))),
+        "event": {
+            "customer_id": safe_string(event.get("customer_id")),
+            "transaction_amount": round(safe_float(event.get("transaction_amount")), 2),
+            "payment_method": safe_string(event.get("payment_method")),
+            "failure_reason": safe_string(event.get("failure_reason")),
+        },
+        "agent_result": result,
+        "timeline": timeline,
+    }
+
+
+@app.get("/recovery-agent/health")
+async def recovery_agent_health_api():
+    """Small readiness endpoint for demos and deployment checks."""
+    return {
+        "status": "ok",
+        "agent": "recovery_agent",
+        "max_recovery_attempts": MAX_RECOVERY_ATTEMPTS,
+        "supported_scenarios": sorted(SUPPORTED_SCENARIOS),
+        "persisted_agent_executions": len(PROCESSED_RECOVERY_EVENTS),
+    }
+
+
 # PAGES
 # ============================================================
 
@@ -6158,3 +6411,4 @@ async def customer_detail_api(customer_id: str):
                 ),
         }
     }
+

@@ -1,25 +1,129 @@
+# ============================================================
+# REVENUE RECOVERY AGENT
+# Git Ignore
+# ============================================================
+
+# ------------------------------------------------------------
 # Python
+# ------------------------------------------------------------
+
 __pycache__/
 *.py[cod]
+*$py.class
+
 .venv/
 venv/
 env/
+ENV/
 
-# Environment / secrets
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ------------------------------------------------------------
+# Environment / Secrets
+# ------------------------------------------------------------
+
 .env
 .env.*
+!.env.example
 
-# IDE
-.vscode/
-.idea/
+*.pem
+*.key
+*.p12
+*.pfx
 
-# OS
-.DS_Store
-Thumbs.db
+# Google Cloud / Firebase credentials
+service-account*.json
+*-service-account*.json
+google-credentials*.json
+firebase-adminsdk*.json
 
-# Logs
+# ------------------------------------------------------------
+# Runtime / Generated Application State
+# ------------------------------------------------------------
+
+data/runtime/
+data/processed/
+logs/
 *.log
 
-# Temporary files
+# Recovery execution state
+recovery_events.json
+
+# ------------------------------------------------------------
+# Backups
+# ------------------------------------------------------------
+
+backup/
+backups/
+
+# ------------------------------------------------------------
+# Temporary installation / update packages
+# ------------------------------------------------------------
+
+*_update/
+*_package/
+*.zip
+
+# Ignore only temporary/generated PowerShell installers
+install_*.ps1
+
+# ------------------------------------------------------------
+# Temporary investigation / test files
+# ------------------------------------------------------------
+
+*_check.json
+*_test.json
 *.tmp
-*.bak.env
+*.temp
+
+# ------------------------------------------------------------
+# OS files
+# ------------------------------------------------------------
+
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ------------------------------------------------------------
+# Editors / IDEs
+# ------------------------------------------------------------
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ------------------------------------------------------------
+# Node / Frontend tooling
+# ------------------------------------------------------------
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+.cache/
+.parcel-cache/
+
+# ------------------------------------------------------------
+# Coverage / Test Output
+# ------------------------------------------------------------
+
+coverage/
+.nyc_output/
+
+# ------------------------------------------------------------
+# Miscellaneous generated files
+# ------------------------------------------------------------
+
+*.bak
+*.backup
+*.orig
