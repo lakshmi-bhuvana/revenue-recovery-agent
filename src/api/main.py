@@ -1,4 +1,4 @@
-﻿
+
 from datetime import datetime
 import json
 from pathlib import Path
@@ -3164,8 +3164,8 @@ def build_agent_recovery_summary() -> dict[str, Any]:
                 or "payment_failure"
             )
         )
-        action_name = safe_string(action.get("recovery_action"), "unknown_action")
-        stop_reason = safe_string(stopping.get("reason"), "NOT_RECORDED")
+        action_name = safe_string(action.get("recovery_action"))
+        stop_reason = safe_string(stopping.get("reason"))
         recovered = bool(execution.get("recovered", normalize_bool(event.get("recovered"))))
         money = safe_float(execution.get("money_recovered", event.get("money_recovered", 0.0)))
         attempt_count = safe_int(
@@ -3182,8 +3182,10 @@ def build_agent_recovery_summary() -> dict[str, Any]:
         if bool(escalation.get("escalate", False)):
             escalation_count += 1
 
-        actions[action_name] = actions.get(action_name, 0) + 1
-        stopping_reasons[stop_reason] = stopping_reasons.get(stop_reason, 0) + 1
+        if action_name:
+            actions[action_name] = actions.get(action_name, 0) + 1
+        if stop_reason:
+            stopping_reasons[stop_reason] = stopping_reasons.get(stop_reason, 0) + 1
 
         bucket = scenarios.setdefault(
             scenario,
@@ -3322,7 +3324,7 @@ async def recovery_agent_audit_api(transaction_id: str):
         },
         {
             "stage": "ACT",
-            "status": safe_string(execution.get("execution_status"), "not_recorded"),
+            "status": safe_string(execution.get("execution_status"), "Not recorded"),
             "detail": safe_string(execution.get("execution_detail"), "Execution recorded."),
             "channel": safe_string(execution.get("channel", action.get("channel"))),
             "attempt_count": safe_int(execution.get("attempt_count", event.get("recovery_attempts", 0))),
@@ -3330,13 +3332,13 @@ async def recovery_agent_audit_api(transaction_id: str):
         {
             "stage": "MEASURE",
             "status": "recovered" if bool(execution.get("recovered")) else "not_recovered",
-            "detail": f"Money recovered: {format_inr(safe_float(execution.get('money_recovered')))}.",
+            "detail": f"Money recovered: INR {safe_float(execution.get('money_recovered')):,.2f}.",
             "money_recovered": round(safe_float(execution.get("money_recovered")), 2),
         },
         {
             "stage": "STOP / ESCALATE",
             "status": "escalated" if bool(escalation.get("escalate")) else "stopped",
-            "stopping_reason": safe_string(stopping.get("reason"), "NOT_RECORDED"),
+            "stopping_reason": safe_string(stopping.get("reason"), "Not recorded"),
             "escalation_level": safe_string(escalation.get("escalation_level"), "NONE"),
             "escalation_reason": safe_string(escalation.get("reason")),
         },
@@ -3369,6 +3371,39 @@ async def recovery_agent_health_api():
     }
 
 
+# ============================================================
+# ML MODEL EVALUATION
+# ============================================================
+@app.get("/ml/evaluation")
+async def ml_evaluation_api():
+    """Return held-out ML evaluation metrics."""
+    metrics_path = Path(
+        "models/recovery_model_metrics.json"
+    )
+    if not metrics_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                "ML evaluation metrics not found. "
+                "Run train_recovery_model.py first."
+            ),
+        )
+    try:
+        with open(
+            metrics_path,
+            "r",
+            encoding="utf-8",
+        ) as file:
+            metrics = json.load(file)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unable to read ML evaluation metrics: {exc}",
+        )
+    return {
+        "success": True,
+        **metrics,
+    }
 # PAGES
 # ============================================================
 
@@ -3386,6 +3421,13 @@ async def dashboard_index_page():
     return FileResponse(
         FRONTEND_DIR / "index.html"
     )
+@app.get("/recovery-agent.html")
+async def recovery_agent_page():
+    return FileResponse(
+        FRONTEND_DIR / "recovery-agent.html"
+    )
+
+
 @app.get("/recovery-cases.html")
 async def recovery_cases_page():
 
@@ -4676,6 +4718,184 @@ async def recovery_cases_api(
     }
 
 
+@app.get("/recovery-agent/executions")
+async def recovery_agent_executions_api(
+    page: int = Query(
+        default=1,
+        ge=1,
+    ),
+    page_size: int = Query(
+        default=50,
+        ge=1,
+        le=50,
+    ),
+    search: str | None = None,
+    scenario: str | None = None,
+    result: str | None = None,
+):
+    """
+    Return the complete persisted Recovery Agent execution history
+    with server-side pagination and filtering.
+    """
+    executions = []
+    search_term = safe_string(search).strip().lower()
+    scenario_term = safe_string(scenario).strip().lower()
+    result_term = safe_string(result).strip().lower()
+    for transaction_id, event in PROCESSED_RECOVERY_EVENTS.items():
+        if not isinstance(event, dict):
+            continue
+        agent_result = event.get("_agent_result")
+        if not isinstance(agent_result, dict):
+            continue
+        diagnosis, score, action, execution, stopping, escalation = (
+            _agent_result_parts(event)
+        )
+        audit = (
+            agent_result.get("audit")
+            if isinstance(agent_result.get("audit"), dict)
+            else {}
+        )
+        txid = safe_string(
+            transaction_id
+        )
+        customer_id = safe_string(
+            event.get("customer_id")
+            or agent_result.get("customer_id")
+            or audit.get("customer_id")
+        )
+        scenario_name = safe_string(
+            agent_result.get("scenario")
+            or audit.get("scenario")
+            or event.get("scenario")
+            or "payment_failure"
+        )
+        diagnosis_name = safe_string(
+            audit.get("diagnosis")
+            or diagnosis.get("diagnosis")
+        )
+        action_name = safe_string(
+            audit.get("recovery_action")
+            or action.get("recovery_action")
+        )
+        channel = safe_string(
+            audit.get("recommended_channel")
+            or execution.get("channel")
+            or action.get("channel")
+        )
+        recovered = bool(
+            execution.get(
+                "recovered",
+                audit.get("recovered", False),
+            )
+        )
+        if recovered:
+            result_name = "recovered"
+        else:
+            result_name = "not_recovered"
+        if search_term:
+            haystack = " ".join(
+                [
+                    txid.lower(),
+                    customer_id.lower(),
+                    scenario_name.lower(),
+                    diagnosis_name.lower(),
+                    action_name.lower(),
+                ]
+            )
+            if search_term not in haystack:
+                continue
+        if scenario_term and scenario_term not in {
+            scenario_name.lower(),
+        }:
+            continue
+        if result_term in {
+            "recovered",
+            "not_recovered",
+        }:
+            if result_name != result_term:
+                continue
+        timestamp = safe_string(
+            audit.get("timestamp")
+            or event.get("timestamp")
+        )
+        executions.append(
+            {
+                "transaction_id": txid,
+                "customer_id": customer_id,
+                "timestamp": timestamp,
+                "scenario": scenario_name,
+                "diagnosis": diagnosis_name,
+                "recovery_probability": round(
+                    safe_float(
+                        audit.get(
+                            "recovery_probability",
+                            score.get("recovery_probability"),
+                        )
+                    ),
+                    4,
+                ),
+                "priority": safe_string(
+                    audit.get(
+                        "priority",
+                        score.get("priority"),
+                    )
+                ),
+                "recovery_action": action_name,
+                "recommended_channel": channel,
+                "recovered": recovered,
+                "result": result_name,
+                "money_recovered": round(
+                    safe_float(
+                        execution.get(
+                            "money_recovered",
+                            audit.get("money_recovered", 0),
+                        )
+                    ),
+                    2,
+                ),
+                "attempt_count": safe_int(
+                    execution.get(
+                        "attempt_count",
+                        audit.get("attempt_count", 0),
+                    )
+                ),
+                "stopping_reason": safe_string(
+                    audit.get(
+                        "stopping_reason",
+                        stopping.get("reason"),
+                    )
+                ),
+                "escalate": bool(
+                    escalation.get("escalate", False)
+                ),
+            }
+        )
+    executions.sort(
+        key=lambda item: item.get("timestamp", ""),
+        reverse=True,
+    )
+    total = len(executions)
+    start = (
+        page - 1
+    ) * page_size
+    end = start + page_size
+    page_items = executions[start:end]
+    total_pages = (
+        (total + page_size - 1) // page_size
+        if total
+        else 1
+    )
+    return {
+        "success": True,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": total_pages,
+        "returned": len(page_items),
+        "has_previous": page > 1,
+        "has_next": page < total_pages,
+        "executions": page_items,
+    }
 # ============================================================
 # CUSTOMERS
 # ============================================================

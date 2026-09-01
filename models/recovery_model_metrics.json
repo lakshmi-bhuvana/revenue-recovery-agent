@@ -1,18 +1,37 @@
 {
+  "evaluation_type": "held_out_test_set",
+  "description": "Metrics are calculated on a stratified 20% holdout that was not used to fit the selected model.",
   "dataset": {
     "total_at_risk_cases": 1643,
     "training_samples": 1314,
-    "testing_samples": 329
+    "testing_samples": 329,
+    "test_positive_rate": 0.765957
+  },
+  "leakage_controls": {
+    "excluded_from_features": [
+      "transaction_id",
+      "customer_id",
+      "revenue_at_risk",
+      "recovered",
+      "money_recovered",
+      "promise_to_pay"
+    ],
+    "recovered_excluded": true,
+    "money_recovered_excluded": true,
+    "identifiers_excluded": true,
+    "future_outcome_fields_excluded": true
   },
   "models": {
     "logistic_regression": {
-      "accuracy": 0.7629179331306991,
-      "balanced_accuracy": 0.5070346320346321,
-      "precision": 0.7685185185185185,
-      "recall": 0.9880952380952381,
-      "f1": 0.8645833333333334,
-      "roc_auc": 0.5986394557823129,
-      "pr_auc": 0.8176018006828084,
+      "accuracy": 0.762918,
+      "balanced_accuracy": 0.507035,
+      "precision": 0.768519,
+      "recall": 0.988095,
+      "f1": 0.864583,
+      "roc_auc": 0.598639,
+      "pr_auc": 0.817602,
+      "brier_score": 0.177666,
+      "positive_prediction_rate": 0.984802,
       "confusion_matrix": [
         [
           2,
@@ -25,13 +44,15 @@
       ]
     },
     "random_forest": {
-      "accuracy": 0.6595744680851063,
-      "balanced_accuracy": 0.5568181818181819,
-      "precision": 0.7941176470588235,
+      "accuracy": 0.659574,
+      "balanced_accuracy": 0.556818,
+      "precision": 0.794118,
       "recall": 0.75,
-      "f1": 0.7714285714285715,
-      "roc_auc": 0.5805504019789733,
-      "pr_auc": 0.8248570372940465,
+      "f1": 0.771429,
+      "roc_auc": 0.58055,
+      "pr_auc": 0.824857,
+      "brier_score": 0.212694,
+      "positive_prediction_rate": 0.723404,
       "confusion_matrix": [
         [
           28,
@@ -44,5 +65,26 @@
       ]
     }
   },
-  "selected_model": "Logistic Regression"
+  "selected_model": "Logistic Regression",
+  "selected_model_metrics": {
+    "accuracy": 0.762918,
+    "balanced_accuracy": 0.507035,
+    "precision": 0.768519,
+    "recall": 0.988095,
+    "f1": 0.864583,
+    "roc_auc": 0.598639,
+    "pr_auc": 0.817602,
+    "brier_score": 0.177666,
+    "positive_prediction_rate": 0.984802,
+    "confusion_matrix": [
+      [
+        2,
+        75
+      ],
+      [
+        3,
+        249
+      ]
+    ]
+  }
 }
