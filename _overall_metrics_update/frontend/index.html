@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Revenue Recovery Agent</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        /* =====================================================
+           SIDEBAR FIX
+        ===================================================== */
+
+        .app {
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            z-index: 1000;
+            transition: width 0.25s ease;
+        }
+
+        .main {
+            margin-left: 250px;
+            transition: margin-left 0.25s ease;
+            min-height: 100vh;
+        }
+
+        /* Collapse */
+
+        .app.sidebar-collapsed .sidebar {
+            width: 76px;
+        }
+
+        .app.sidebar-collapsed .main {
+            margin-left: 76px;
+        }
+
+        .app.sidebar-collapsed .logo-text,
+        .app.sidebar-collapsed .status-text {
+            display: none;
+        }
+
+        .app.sidebar-collapsed .logo {
+            justify-content: center;
+        }
+
+        .app.sidebar-collapsed .nav-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .app.sidebar-collapsed .nav-item span {
+            margin-right: 0;
+        }
+
+        .app.sidebar-collapsed .sidebar-bottom {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .app.sidebar-collapsed .system-status {
+            justify-content: center;
+        }
+
+        /* =====================================================
+           TOGGLE BUTTON
+        ===================================================== */
+
+        .sidebar-toggle {
+            position: absolute;
+            top: 50%;
+            right: -15px;
+
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+            border: 1px solid #d9e2f0;
+
+            background: #ffffff;
+            color: #172033;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            font-size: 20px;
+            font-weight: 700;
+
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+            z-index: 2000;
+
+            transition:
+                transform 0.25s ease,
+                background 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .app.sidebar-collapsed .sidebar-toggle {
+            transform: rotate(180deg);
+        }
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        .nav-item {
+            text-decoration: none !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item span {
+            flex-shrink: 0;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+                width: 220px;
+            }
+
+            .main {
+                margin-left: 220px;
+            }
+
+            .app.sidebar-collapsed .sidebar {
+                width: 70px;
+            }
+
+            .app.sidebar-collapsed .main {
+                margin-left: 70px;
+            }
+        }
+
+        /* =====================================================
+           ASK RECOVERY AI BAR
+        ===================================================== */
+        .ai-bar {
+            margin: 0 0 22px 0;
+            background: #ffffff;
+            border: 1px solid #d9e2f0;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+        }
+
+        .ai-bar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 18px 10px;
+        }
+
+        .ai-bar-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-bar-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .ai-bar-title strong {
+            display: block;
+            color: #172033;
+            font-size: 14px;
+        }
+
+        .ai-bar-title small {
+            display: block;
+            margin-top: 2px;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .ai-bar-status {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .ai-bar-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px 14px;
+        }
+
+        .ai-bar-input {
+            flex: 1;
+            min-width: 0;
+            height: 42px;
+            border: 1px solid #d9e2f0;
+            border-radius: 9px;
+            padding: 0 13px;
+            outline: none;
+            color: #172033;
+            background: #f8fafc;
+            font-size: 12px;
+        }
+
+        .ai-bar-input:focus {
+            border-color: #818cf8;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+        }
+
+        .ai-bar-button {
+            height: 42px;
+            border: 0;
+            border-radius: 9px;
+            padding: 0 17px;
+            background: #4f46e5;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .ai-bar-button:hover { background: #4338ca; }
+        .ai-bar-button:disabled { opacity: 0.65; cursor: wait; }
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            padding: 0 18px 14px;
+        }
+
+        .ai-suggestion {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .ai-suggestion:hover {
+            border-color: #c7d2fe;
+            color: #4338ca;
+            background: #eef2ff;
+        }
+
+        .ai-response {
+            display: none;
+            border-top: 1px solid #edf2f7;
+            padding: 15px 18px 17px;
+            background: #fafbff;
+        }
+
+        .ai-response.visible { display: block; }
+
+        .ai-response-label {
+            margin-bottom: 7px;
+            color: #4f46e5;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ai-response-text {
+            color: #334155;
+            font-size: 12px;
+            line-height: 1.65;
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 700px) {
+            .ai-bar-form { flex-direction: column; align-items: stretch; }
+            .ai-bar-button { width: 100%; }
+            .ai-bar-header { align-items: flex-start; }
+            .ai-bar-status { display: none; }
+        }
+
+    
+        /* =====================================================
+           OVERALL RECOVERY METRICS
+        ====================================================== */
+        .overall-metrics-section {
+            margin-top: 18px;
+        }
+
+        .overall-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .overall-metric-card {
+            background: #ffffff;
+            border: 1px solid #dbe4f0;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 108px;
+            box-sizing: border-box;
+        }
+
+        .overall-metric-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 9px;
+        }
+
+        .overall-metric-value {
+            font-size: 21px;
+            line-height: 1.15;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .overall-metric-description {
+            margin-top: 7px;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 1100px) {
+            .overall-metrics-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .overall-metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+</style>
+</head>
+
+
+<body>
+
+<div class="app" id="app">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+    <!-- LOGO -->
+    <div class="logo">
+
+        <div class="logo-icon">
+            R
+        </div>
+
+        <div class="logo-text">
+            <h2>Recovery AI</h2>
+            <span>Revenue Operations</span>
+        </div>
+
+    </div>
+
+
+    <!-- COLLAPSE BUTTON -->
+    <button
+    	type="button"
+    	class="sidebar-toggle"
+    	id="sidebar-toggle"
+    	aria-label="Collapse sidebar"
+    	title="Collapse sidebar"
+>
+    	<span class="toggle-icon">‹</span>
+</button>
+
+
+    <!-- NAVIGATION -->
+    <nav>
+
+    <a href="/index.html" class="nav-item active">
+        <span>▦</span>
+        Dashboard
+    </a>
+
+    <a href="/recovery-cases.html" class="nav-item">
+        <span>◉</span>
+        Recovery Cases
+    </a>
+
+    <a href="/customers.html" class="nav-item">
+        <span>◈</span>
+        Customers
+    </a>
+
+    <a href="/analytics.html" class="nav-item">
+        <span>◌</span>
+        Analytics
+    </a>
+
+</nav>
+
+
+    <!-- SYSTEM STATUS -->
+    <div class="sidebar-bottom">
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            <div class="status-text">
+
+                <strong>
+                    System Online
+                </strong>
+
+                <small>
+                    AI Agent Active
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main" id="main">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Revenue Recovery Dashboard
+                </h1>
+
+                <p>
+                    AI-powered recovery prioritization and
+                    decision intelligence
+                </p>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <span class="last-updated">
+                    <span class="live-dot"></span>
+                    Live
+                </span>
+
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    onclick="loadDashboard()"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             KPI CARDS
+        ================================================== -->
+
+        <section class="kpi-grid">
+
+
+            <!-- TOTAL REVENUE AT RISK -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-header">
+
+                    <span>
+                        Total Revenue at Risk
+                    </span>
+
+                    <div class="kpi-icon">
+                        ₹
+                    </div>
+
+                </div>
+
+                <h2 id="total-risk">
+                    Loading...
+                </h2>
+
+                <p class="kpi-description">
+                    Revenue requiring recovery
+                </p>
+
+            </div>
+
+
+            <!-- EXPECTED RECOVERY -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-header">
+
+                    <span>
+                        Expected Recovery
+                    </span>
+
+                    <div class="kpi-icon">
+                        ↗
+                    </div>
+
+                </div>
+
+                <h2 id="expected-recovery">
+                    Loading...
+                </h2>
+
+                <p class="kpi-description">
+                    AI estimated recovery value
+                </p>
+
+            </div>
+
+
+            <!-- RECOVERY RATE -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-header">
+
+                    <span>
+                        Recovery Rate
+                    </span>
+
+                    <div class="kpi-icon">
+                        %
+                    </div>
+
+                </div>
+
+                <h2 id="recovery-rate">
+                    —
+                </h2>
+
+                <p class="kpi-description">
+                    Historical recovery performance
+                </p>
+
+            </div>
+
+
+            <!-- HIGH PRIORITY -->
+
+            <div class="kpi-card">
+
+                <div class="kpi-header">
+
+                    <span>
+                        High Priority Cases
+                    </span>
+
+                    <div class="kpi-icon">
+                        !
+                    </div>
+
+                </div>
+
+                <h2 id="high-priority">
+                    Loading...
+                </h2>
+
+                <p class="kpi-description">
+                    Cases requiring immediate attention
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             OVERALL RECOVERY PERFORMANCE
+        ================================================== -->
+        <section class="panel overall-metrics-section">
+            <div class="panel-header">
+                <div>
+                    <h3>Overall Recovery Performance</h3>
+                    <p>Dataset-wide recovery results including completed live recoveries</p>
+                </div>
+            </div>
+
+            <div class="overall-metrics-grid">
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Total Transactions</div>
+                    <div class="overall-metric-value" id="overall-total-cases">—</div>
+                    <div class="overall-metric-description">All transactions in the recovery dataset</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Total Transaction Value</div>
+                    <div class="overall-metric-value" id="overall-total-value">—</div>
+                    <div class="overall-metric-description">Total value across all transactions</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Recovered Cases</div>
+                    <div class="overall-metric-value" id="overall-recovered-cases">—</div>
+                    <div class="overall-metric-description">Cases successfully recovered</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Money Recovered</div>
+                    <div class="overall-metric-value" id="overall-money-recovered">—</div>
+                    <div class="overall-metric-description">Actual recovered revenue</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Overall Recovery Rate</div>
+                    <div class="overall-metric-value" id="overall-recovery-rate">—</div>
+                    <div class="overall-metric-description">Recovered cases ÷ total cases</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Unrecovered Cases</div>
+                    <div class="overall-metric-value" id="overall-unrecovered-cases">—</div>
+                    <div class="overall-metric-description">Cases still not recovered</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Recovery Value Rate</div>
+                    <div class="overall-metric-value" id="overall-value-rate">—</div>
+                    <div class="overall-metric-description">Money recovered ÷ total transaction value</div>
+                </div>
+
+                <div class="overall-metric-card">
+                    <div class="overall-metric-label">Customers</div>
+                    <div class="overall-metric-value" id="overall-customers">—</div>
+                    <div class="overall-metric-description">Unique customers represented</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================
+             ANALYTICS GRID
+        ================================================== -->
+
+        <section class="analytics-grid">
+
+
+            <!-- RECOVERY OVERVIEW -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Overview
+                        </h3>
+
+                        <p>
+                            AI decision distribution
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-placeholder">
+
+                    <div class="placeholder-circle">
+
+                        <span>
+                            AI
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart-legend">
+
+                        <div>
+                            <span class="legend-dot high"></span>
+                            High Priority
+                        </div>
+
+                        <div>
+                            <span class="legend-dot medium"></span>
+                            Medium Priority
+                        </div>
+
+                        <div>
+                            <span class="legend-dot low"></span>
+                            Low Priority
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECOVERY STRATEGY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h3>
+                            Recovery Strategy
+                        </h3>
+
+                        <p>
+                            Recommended agent actions
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="strategy-list">
+
+
+                    <!-- AGGRESSIVE -->
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Aggressive Recovery
+                            </strong>
+
+                            <small>
+                                High-value opportunities
+                            </small>
+
+                        </div>
+
+                        <span id="aggressive-count">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- ASSISTED -->
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Assisted Recovery
+                            </strong>
+
+                            <small>
+                                Agent-assisted cases
+                            </small>
+
+                        </div>
+
+                        <span id="assisted-count">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- STANDARD -->
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Standard Recovery
+                            </strong>
+
+                            <small>
+                                Normal payment recovery
+                            </small>
+
+                        </div>
+
+                        <span id="standard-count">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <!-- LOW COST -->
+
+                    <div class="strategy-row">
+
+                        <div>
+
+                            <strong>
+                                Low Cost Recovery
+                            </strong>
+
+                            <small>
+                                Low-priority follow-up
+                            </small>
+
+                        </div>
+
+                        <span id="low-cost-count">
+                            -
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TOP RECOVERY OPPORTUNITIES
+        ================================================== -->
+
+
+
+        <!-- ==============================
+             ASK RECOVERY AI
+        =============================== -->
+        <section class="ai-bar" id="ask-recovery-ai">
+            <div class="ai-bar-header">
+                <div class="ai-bar-title">
+                    <div class="ai-bar-icon">✦</div>
+                    <div>
+                        <strong>Ask Recovery AI</strong>
+                        <small>Ask about revenue risk, recovery performance, or agent decisions.</small>
+                    </div>
+                </div>
+                <span class="ai-bar-status" id="ai-bar-status">Grounded in current dashboard data</span>
+            </div>
+
+            <form class="ai-bar-form" id="ai-bar-form" onsubmit="askRecoveryAI(event)">
+                <input
+                    class="ai-bar-input"
+                    id="ai-question"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="Why is revenue at risk?"
+                    aria-label="Ask Recovery AI a question"
+                >
+                <button class="ai-bar-button" id="ai-ask-button" type="submit">Ask AI</button>
+            </form>
+
+            <div class="ai-suggestions">
+                <button type="button" class="ai-suggestion" onclick="useAIQuestion('Why is revenue at risk?')">Why is revenue at risk?</button>
+                <button type="button" class="ai-suggestion" onclick="useAIQuestion('What should I prioritize?')">What should I prioritize?</button>
+                <button type="button" class="ai-suggestion" onclick="useAIQuestion('Which recovery strategy is performing best?')">Which strategy is best?</button>
+                <button type="button" class="ai-suggestion" onclick="useAIQuestion('Why did the agent choose this action?')">Why this action?</button>
+            </div>
+
+            <div class="ai-response" id="ai-response">
+                <div class="ai-response-label">Recovery AI</div>
+                <div class="ai-response-text" id="ai-response-text"></div>
+            </div>
+        </section>
+
+        <section class="panel opportunities">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Top Recovery Opportunities
+                    </h3>
+
+                    <p>
+                        Highest expected-value recovery cases
+                    </p>
+
+                </div>
+
+
+                <div class="table-controls">
+
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Search transaction..."
+                        onkeyup="filterTable()"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Transaction
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Probability
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Strategy
+                            </th>
+
+                            <th>
+                                Channel
+                            </th>
+
+                            <th>
+                                Expected Recovery
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="opportunity-table">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="loading"
+                            >
+                                Loading recovery opportunities...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- =====================================================
+     DASHBOARD JAVASCRIPT
+====================================================== -->
+
+<script src="/js/app.js"></script>
+
+
+<!-- =====================================================
+     SIDEBAR JAVASCRIPT
+====================================================== -->
+
+<script>
+
+function toggleSidebar() {
+
+    const app = document.getElementById("app");
+
+    const button = document.getElementById("sidebar-toggle");
+
+    if (!app) {
+        console.error("App element not found");
+        return;
+    }
+
+    app.classList.toggle("sidebar-collapsed");
+
+    const collapsed =
+        app.classList.contains("sidebar-collapsed");
+
+    localStorage.setItem(
+        "sidebarCollapsed",
+        collapsed ? "true" : "false"
+    );
+
+    if (button) {
+
+        button.setAttribute(
+            "aria-label",
+            collapsed
+                ? "Expand sidebar"
+                : "Collapse sidebar"
+        );
+
+        button.setAttribute(
+            "title",
+            collapsed
+                ? "Expand sidebar"
+                : "Collapse sidebar"
+        );
+
+    }
+
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const app =
+            document.getElementById("app");
+
+        const button =
+            document.getElementById("sidebar-toggle");
+
+        if (!app) {
+            return;
+        }
+
+        const saved =
+            localStorage.getItem(
+                "sidebarCollapsed"
+            );
+
+        if (saved === "true") {
+
+            app.classList.add(
+                "sidebar-collapsed"
+            );
+
+        }
+
+        if (button) {
+
+            const collapsed =
+                app.classList.contains(
+                    "sidebar-collapsed"
+                );
+
+            button.setAttribute(
+                "aria-label",
+                collapsed
+                    ? "Expand sidebar"
+                    : "Collapse sidebar"
+            );
+
+            button.setAttribute(
+                "title",
+                collapsed
+                    ? "Expand sidebar"
+                    : "Collapse sidebar"
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+
+<!-- =====================================================
+     RECOVERY AI BAR
+====================================================== -->
+<script>
+
+const RECOVERY_AI_ENDPOINT = "/ai/analyze";
+
+function getDashboardAIContext() {
+    const text = (id) => {
+        const el = document.getElementById(id);
+        return el ? el.textContent.trim() : null;
+    };
+
+    return {
+        revenue_at_risk: text("total-risk"),
+        expected_recovery: text("expected-recovery"),
+        recovery_rate: text("recovery-rate"),
+        high_priority_cases: text("high-priority"),
+        strategies: {
+            aggressive: text("aggressive-count"),
+            assisted: text("assisted-count"),
+            standard: text("standard-count"),
+            low_cost: text("low-cost-count")
+        },
+        page: "merchant revenue recovery dashboard"
+    };
+}
+
+function useAIQuestion(question) {
+    const input = document.getElementById("ai-question");
+    if (!input) return;
+    input.value = question;
+    input.focus();
+}
+
+async function askRecoveryAI(event) {
+    event.preventDefault();
+
+    const input = document.getElementById("ai-question");
+    const button = document.getElementById("ai-ask-button");
+    const response = document.getElementById("ai-response");
+    const responseText = document.getElementById("ai-response-text");
+    const status = document.getElementById("ai-bar-status");
+
+    const question = input ? input.value.trim() : "";
+    if (!question) {
+        input.focus();
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Thinking…";
+    status.textContent = "Analyzing current recovery data…";
+    response.classList.add("visible");
+    responseText.textContent = "Preparing grounded analysis…";
+
+    try {
+        const res = await fetch(RECOVERY_AI_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                question,
+                context: getDashboardAIContext()
+            })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            throw new Error(data.detail || data.error || `AI request failed (${res.status})`);
+        }
+
+        const answer = data.answer || data.response || data.message || data.analysis;
+        if (!answer) {
+            throw new Error("The AI endpoint returned no answer.");
+        }
+
+        responseText.textContent = answer;
+        status.textContent = "Analysis generated from current recovery data";
+    } catch (error) {
+        responseText.textContent = "Unable to generate the AI analysis right now. " + error.message;
+        status.textContent = "AI analysis unavailable";
+    } finally {
+        button.disabled = false;
+        button.textContent = "Ask AI";
+    }
+}
+
+</script>
+
+
+<script>
+(function () {
+    function formatINR(value) {
+        const number = Number(value || 0);
+        return new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: "INR",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(number);
+    }
+
+    function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+    }
+
+    async function loadOverallMetrics() {
+        try {
+            const response = await fetch("/overall-metrics", {
+                cache: "no-store"
+            });
+
+            if (!response.ok) {
+                throw new Error("Overall metrics request failed: " + response.status);
+            }
+
+            const data = await response.json();
+
+            setText("overall-total-cases", Number(data.total_cases || 0).toLocaleString("en-IN"));
+            setText("overall-total-value", formatINR(data.total_transaction_value));
+            setText("overall-recovered-cases", Number(data.recovered_cases || 0).toLocaleString("en-IN"));
+            setText("overall-money-recovered", formatINR(data.money_recovered));
+            setText("overall-recovery-rate", Number(data.overall_recovery_rate || 0).toFixed(2) + "%");
+            setText("overall-unrecovered-cases", Number(data.unrecovered_cases || 0).toLocaleString("en-IN"));
+            setText("overall-value-rate", Number(data.recovery_value_rate || 0).toFixed(2) + "%");
+            setText("overall-customers", Number(data.total_customers || 0).toLocaleString("en-IN"));
+        } catch (error) {
+            console.error("Failed to load overall recovery metrics:", error);
+        }
+    }
+
+    window.loadOverallMetrics = loadOverallMetrics;
+
+    document.addEventListener("DOMContentLoaded", loadOverallMetrics);
+
+    // Keep the new section synchronized with the existing Refresh button.
+    const originalLoadDashboard = window.loadDashboard;
+    if (typeof originalLoadDashboard === "function") {
+        window.loadDashboard = async function () {
+            const result = await originalLoadDashboard.apply(this, arguments);
+            await loadOverallMetrics();
+            return result;
+        };
+    }
+})();
+</script>
+</body>
+</html>

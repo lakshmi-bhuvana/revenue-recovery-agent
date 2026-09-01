@@ -3127,12 +3127,6 @@ async def dashboard():
     )
 
 
-
-@app.get("/index.html")
-async def dashboard_index_page():
-    return FileResponse(
-        FRONTEND_DIR / "index.html"
-    )
 @app.get("/recovery-cases.html")
 async def recovery_cases_page():
 

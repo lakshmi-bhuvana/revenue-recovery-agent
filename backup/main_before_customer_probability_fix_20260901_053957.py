@@ -3127,12 +3127,6 @@ async def dashboard():
     )
 
 
-
-@app.get("/index.html")
-async def dashboard_index_page():
-    return FileResponse(
-        FRONTEND_DIR / "index.html"
-    )
 @app.get("/recovery-cases.html")
 async def recovery_cases_page():
 
@@ -4429,354 +4423,111 @@ async def recovery_cases_api(
 
 @app.get("/customers")
 async def customers_api():
-    # --------------------------------------------------------
-    # COMPLETE DATASET
-    # --------------------------------------------------------
+
+    # Start from the complete transaction dataset so recovered
+    # customers are not removed from the customer directory.
     df = prepare_base_dataframe(
         load_data()
     )
-    if df.empty:
-        return {
-            "total_customers": 0,
-            "customers_with_cases": 0,
-            "recovered_customers": 0,
-            "total_cases": 0,
-            "money_recovered": 0.0,
-            "customers": [],
-        }
-    # --------------------------------------------------------
-    # APPLY PERSISTED RECOVERY AGENT STATE
-    # --------------------------------------------------------
+
+    # Apply the latest server-side recovery state to matching
+    # transactions without changing the master CSV.
     if PROCESSED_RECOVERY_EVENTS:
-        event_df = pd.DataFrame(
-            PROCESSED_RECOVERY_EVENTS.values()
-        )
-        if not event_df.empty and "transaction_id" in event_df.columns:
-            event_df = prepare_base_dataframe(
-                event_df
+
+        live_df = prepare_base_dataframe(
+            pd.DataFrame(
+                PROCESSED_RECOVERY_EVENTS.values()
             )
-            event_df = event_df.set_index(
+        )
+
+        if not live_df.empty:
+
+            live_df = live_df.set_index(
                 "transaction_id"
             )
+
             df = df.set_index(
                 "transaction_id"
             )
+
             common_ids = df.index.intersection(
-                event_df.index
+                live_df.index
             )
+
             for column in [
                 "recovered",
                 "money_recovered",
                 "payment_status",
                 "recovery_attempts",
-                "recovery_probability",
-                "customer_intent",
-                "customer_reliability",
-                "contactability",
-                "recovery_friction",
                 "priority",
                 "priority_score",
+                "recovery_probability",
                 "strategy",
                 "recovery_action",
                 "recommended_channel",
                 "expected_recovery_value",
             ]:
-                if column in event_df.columns:
+
+                if column in live_df.columns:
+
                     df.loc[
                         common_ids,
-                        column
-                    ] = event_df.loc[
+                        column,
+                    ] = live_df.loc[
                         common_ids,
-                        column
+                        column,
                     ]
+
             df = df.reset_index()
-    # --------------------------------------------------------
-    # NORMALIZE CUSTOMER IDS
-    # --------------------------------------------------------
+
+    # Normalize customer identifiers.
     df["customer_id"] = (
         df["customer_id"]
         .astype(str)
         .str.strip()
     )
+
     df = df[
         df["customer_id"] != ""
     ].copy()
-    # --------------------------------------------------------
-    # ENSURE TRANSACTION-LEVEL MODEL METRICS EXIST
-    #
-    # Existing persisted values are preserved.
-    # Missing values are calculated using the project's
-    # existing scoring formulas.
-    # --------------------------------------------------------
-    calculated_probability = (
-        calculate_recovery_probability(
-            df
-        )
-    )
-    if "recovery_probability" not in df.columns:
-        df[
-            "recovery_probability"
-        ] = calculated_probability
-    else:
-        existing_probability = pd.to_numeric(
-            df[
-                "recovery_probability"
-            ],
-            errors="coerce"
-        )
-        df[
-            "recovery_probability"
-        ] = existing_probability.fillna(
-            calculated_probability
-        )
-    df[
-        "recovery_probability"
-    ] = (
-        df[
-            "recovery_probability"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # EXPECTED RECOVERY
-    # --------------------------------------------------------
-    calculated_expected_recovery = (
-        df[
-            "transaction_amount"
-        ]
-        * df[
-            "recovery_probability"
-        ]
-    )
-    if "expected_recovery_value" not in df.columns:
-        df[
-            "expected_recovery_value"
-        ] = calculated_expected_recovery
-    else:
-        existing_expected = pd.to_numeric(
-            df[
-                "expected_recovery_value"
-            ],
-            errors="coerce"
-        )
-        df[
-            "expected_recovery_value"
-        ] = existing_expected.fillna(
-            calculated_expected_recovery
-        )
-    # --------------------------------------------------------
-    # CUSTOMER INTENT
-    # --------------------------------------------------------
-    calculated_intent = (
-        calculate_customer_intent(
-            df
-        )
-    )
-    if "customer_intent" not in df.columns:
-        df[
-            "customer_intent"
-        ] = calculated_intent
-    else:
-        existing_intent = pd.to_numeric(
-            df[
-                "customer_intent"
-            ],
-            errors="coerce"
-        )
-        df[
-            "customer_intent"
-        ] = existing_intent.fillna(
-            calculated_intent
-        )
-    df[
-        "customer_intent"
-    ] = (
-        df[
-            "customer_intent"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # VALUE SCORE
-    # --------------------------------------------------------
-    df[
-        "value_score"
-    ] = calculate_value_score(
-        df
-    )
-    # --------------------------------------------------------
-    # PRIORITY SCORE
-    # --------------------------------------------------------
-    calculated_priority_score = (
-        calculate_priority_score(
-            df
-        )
-    )
-    if "priority_score" not in df.columns:
-        df[
-            "priority_score"
-        ] = calculated_priority_score
-    else:
-        existing_priority_score = pd.to_numeric(
-            df[
-                "priority_score"
-            ],
-            errors="coerce"
-        )
-        df[
-            "priority_score"
-        ] = existing_priority_score.fillna(
-            calculated_priority_score
-        )
-    df[
-        "priority_score"
-    ] = (
-        df[
-            "priority_score"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # PRIORITY LABEL
-    #
-    # Priority is always derived from the actual score so that
-    # customer directory and recovery cases stay consistent.
-    # --------------------------------------------------------
-    df[
-        "priority"
-    ] = assign_priority(
-        df[
-            "priority_score"
-        ]
-    )
-    # --------------------------------------------------------
-    # STRATEGY
-    # --------------------------------------------------------
-    calculated_strategy = (
-        assign_strategy(
-            df[
-                "priority_score"
-            ]
-        )
-    )
-    if "strategy" not in df.columns:
-        df[
-            "strategy"
-        ] = calculated_strategy
-    else:
-        strategy = (
-            df[
-                "strategy"
-            ]
-            .fillna("")
-            .astype(str)
-            .str.strip()
-        )
-        missing_strategy = (
-            strategy == ""
-        )
-        strategy.loc[
-            missing_strategy
-        ] = calculated_strategy.loc[
-            missing_strategy
-        ]
-        df[
-            "strategy"
-        ] = strategy
-    # --------------------------------------------------------
-    # RECOVERY STATE
-    # --------------------------------------------------------
-    df[
-        "recovered"
-    ] = (
-        df[
-            "recovered"
-        ]
-        .apply(
-            normalize_bool
-        )
-    )
-    df[
-        "money_recovered"
-    ] = pd.to_numeric(
-        df[
-            "money_recovered"
-        ],
-        errors="coerce"
-    ).fillna(0.0)
-    # --------------------------------------------------------
-    # CUSTOMER AGGREGATION
-    # --------------------------------------------------------
+
+    # Aggregate ALL dataset transactions by customer.
     grouped = (
         df
         .groupby(
             "customer_id",
-            as_index=False
+            as_index=False,
         )
         .agg(
             cases=(
                 "transaction_id",
-                "count"
+                "count",
             ),
+
             amount_at_risk=(
                 "transaction_amount",
-                "sum"
+                "sum",
             ),
+
             recovered_cases=(
                 "recovered",
-                "sum"
+                "sum",
             ),
+
             money_recovered=(
                 "money_recovered",
-                "sum"
+                "sum",
             ),
+
             average_recovery_probability=(
                 "recovery_probability",
-                "mean"
-            ),
-            average_priority_score=(
-                "priority_score",
-                "mean"
-            ),
-            high_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "HIGH"
-                        ).sum()
-                    )
-            ),
-            medium_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "MEDIUM"
-                        ).sum()
-                    )
-            ),
-            low_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "LOW"
-                        ).sum()
-                    )
+                "mean",
             ),
         )
     )
+
     if grouped.empty:
+
         return {
             "total_customers": 0,
             "customers_with_cases": 0,
@@ -4785,162 +4536,103 @@ async def customers_api():
             "money_recovered": 0.0,
             "customers": [],
         }
-    # --------------------------------------------------------
-    # RECOVERY RATE
-    # --------------------------------------------------------
-    grouped[
-        "recovery_rate"
-    ] = (
-        grouped[
-            "recovered_cases"
-        ]
-        / grouped[
-            "cases"
-        ].replace(
-            0,
-            1
-        )
+
+    grouped["recovery_rate"] = (
+        grouped["recovered_cases"]
+        / grouped["cases"].replace(0, 1)
         * 100
     )
-    # --------------------------------------------------------
-    # SORT CUSTOMERS BY RECOVERED VALUE
-    # --------------------------------------------------------
+
     grouped = grouped.sort_values(
         [
             "money_recovered",
-            "amount_at_risk"
+            "amount_at_risk",
         ],
-        ascending=False
+        ascending=False,
     )
-    # --------------------------------------------------------
-    # RESPONSE
-    # --------------------------------------------------------
-    customers = []
-    for _, row in grouped.iterrows():
-        customers.append(
-            {
-                "customer_id":
-                    safe_string(
-                        row[
-                            "customer_id"
-                        ]
-                    ),
-                "cases":
-                    safe_int(
-                        row[
-                            "cases"
-                        ]
-                    ),
-                "amount_at_risk":
-                    round(
-                        safe_float(
-                            row[
-                                "amount_at_risk"
-                            ]
-                        ),
-                        2
-                    ),
-                "recovered_cases":
-                    safe_int(
-                        row[
-                            "recovered_cases"
-                        ]
-                    ),
-                "recovery_rate":
-                    round(
-                        safe_float(
-                            row[
-                                "recovery_rate"
-                            ]
-                        ),
-                        2
-                    ),
-                "money_recovered":
-                    round(
-                        safe_float(
-                            row[
-                                "money_recovered"
-                            ]
-                        ),
-                        2
-                    ),
-                "average_recovery_probability":
-                    round(
-                        safe_float(
-                            row[
-                                "average_recovery_probability"
-                            ]
-                        ),
-                        4
-                    ),
-                "average_priority_score":
-                    round(
-                        safe_float(
-                            row[
-                                "average_priority_score"
-                            ]
-                        ),
-                        4
-                    ),
-                "high_priority_cases":
-                    safe_int(
-                        row[
-                            "high_priority_cases"
-                        ]
-                    ),
-                "medium_priority_cases":
-                    safe_int(
-                        row[
-                            "medium_priority_cases"
-                        ]
-                    ),
-                "low_priority_cases":
-                    safe_int(
-                        row[
-                            "low_priority_cases"
-                        ]
-                    ),
-            }
-        )
+
     return {
-        "total_customers":
-            int(
-                len(
-                    grouped
-                )
+
+        "total_customers": int(
+            len(grouped)
+        ),
+
+        "customers_with_cases": int(
+            (
+                grouped["cases"] > 0
+            ).sum()
+        ),
+
+        "recovered_customers": int(
+            (
+                grouped["recovered_cases"] > 0
+            ).sum()
+        ),
+
+        "total_cases": int(
+            len(df)
+        ),
+
+        "money_recovered": round(
+            safe_float(
+                df["money_recovered"].sum()
             ),
-        "customers_with_cases":
-            int(
-                (
-                    grouped[
-                        "cases"
-                    ] > 0
-                ).sum()
-            ),
-        "recovered_customers":
-            int(
-                (
-                    grouped[
-                        "recovered_cases"
-                    ] > 0
-                ).sum()
-            ),
-        "total_cases":
-            int(
-                len(df)
-            ),
-        "money_recovered":
-            round(
-                safe_float(
-                    df[
-                        "money_recovered"
-                    ].sum()
+            2,
+        ),
+
+        "customers": [
+
+            {
+                "customer_id": safe_string(
+                    row["customer_id"]
                 ),
-                2
-            ),
-        "customers":
-            customers,
+
+                "cases": safe_int(
+                    row["cases"]
+                ),
+
+                "amount_at_risk": round(
+                    safe_float(
+                        row["amount_at_risk"]
+                    ),
+                    2,
+                ),
+
+                "recovered_cases": safe_int(
+                    row["recovered_cases"]
+                ),
+
+                "recovery_rate": round(
+                    safe_float(
+                        row["recovery_rate"]
+                    ),
+                    2,
+                ),
+
+                "money_recovered": round(
+                    safe_float(
+                        row["money_recovered"]
+                    ),
+                    2,
+                ),
+
+                "average_recovery_probability": round(
+                    safe_float(
+                        row[
+                            "average_recovery_probability"
+                        ]
+                    ),
+                    4,
+                ),
+            }
+
+            for _, row in grouped.iterrows()
+        ],
     }
+# ============================================================
+# ANALYTICS
+# ============================================================
+
 @app.get("/analytics")
 async def analytics_api():
 
@@ -5081,11 +4773,6 @@ async def analytics_api():
 # They do NOT change ML scoring or escalation rules.
 
 
-@app.get("/customer.html")
-async def customer_page():
-    return FileResponse(
-        FRONTEND_DIR / "customer.html"
-    )
 @app.get("/recovery-case.html")
 async def recovery_case_page():
     return FileResponse(

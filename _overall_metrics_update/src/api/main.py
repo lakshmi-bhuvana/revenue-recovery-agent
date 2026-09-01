@@ -1,4 +1,4 @@
-﻿
+
 from datetime import datetime
 import json
 from pathlib import Path
@@ -400,7 +400,7 @@ def format_inr(value: float) -> str:
     )
 
     if len(integer_part) <= 3:
-        return f"â‚¹{integer_part}.{decimal_part}"
+        return f"₹{integer_part}.{decimal_part}"
 
     last_three = integer_part[-3:]
     remaining = integer_part[:-3]
@@ -422,7 +422,7 @@ def format_inr(value: float) -> str:
         )
 
     return (
-        f"â‚¹{','.join(groups)},"
+        f"₹{','.join(groups)},"
         f"{last_three}.{decimal_part}"
     )
 
@@ -952,10 +952,40 @@ def get_at_risk_data() -> pd.DataFrame:
         )
     )
 
-    at_risk[
+    if (
         "priority"
-    ] = calculated_priority_label
+        not in at_risk.columns
+    ):
 
+        at_risk[
+            "priority"
+        ] = calculated_priority_label
+
+    else:
+
+        priority = (
+            at_risk[
+                "priority"
+            ]
+            .fillna("LOW")
+            .astype(str)
+            .str.strip()
+            .str.upper()
+        )
+
+        missing = (
+            priority == ""
+        )
+
+        priority.loc[
+            missing
+        ] = calculated_priority_label.loc[
+            missing
+        ]
+
+        at_risk[
+            "priority"
+        ] = priority
 
     calculated_strategy = (
         assign_strategy(
@@ -1251,15 +1281,8 @@ def normalize_scenario(
 
         "b2b_receivables":
             "b2b_receivable",
+
         "invoice_overdue":
-            "b2b_receivable",
-        "overdue_receivable":
-            "b2b_receivable",
-        "overdue_invoice":
-            "b2b_receivable",
-        "receivable_overdue":
-            "b2b_receivable",
-        "b2b_invoice_overdue":
             "b2b_receivable",
 
         "mandate":
@@ -1997,7 +2020,7 @@ def run_recovery_agent(
 
 
 # ============================================================
-# PROCESSED EVENT â†’ DATAFRAME ROW
+# PROCESSED EVENT → DATAFRAME ROW
 # ============================================================
 
 def processed_event_to_row(
@@ -2394,16 +2417,16 @@ def get_ai_answer(
     }:
 
         return (
-            "Hi! I'm your Recovery AI. ðŸ‘‹\n\n"
+            "Hi! I'm your Recovery AI. 👋\n\n"
             "I can help you understand revenue risk, "
             "payment failures, recovery performance, "
             "prioritization, strategies, and agent decisions.\n\n"
             "Try asking:\n"
-            "â€¢ Why is revenue at risk?\n"
-            "â€¢ Why do transactions fail?\n"
-            "â€¢ What should I prioritize first?\n"
-            "â€¢ Which strategy performs best?\n"
-            "â€¢ Explain the reasoning behind the decision."
+            "• Why is revenue at risk?\n"
+            "• Why do transactions fail?\n"
+            "• What should I prioritize first?\n"
+            "• Which strategy performs best?\n"
+            "• Explain the reasoning behind the decision."
         )
 
     recovery_keywords = {
@@ -2592,17 +2615,17 @@ def get_ai_answer(
         return (
             f"The reasoning behind prioritizing transaction "
             f"{row['transaction_id']} is based on expected recovery value.\n\n"
-            f"â€¢ Amount at risk: "
+            f"• Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"• Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"• Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"â€¢ Customer intent: "
+            f"• Customer intent: "
             f"{row['customer_intent'] * 100:.2f}%\n"
-            f"â€¢ Customer success rate: "
+            f"• Customer success rate: "
             f"{row['customer_success_rate'] * 100:.2f}%\n"
-            f"â€¢ Priority score: "
+            f"• Priority score: "
             f"{row['priority_score'] * 100:.2f}%\n\n"
             "The system combines recovery probability, transaction "
             "value, customer intent, and customer success rate."
@@ -2667,10 +2690,10 @@ def get_ai_answer(
         return (
             f"The weakest recovery category is "
             f"'{worst_name}'.\n\n"
-            f"â€¢ Cases: {int(worst['cases']):,}\n"
-            f"â€¢ Transaction value: "
+            f"• Cases: {int(worst['cases']):,}\n"
+            f"• Transaction value: "
             f"{format_inr(worst['amount'])}\n"
-            f"â€¢ Recovery rate: "
+            f"• Recovery rate: "
             f"{worst['recovery_rate']:.2f}%\n\n"
             "This suggests that the failure type is creating "
             "additional recovery friction."
@@ -2733,10 +2756,10 @@ def get_ai_answer(
             f"The reasoning for the strongest strategy, "
             f"'{best_name}', is its observed recovery performance "
             "in the current dataset.\n\n"
-            f"â€¢ Recovery rate: "
+            f"• Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"â€¢ Cases: {int(best['cases']):,}\n"
-            f"â€¢ Money recovered: "
+            f"• Cases: {int(best['cases']):,}\n"
+            f"• Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -2748,11 +2771,11 @@ def get_ai_answer(
         return (
             "The revenue risk is driven by failed transactions "
             "that are still marked as recoverable opportunities.\n\n"
-            f"â€¢ Revenue at risk: "
+            f"• Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"â€¢ Expected recovery: "
+            f"• Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"â€¢ Unrecovered cases: "
+            f"• Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -2801,14 +2824,14 @@ def get_ai_answer(
             "HIGH-priority cases.\n\n"
             f"The top opportunity is transaction "
             f"{top['transaction_id']}.\n\n"
-            f"â€¢ Amount at risk: "
+            f"• Amount at risk: "
             f"{format_inr(top['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"• Recovery probability: "
             f"{top['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"• Expected recovery: "
             f"{format_inr(top['expected_recovery_value'])}\n"
-            f"â€¢ Strategy: {top['strategy']}\n"
-            f"â€¢ Channel: {top['recommended_channel']}\n\n"
+            f"• Strategy: {top['strategy']}\n"
+            f"• Channel: {top['recommended_channel']}\n\n"
             f"Among the top five opportunities, "
             f"{format_inr(total_high_value)} is at risk and "
             f"{format_inr(expected_high_value)} is expected to be recovered."
@@ -2847,15 +2870,15 @@ def get_ai_answer(
             "I would prioritize cases using expected recovery value "
             "rather than transaction amount alone.\n\n"
             f"Top opportunity: {row['transaction_id']}\n\n"
-            f"â€¢ Amount at risk: "
+            f"• Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"• Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"• Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"â€¢ Priority: {row['priority']}\n"
-            f"â€¢ Strategy: {row['strategy']}\n"
-            f"â€¢ Channel: {row['recommended_channel']}"
+            f"• Priority: {row['priority']}\n"
+            f"• Strategy: {row['strategy']}\n"
+            f"• Channel: {row['recommended_channel']}"
         )
 
     if (
@@ -2995,10 +3018,10 @@ def get_ai_answer(
         return (
             f"The strongest-performing strategy in the current "
             f"data is '{best_name}'.\n\n"
-            f"â€¢ Recovery rate: "
+            f"• Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"â€¢ Cases: {int(best['cases']):,}\n"
-            f"â€¢ Money recovered: "
+            f"• Cases: {int(best['cases']):,}\n"
+            f"• Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -3056,7 +3079,7 @@ def get_ai_answer(
         ):
 
             lines.append(
-                f"â€¢ {failure_name}: "
+                f"• {failure_name}: "
                 f"{int(row['cases']):,} cases, "
                 f"{format_inr(row['amount'])} at risk"
             )
@@ -3093,17 +3116,17 @@ def get_ai_answer(
 
         return (
             "Here's the current recovery picture:\n\n"
-            f"â€¢ Revenue at risk: "
+            f"• Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"â€¢ Expected recovery: "
+            f"• Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"â€¢ Recovery rate: "
+            f"• Recovery rate: "
             f"{summary['recovery_rate']:.2f}%\n"
-            f"â€¢ Recovery cases: "
+            f"• Recovery cases: "
             f"{summary['at_risk_cases']:,}\n"
-            f"â€¢ Recovered cases: "
+            f"• Recovered cases: "
             f"{summary['recovered_cases']:,}\n"
-            f"â€¢ Unrecovered cases: "
+            f"• Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -3127,12 +3150,6 @@ async def dashboard():
     )
 
 
-
-@app.get("/index.html")
-async def dashboard_index_page():
-    return FileResponse(
-        FRONTEND_DIR / "index.html"
-    )
 @app.get("/recovery-cases.html")
 async def recovery_cases_page():
 
@@ -4429,354 +4446,45 @@ async def recovery_cases_api(
 
 @app.get("/customers")
 async def customers_api():
-    # --------------------------------------------------------
-    # COMPLETE DATASET
-    # --------------------------------------------------------
-    df = prepare_base_dataframe(
-        load_data()
-    )
-    if df.empty:
-        return {
-            "total_customers": 0,
-            "customers_with_cases": 0,
-            "recovered_customers": 0,
-            "total_cases": 0,
-            "money_recovered": 0.0,
-            "customers": [],
-        }
-    # --------------------------------------------------------
-    # APPLY PERSISTED RECOVERY AGENT STATE
-    # --------------------------------------------------------
-    if PROCESSED_RECOVERY_EVENTS:
-        event_df = pd.DataFrame(
-            PROCESSED_RECOVERY_EVENTS.values()
-        )
-        if not event_df.empty and "transaction_id" in event_df.columns:
-            event_df = prepare_base_dataframe(
-                event_df
-            )
-            event_df = event_df.set_index(
-                "transaction_id"
-            )
-            df = df.set_index(
-                "transaction_id"
-            )
-            common_ids = df.index.intersection(
-                event_df.index
-            )
-            for column in [
-                "recovered",
-                "money_recovered",
-                "payment_status",
-                "recovery_attempts",
-                "recovery_probability",
-                "customer_intent",
-                "customer_reliability",
-                "contactability",
-                "recovery_friction",
-                "priority",
-                "priority_score",
-                "strategy",
-                "recovery_action",
-                "recommended_channel",
-                "expected_recovery_value",
-            ]:
-                if column in event_df.columns:
-                    df.loc[
-                        common_ids,
-                        column
-                    ] = event_df.loc[
-                        common_ids,
-                        column
-                    ]
-            df = df.reset_index()
-    # --------------------------------------------------------
-    # NORMALIZE CUSTOMER IDS
-    # --------------------------------------------------------
-    df["customer_id"] = (
-        df["customer_id"]
-        .astype(str)
-        .str.strip()
-    )
-    df = df[
-        df["customer_id"] != ""
-    ].copy()
-    # --------------------------------------------------------
-    # ENSURE TRANSACTION-LEVEL MODEL METRICS EXIST
-    #
-    # Existing persisted values are preserved.
-    # Missing values are calculated using the project's
-    # existing scoring formulas.
-    # --------------------------------------------------------
-    calculated_probability = (
-        calculate_recovery_probability(
-            df
-        )
-    )
-    if "recovery_probability" not in df.columns:
-        df[
-            "recovery_probability"
-        ] = calculated_probability
-    else:
-        existing_probability = pd.to_numeric(
-            df[
-                "recovery_probability"
-            ],
-            errors="coerce"
-        )
-        df[
-            "recovery_probability"
-        ] = existing_probability.fillna(
-            calculated_probability
-        )
-    df[
-        "recovery_probability"
-    ] = (
-        df[
-            "recovery_probability"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # EXPECTED RECOVERY
-    # --------------------------------------------------------
-    calculated_expected_recovery = (
-        df[
-            "transaction_amount"
-        ]
-        * df[
-            "recovery_probability"
-        ]
-    )
-    if "expected_recovery_value" not in df.columns:
-        df[
-            "expected_recovery_value"
-        ] = calculated_expected_recovery
-    else:
-        existing_expected = pd.to_numeric(
-            df[
-                "expected_recovery_value"
-            ],
-            errors="coerce"
-        )
-        df[
-            "expected_recovery_value"
-        ] = existing_expected.fillna(
-            calculated_expected_recovery
-        )
-    # --------------------------------------------------------
-    # CUSTOMER INTENT
-    # --------------------------------------------------------
-    calculated_intent = (
-        calculate_customer_intent(
-            df
-        )
-    )
-    if "customer_intent" not in df.columns:
-        df[
-            "customer_intent"
-        ] = calculated_intent
-    else:
-        existing_intent = pd.to_numeric(
-            df[
-                "customer_intent"
-            ],
-            errors="coerce"
-        )
-        df[
-            "customer_intent"
-        ] = existing_intent.fillna(
-            calculated_intent
-        )
-    df[
-        "customer_intent"
-    ] = (
-        df[
-            "customer_intent"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # VALUE SCORE
-    # --------------------------------------------------------
-    df[
-        "value_score"
-    ] = calculate_value_score(
-        df
-    )
-    # --------------------------------------------------------
-    # PRIORITY SCORE
-    # --------------------------------------------------------
-    calculated_priority_score = (
-        calculate_priority_score(
-            df
-        )
-    )
-    if "priority_score" not in df.columns:
-        df[
-            "priority_score"
-        ] = calculated_priority_score
-    else:
-        existing_priority_score = pd.to_numeric(
-            df[
-                "priority_score"
-            ],
-            errors="coerce"
-        )
-        df[
-            "priority_score"
-        ] = existing_priority_score.fillna(
-            calculated_priority_score
-        )
-    df[
-        "priority_score"
-    ] = (
-        df[
-            "priority_score"
-        ]
-        .clip(0, 1)
-    )
-    # --------------------------------------------------------
-    # PRIORITY LABEL
-    #
-    # Priority is always derived from the actual score so that
-    # customer directory and recovery cases stay consistent.
-    # --------------------------------------------------------
-    df[
-        "priority"
-    ] = assign_priority(
-        df[
-            "priority_score"
-        ]
-    )
-    # --------------------------------------------------------
-    # STRATEGY
-    # --------------------------------------------------------
-    calculated_strategy = (
-        assign_strategy(
-            df[
-                "priority_score"
-            ]
-        )
-    )
-    if "strategy" not in df.columns:
-        df[
-            "strategy"
-        ] = calculated_strategy
-    else:
-        strategy = (
-            df[
-                "strategy"
-            ]
-            .fillna("")
-            .astype(str)
-            .str.strip()
-        )
-        missing_strategy = (
-            strategy == ""
-        )
-        strategy.loc[
-            missing_strategy
-        ] = calculated_strategy.loc[
-            missing_strategy
-        ]
-        df[
-            "strategy"
-        ] = strategy
-    # --------------------------------------------------------
-    # RECOVERY STATE
-    # --------------------------------------------------------
-    df[
-        "recovered"
-    ] = (
-        df[
-            "recovered"
-        ]
-        .apply(
-            normalize_bool
-        )
-    )
-    df[
-        "money_recovered"
-    ] = pd.to_numeric(
-        df[
-            "money_recovered"
-        ],
-        errors="coerce"
-    ).fillna(0.0)
-    # --------------------------------------------------------
-    # CUSTOMER AGGREGATION
-    # --------------------------------------------------------
+
+    at_risk = get_at_risk_data()
+
     grouped = (
-        df
+        at_risk
         .groupby(
             "customer_id",
-            as_index=False
+            as_index=False,
         )
         .agg(
             cases=(
                 "transaction_id",
-                "count"
+                "count",
             ),
+
             amount_at_risk=(
                 "transaction_amount",
-                "sum"
+                "sum",
             ),
+
             recovered_cases=(
                 "recovered",
-                "sum"
+                "sum",
             ),
+
             money_recovered=(
                 "money_recovered",
-                "sum"
+                "sum",
             ),
+
             average_recovery_probability=(
                 "recovery_probability",
-                "mean"
-            ),
-            average_priority_score=(
-                "priority_score",
-                "mean"
-            ),
-            high_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "HIGH"
-                        ).sum()
-                    )
-            ),
-            medium_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "MEDIUM"
-                        ).sum()
-                    )
-            ),
-            low_priority_cases=(
-                "priority",
-                lambda values:
-                    int(
-                        (
-                            values
-                            .astype(str)
-                            .str.upper()
-                            == "LOW"
-                        ).sum()
-                    )
+                "mean",
             ),
         )
     )
+
     if grouped.empty:
+
         return {
             "total_customers": 0,
             "customers_with_cases": 0,
@@ -4785,9 +4493,7 @@ async def customers_api():
             "money_recovered": 0.0,
             "customers": [],
         }
-    # --------------------------------------------------------
-    # RECOVERY RATE
-    # --------------------------------------------------------
+
     grouped[
         "recovery_rate"
     ] = (
@@ -4796,151 +4502,116 @@ async def customers_api():
         ]
         / grouped[
             "cases"
-        ].replace(
-            0,
-            1
-        )
+        ]
         * 100
     )
-    # --------------------------------------------------------
-    # SORT CUSTOMERS BY RECOVERED VALUE
-    # --------------------------------------------------------
+
     grouped = grouped.sort_values(
         [
             "money_recovered",
-            "amount_at_risk"
+            "amount_at_risk",
         ],
-        ascending=False
+        ascending=False,
     )
-    # --------------------------------------------------------
-    # RESPONSE
-    # --------------------------------------------------------
-    customers = []
-    for _, row in grouped.iterrows():
-        customers.append(
-            {
-                "customer_id":
-                    safe_string(
-                        row[
-                            "customer_id"
-                        ]
-                    ),
-                "cases":
-                    safe_int(
-                        row[
-                            "cases"
-                        ]
-                    ),
-                "amount_at_risk":
-                    round(
-                        safe_float(
-                            row[
-                                "amount_at_risk"
-                            ]
-                        ),
-                        2
-                    ),
-                "recovered_cases":
-                    safe_int(
-                        row[
-                            "recovered_cases"
-                        ]
-                    ),
-                "recovery_rate":
-                    round(
-                        safe_float(
-                            row[
-                                "recovery_rate"
-                            ]
-                        ),
-                        2
-                    ),
-                "money_recovered":
-                    round(
-                        safe_float(
-                            row[
-                                "money_recovered"
-                            ]
-                        ),
-                        2
-                    ),
-                "average_recovery_probability":
-                    round(
-                        safe_float(
-                            row[
-                                "average_recovery_probability"
-                            ]
-                        ),
-                        4
-                    ),
-                "average_priority_score":
-                    round(
-                        safe_float(
-                            row[
-                                "average_priority_score"
-                            ]
-                        ),
-                        4
-                    ),
-                "high_priority_cases":
-                    safe_int(
-                        row[
-                            "high_priority_cases"
-                        ]
-                    ),
-                "medium_priority_cases":
-                    safe_int(
-                        row[
-                            "medium_priority_cases"
-                        ]
-                    ),
-                "low_priority_cases":
-                    safe_int(
-                        row[
-                            "low_priority_cases"
-                        ]
-                    ),
-            }
-        )
+
     return {
-        "total_customers":
-            int(
-                len(
-                    grouped
-                )
+        "total_customers": int(
+            len(grouped)
+        ),
+
+        "customers_with_cases": int(
+            len(grouped)
+        ),
+
+        "recovered_customers": int(
+            (
+                grouped[
+                    "recovered_cases"
+                ]
+                > 0
+            ).sum()
+        ),
+
+        "total_cases": int(
+            len(at_risk)
+        ),
+
+        "money_recovered": round(
+            safe_float(
+                at_risk[
+                    "money_recovered"
+                ].sum()
             ),
-        "customers_with_cases":
-            int(
-                (
-                    grouped[
-                        "cases"
-                    ] > 0
-                ).sum()
-            ),
-        "recovered_customers":
-            int(
-                (
-                    grouped[
-                        "recovered_cases"
-                    ] > 0
-                ).sum()
-            ),
-        "total_cases":
-            int(
-                len(df)
-            ),
-        "money_recovered":
-            round(
-                safe_float(
-                    df[
-                        "money_recovered"
-                    ].sum()
+            2,
+        ),
+
+        "customers": [
+            {
+                "customer_id": safe_string(
+                    row[
+                        "customer_id"
+                    ]
                 ),
-                2
-            ),
-        "customers":
-            customers,
+
+                "cases": safe_int(
+                    row[
+                        "cases"
+                    ]
+                ),
+
+                "amount_at_risk": round(
+                    safe_float(
+                        row[
+                            "amount_at_risk"
+                        ]
+                    ),
+                    2,
+                ),
+
+                "recovered_cases": safe_int(
+                    row[
+                        "recovered_cases"
+                    ]
+                ),
+
+                "recovery_rate": round(
+                    safe_float(
+                        row[
+                            "recovery_rate"
+                        ]
+                    ),
+                    2,
+                ),
+
+                "money_recovered": round(
+                    safe_float(
+                        row[
+                            "money_recovered"
+                        ]
+                    ),
+                    2,
+                ),
+
+                "average_recovery_probability": round(
+                    safe_float(
+                        row[
+                            "average_recovery_probability"
+                        ]
+                    ),
+                    4,
+                ),
+            }
+
+            for _, row
+            in grouped.iterrows()
+        ],
     }
+
+
+# ============================================================
+# ANALYTICS
+# ============================================================
+
 @app.get("/analytics")
 async def analytics_api():
 
@@ -5072,1089 +4743,4 @@ async def analytics_api():
         "strategy": group_recovery(
             "strategy"
         ),
-    }
-
-
-# CASE WORKFLOW EXTENSIONS
-# Add these routes to src/api/main.py.
-# They reuse the existing RecoveryEvent + process_recovery_event path.
-# They do NOT change ML scoring or escalation rules.
-
-
-@app.get("/customer.html")
-async def customer_page():
-    return FileResponse(
-        FRONTEND_DIR / "customer.html"
-    )
-@app.get("/recovery-case.html")
-async def recovery_case_page():
-    return FileResponse(
-        FRONTEND_DIR / "recovery-case.html"
-    )
-
-class RecoveryBatchRequest(BaseModel):
-    transaction_ids: list[str] = Field(..., min_length=1, max_length=50)
-
-
-def _recovery_case_row(transaction_id: str):
-    """
-    Return a transaction from the COMPLETE dataset.
-    Active recovery cases are a subset of the dataset, so this
-    function must not use get_at_risk_data() exclusively. A case
-    remains viewable after recovery, with the latest live/processed
-    state overlaid onto the original dataset row.
-    """
-    txid = safe_string(transaction_id)
-    if not txid:
-        return None
-    # --------------------------------------------------------
-    # START WITH THE COMPLETE DATASET
-    # --------------------------------------------------------
-    df = prepare_base_dataframe(
-        load_data()
-    )
-    if df.empty:
-        return None
-    if "transaction_id" not in df.columns:
-        return None
-    matches = df[
-        df["transaction_id"]
-        .astype(str)
-        .str.strip()
-        == txid
-    ]
-    if matches.empty:
-        return None
-    row = matches.iloc[0].copy()
-    # --------------------------------------------------------
-    # OVERLAY THE LATEST PROCESSED RECOVERY EVENT
-    # --------------------------------------------------------
-    processed = (
-        PROCESSED_RECOVERY_EVENTS.get(
-            txid,
-            {}
-        )
-    )
-    if isinstance(processed, dict) and processed:
-        for key, value in processed.items():
-            if value is not None:
-                row[key] = value
-    # --------------------------------------------------------
-    # OVERLAY CURRENT LIVE RECOVERY STATE
-    #
-    # Only state values that actually exist are applied.
-    # --------------------------------------------------------
-    live = (
-        LIVE_RECOVERY_STATE.get(
-            txid,
-            {}
-        )
-    )
-    if isinstance(live, dict) and live:
-        for key, value in live.items():
-            if value is not None:
-                row[key] = value
-    return row
-def _event_from_recovery_row(top) -> RecoveryEvent:
-    return RecoveryEvent(
-        transaction_id=safe_string(top.get("transaction_id")),
-        customer_id=safe_string(top.get("customer_id")),
-        transaction_amount=safe_float(top.get("transaction_amount")),
-        payment_method=safe_string(top.get("payment_method", "unknown"), "unknown"),
-        failure_reason=safe_string(top.get("failure_reason", "unknown"), "unknown"),
-        retry_count=max(0, safe_int(top.get("retry_count", 0))),
-        customer_transaction_count=max(1, safe_int(top.get("customer_transaction_count", 1), 1)),
-        customer_success_rate=min(1.0, max(0.0, safe_float(top.get("customer_success_rate", 0.8), 0.8))),
-        payment_method_success_rate=min(1.0, max(0.0, safe_float(top.get("payment_method_success_rate", 0.8), 0.8))),
-        channel=safe_string(top.get("channel", "payment_link"), "payment_link"),
-        preferred_channel=(safe_string(top.get("preferred_channel", "")) or None),
-        product_interest_score=min(1.0, max(0.0, safe_float(top.get("product_interest_score", 0.5), 0.5))),
-        checkout_progress=min(1.0, max(0.0, safe_float(top.get("checkout_progress", 0.5), 0.5))),
-        customer_email_available=normalize_bool(top.get("customer_email_available", 1)),
-        customer_phone_available=normalize_bool(top.get("customer_phone_available", 1)),
-        scenario=normalize_scenario(top.get("scenario", "payment_failure")),
-        payment_status=safe_string(top.get("payment_status", "failed"), "failed"),
-        revenue_at_risk=1,
-        recovery_attempts=max(0, safe_int(top.get("recovery_attempts", 0))),
-        promise_to_pay=normalize_bool(top.get("promise_to_pay", 0)),
-        recovered=0,
-        money_recovered=0.0,
-    )
-
-
-@app.get("/recovery-case/{transaction_id}")
-async def recovery_case_detail(transaction_id: str):
-    row = _recovery_case_row(transaction_id)
-    if row is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Transaction not found."
-        )
-    txid = safe_string(
-        row.get("transaction_id")
-    )
-    live = (
-        LIVE_RECOVERY_STATE.get(
-            txid,
-            {}
-        )
-    )
-    processed = (
-        PROCESSED_RECOVERY_EVENTS.get(
-            txid,
-            {}
-        )
-    )
-    # --------------------------------------------------------
-    # Determine whether a real Recovery Agent execution exists.
-    # --------------------------------------------------------
-    has_historical_agent_execution = (
-        isinstance(processed, dict)
-        and bool(processed.get("_agent_result"))
-    )
-    # --------------------------------------------------------
-    # For transactions without historical agent execution,
-    # calculate a CURRENT model assessment from the actual
-    # dataset features using the project's existing formulas.
-    # --------------------------------------------------------
-    assessment_probability = None
-    assessment_intent = None
-    assessment_value_score = None
-    assessment_priority_score = None
-    assessment_priority = None
-    assessment_expected_recovery = None
-    assessment_strategy = None
-    try:
-        if not has_historical_agent_execution:
-            assessment_df = pd.DataFrame(
-                [row.to_dict()]
-            )
-            assessment_df = prepare_base_dataframe(
-                assessment_df
-            )
-            assessment_probability = (
-                calculate_recovery_probability(
-                    assessment_df
-                ).iloc[0]
-            )
-            assessment_intent = (
-                calculate_customer_intent(
-                    assessment_df
-                ).iloc[0]
-            )
-            assessment_value_score = (
-                calculate_value_score(
-                    assessment_df
-                ).iloc[0]
-            )
-            assessment_df[
-                "recovery_probability"
-            ] = assessment_probability
-            assessment_df[
-                "customer_intent"
-            ] = assessment_intent
-            assessment_df[
-                "value_score"
-            ] = assessment_value_score
-            assessment_priority_score = (
-                calculate_priority_score(
-                    assessment_df
-                ).iloc[0]
-            )
-            assessment_priority = (
-                assign_priority(
-                    pd.Series(
-                        [assessment_priority_score]
-                    )
-                ).iloc[0]
-            )
-            assessment_strategy = (
-                assign_strategy(
-                    pd.Series(
-                        [assessment_priority_score]
-                    )
-                ).iloc[0]
-            )
-            assessment_expected_recovery = (
-                safe_float(
-                    row.get(
-                        "transaction_amount"
-                    )
-                )
-                * safe_float(
-                    assessment_probability
-                )
-            )
-    except Exception:
-        assessment_probability = None
-        assessment_intent = None
-        assessment_value_score = None
-        assessment_priority_score = None
-        assessment_priority = None
-        assessment_expected_recovery = None
-        assessment_strategy = None
-    # --------------------------------------------------------
-    # Historical agent values take precedence.
-    # Otherwise expose the current model assessment.
-    # --------------------------------------------------------
-    historical_result = (
-        processed.get(
-            "_agent_result",
-            {}
-        )
-        if isinstance(processed, dict)
-        else {}
-    )
-    historical_score = (
-        historical_result.get(
-            "score",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_action = (
-        historical_result.get(
-            "action",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_execution = (
-        historical_result.get(
-            "execution",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_stopping = (
-        historical_result.get(
-            "stopping",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_escalation = (
-        historical_result.get(
-            "escalation",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_policy = (
-        historical_result.get(
-            "policy",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    historical_audit = (
-        historical_result.get(
-            "audit",
-            {}
-        )
-        if isinstance(historical_result, dict)
-        else {}
-    )
-    # --------------------------------------------------------
-    # Final values shown by the case page.
-    # --------------------------------------------------------
-    if has_historical_agent_execution:
-        display_probability = safe_float(
-            historical_score.get(
-                "recovery_probability"
-            )
-        )
-        display_priority_score = safe_float(
-            historical_score.get(
-                "priority_score"
-            )
-        )
-        display_priority = safe_string(
-            historical_score.get(
-                "priority"
-            )
-        )
-        display_expected_recovery = (
-            safe_float(
-                processed.get(
-                    "expected_recovery_value",
-                    safe_float(
-                        row.get(
-                            "transaction_amount"
-                        )
-                    )
-                    * display_probability,
-                )
-            )
-        )
-        display_strategy = safe_string(
-            historical_action.get(
-                "strategy"
-            )
-        )
-        display_action = safe_string(
-            historical_action.get(
-                "recovery_action"
-            )
-        )
-        display_channel = safe_string(
-            historical_action.get(
-                "channel"
-            )
-        )
-        display_intent = safe_float(
-            historical_score.get(
-                "customer_intent"
-            )
-        )
-        display_reliability = safe_float(
-            historical_score.get(
-                "customer_reliability"
-            )
-        )
-        display_contactability = safe_float(
-            historical_score.get(
-                "contactability"
-            )
-        )
-        display_friction = safe_float(
-            historical_score.get(
-                "recovery_friction"
-            )
-        )
-        display_attempts = max(
-            0,
-            safe_int(
-                historical_execution.get(
-                    "attempt_count",
-                    processed.get(
-                        "recovery_attempts",
-                        row.get(
-                            "recovery_attempts",
-                            0
-                        )
-                    )
-                )
-            )
-        )
-        execution = historical_execution
-        stopping = historical_stopping
-        escalation = historical_escalation
-        policy = historical_policy
-        audit = historical_audit
-        assessment_source = (
-            "historical_agent_execution"
-        )
-    else:
-        display_probability = (
-            safe_float(
-                assessment_probability
-            )
-        )
-        display_priority_score = (
-            safe_float(
-                assessment_priority_score
-            )
-        )
-        display_priority = (
-            safe_string(
-                assessment_priority
-            )
-        )
-        display_expected_recovery = (
-            safe_float(
-                assessment_expected_recovery
-            )
-        )
-        display_strategy = (
-            safe_string(
-                assessment_strategy
-            )
-        )
-        display_action = ""
-        display_channel = ""
-        display_intent = (
-            safe_float(
-                assessment_intent
-            )
-        )
-        display_reliability = 0.0
-        display_contactability = 0.0
-        display_friction = 0.0
-        display_attempts = max(
-            0,
-            safe_int(
-                row.get(
-                    "recovery_attempts",
-                    0
-                )
-            )
-        )
-        execution = {}
-        stopping = {}
-        escalation = {}
-        policy = {}
-        audit = {}
-        assessment_source = (
-            "current_model_assessment"
-        )
-    # --------------------------------------------------------
-    # Return a stable case-detail payload.
-    # --------------------------------------------------------
-    return {
-        "success": True,
-        "case": {
-            "transaction_id":
-                txid,
-            "customer_id":
-                safe_string(
-                    row.get(
-                        "customer_id"
-                    )
-                ),
-            "transaction_amount":
-                round(
-                    safe_float(
-                        row.get(
-                            "transaction_amount"
-                        )
-                    ),
-                    2
-                ),
-            "payment_method":
-                safe_string(
-                    row.get(
-                        "payment_method"
-                    )
-                ),
-            "failure_reason":
-                safe_string(
-                    row.get(
-                        "failure_reason"
-                    )
-                ),
-            "scenario":
-                normalize_scenario(
-                    row.get(
-                        "scenario",
-                        "payment_failure"
-                    )
-                ),
-            "payment_status":
-                safe_string(
-                    row.get(
-                        "payment_status"
-                    )
-                ),
-            "recovery_probability":
-                round(
-                    display_probability,
-                    4
-                ),
-            "priority_score":
-                round(
-                    display_priority_score,
-                    4
-                ),
-            "priority":
-                display_priority,
-            "strategy":
-                display_strategy,
-            "recovery_action":
-                display_action,
-            "recommended_channel":
-                display_channel,
-            "expected_recovery_value":
-                round(
-                    display_expected_recovery,
-                    2
-                ),
-            "customer_intent":
-                round(
-                    display_intent,
-                    4
-                ),
-            "customer_reliability":
-                round(
-                    display_reliability,
-                    4
-                ),
-            "contactability":
-                round(
-                    display_contactability,
-                    4
-                ),
-            "recovery_friction":
-                round(
-                    display_friction,
-                    4
-                ),
-            "recovery_attempts":
-                display_attempts,
-            "max_recovery_attempts":
-                MAX_RECOVERY_ATTEMPTS,
-            "recovered":
-                bool(
-                    normalize_bool(
-                        row.get(
-                            "recovered"
-                        )
-                    )
-                ),
-            "money_recovered":
-                round(
-                    safe_float(
-                        row.get(
-                            "money_recovered"
-                        )
-                    ),
-                    2
-                ),
-            "assessment_source":
-                assessment_source,
-            "historical_agent_execution_available":
-                has_historical_agent_execution,
-            "live_recovery_state":
-                live,
-            "latest_processed_event":
-                processed,
-            "execution":
-                execution,
-            "stopping":
-                stopping,
-            "escalation":
-                escalation,
-            "policy":
-                policy,
-            "audit":
-                audit,
-        }
-    }
-@app.post("/recovery/run/{transaction_id}")
-async def run_recovery_for_transaction(transaction_id: str):
-    row = _recovery_case_row(transaction_id)
-    if row is None:
-        raise HTTPException(status_code=404, detail="Active recovery case not found.")
-
-    if normalize_bool(row.get("recovered")):
-        return {
-            "success": False,
-            "status": "already_recovered",
-            "transaction_id": transaction_id,
-            "message": "This case is already recovered.",
-        }
-
-    event = _event_from_recovery_row(row)
-    result = await process_recovery_event(event)
-    return {
-        "success": True,
-        "status": "processed",
-        "transaction_id": transaction_id,
-        "result": result,
-    }
-
-
-@app.post("/recovery/run-batch")
-async def run_recovery_batch(request: RecoveryBatchRequest):
-    results = []
-    processed_count = 0
-
-    for raw_id in request.transaction_ids:
-        transaction_id = safe_string(raw_id)
-        if not transaction_id:
-            continue
-
-        row = _recovery_case_row(transaction_id)
-        if row is None:
-            results.append({
-                "transaction_id": transaction_id,
-                "success": False,
-                "status": "not_found",
-                "message": "Active recovery case not found.",
-            })
-            continue
-
-        if normalize_bool(row.get("recovered")):
-            results.append({
-                "transaction_id": transaction_id,
-                "success": False,
-                "status": "already_recovered",
-            })
-            continue
-
-        try:
-            event = _event_from_recovery_row(row)
-            result = await process_recovery_event(event)
-            processed_count += 1
-            results.append({
-                "transaction_id": transaction_id,
-                "success": True,
-                "status": "processed",
-                "result": result,
-            })
-        except Exception as exc:
-            results.append({
-                "transaction_id": transaction_id,
-                "success": False,
-                "status": "error",
-                "message": str(exc),
-            })
-
-    return {
-        "success": True,
-        "status": "completed",
-        "requested": len(request.transaction_ids),
-        "processed": processed_count,
-        "results": results,
-    }
-
-
-
-
-# ============================================================
-# COMPLETE CUSTOMER DETAIL API
-# Added by final UI workflow installer.
-# ============================================================
-
-@app.get("/customers/{customer_id}")
-async def customer_detail_api(customer_id: str):
-    customer_id = safe_string(
-        customer_id
-    )
-    if not customer_id:
-        raise HTTPException(
-            status_code=400,
-            detail="customer_id is required."
-        )
-    # --------------------------------------------------------
-    # COMPLETE DATASET
-    # --------------------------------------------------------
-    raw = load_data()
-    df = prepare_base_dataframe(
-        raw
-    )
-    if (
-        df.empty
-        or "customer_id" not in df.columns
-    ):
-        raise HTTPException(
-            status_code=404,
-            detail="Customer not found."
-        )
-    df["customer_id"] = (
-        df["customer_id"]
-        .astype(str)
-        .str.strip()
-    )
-    matches = df[
-        df["customer_id"] == customer_id
-    ].copy()
-    if matches.empty:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Customer {customer_id} not found."
-        )
-    transactions = []
-    # --------------------------------------------------------
-    # PROCESS EVERY CUSTOMER TRANSACTION
-    # --------------------------------------------------------
-    for _, original_row in matches.iterrows():
-        transaction_id = safe_string(
-            original_row.get(
-                "transaction_id"
-            )
-        )
-        if not transaction_id:
-            continue
-        # Start from the original dataset row.
-        row = original_row.copy()
-        # ----------------------------------------------------
-        # APPLY PERSISTED AGENT STATE
-        # ----------------------------------------------------
-        processed = (
-            PROCESSED_RECOVERY_EVENTS.get(
-                transaction_id,
-                {}
-            )
-        )
-        live = (
-            LIVE_RECOVERY_STATE.get(
-                transaction_id,
-                {}
-            )
-        )
-        if (
-            isinstance(processed, dict)
-            and processed
-        ):
-            for key, value in processed.items():
-                if value is not None:
-                    row[key] = value
-        if (
-            isinstance(live, dict)
-            and live
-        ):
-            for key, value in live.items():
-                if value is not None:
-                    row[key] = value
-        # ----------------------------------------------------
-        # CHECK FOR REAL HISTORICAL AGENT EXECUTION
-        # ----------------------------------------------------
-        has_historical_agent_execution = (
-            isinstance(processed, dict)
-            and bool(
-                processed.get(
-                    "_agent_result"
-                )
-            )
-        )
-        historical_result = (
-            processed.get(
-                "_agent_result",
-                {}
-            )
-            if isinstance(processed, dict)
-            else {}
-        )
-        historical_score = (
-            historical_result.get(
-                "score",
-                {}
-            )
-            if isinstance(
-                historical_result,
-                dict
-            )
-            else {}
-        )
-        historical_action = (
-            historical_result.get(
-                "action",
-                {}
-            )
-            if isinstance(
-                historical_result,
-                dict
-            )
-            else {}
-        )
-        # ----------------------------------------------------
-        # CURRENT MODEL ASSESSMENT
-        #
-        # Used only when this transaction does not have a
-        # persisted Recovery Agent execution.
-        # ----------------------------------------------------
-        current_probability = 0.0
-        current_intent = 0.0
-        current_value_score = 0.0
-        current_priority_score = 0.0
-        current_priority = "LOW"
-        current_strategy = "low_cost_recovery"
-        current_expected_recovery = 0.0
-        try:
-            assessment_df = pd.DataFrame(
-                [row.to_dict()]
-            )
-            assessment_df = (
-                prepare_base_dataframe(
-                    assessment_df
-                )
-            )
-            current_probability = safe_float(
-                calculate_recovery_probability(
-                    assessment_df
-                ).iloc[0]
-            )
-            current_intent = safe_float(
-                calculate_customer_intent(
-                    assessment_df
-                ).iloc[0]
-            )
-            current_value_score = safe_float(
-                calculate_value_score(
-                    assessment_df
-                ).iloc[0]
-            )
-            assessment_df[
-                "recovery_probability"
-            ] = current_probability
-            assessment_df[
-                "customer_intent"
-            ] = current_intent
-            assessment_df[
-                "value_score"
-            ] = current_value_score
-            current_priority_score = safe_float(
-                calculate_priority_score(
-                    assessment_df
-                ).iloc[0]
-            )
-            current_priority = safe_string(
-                assign_priority(
-                    pd.Series(
-                        [current_priority_score]
-                    )
-                ).iloc[0],
-                "LOW"
-            )
-            current_strategy = safe_string(
-                assign_strategy(
-                    pd.Series(
-                        [current_priority_score]
-                    )
-                ).iloc[0],
-                "low_cost_recovery"
-            )
-            current_expected_recovery = (
-                safe_float(
-                    row.get(
-                        "transaction_amount"
-                    )
-                )
-                * current_probability
-            )
-        except Exception:
-            # Keep the transaction visible even if assessment
-            # calculation fails for an unusual source row.
-            pass
-        # ----------------------------------------------------
-        # HISTORICAL AGENT RESULT WINS WHEN AVAILABLE
-        # ----------------------------------------------------
-        if has_historical_agent_execution:
-            recovery_probability = safe_float(
-                historical_score.get(
-                    "recovery_probability",
-                    0.0
-                )
-            )
-            priority_score = safe_float(
-                historical_score.get(
-                    "priority_score",
-                    0.0
-                )
-            )
-            priority = safe_string(
-                historical_score.get(
-                    "priority",
-                    ""
-                )
-            )
-            strategy = safe_string(
-                historical_action.get(
-                    "strategy",
-                    ""
-                )
-            )
-            expected_recovery_value = (
-                safe_float(
-                    processed.get(
-                        "expected_recovery_value",
-                        safe_float(
-                            row.get(
-                                "transaction_amount"
-                            )
-                        )
-                        * recovery_probability
-                    )
-                )
-            )
-            recovery_action = safe_string(
-                historical_action.get(
-                    "recovery_action",
-                    ""
-                )
-            )
-            recommended_channel = safe_string(
-                historical_action.get(
-                    "channel",
-                    ""
-                )
-            )
-            assessment_source = (
-                "historical_agent_execution"
-            )
-        else:
-            recovery_probability = (
-                current_probability
-            )
-            priority_score = (
-                current_priority_score
-            )
-            priority = (
-                current_priority
-            )
-            strategy = (
-                current_strategy
-            )
-            expected_recovery_value = (
-                current_expected_recovery
-            )
-            recovery_action = ""
-            recommended_channel = ""
-            assessment_source = (
-                "current_model_assessment"
-            )
-        # ----------------------------------------------------
-        # TRANSACTION
-        # ----------------------------------------------------
-        transactions.append(
-            {
-                "transaction_id":
-                    transaction_id,
-                "customer_id":
-                    safe_string(
-                        row.get(
-                            "customer_id"
-                        )
-                    ),
-                "transaction_amount":
-                    round(
-                        safe_float(
-                            row.get(
-                                "transaction_amount"
-                            )
-                        ),
-                        2
-                    ),
-                "payment_method":
-                    safe_string(
-                        row.get(
-                            "payment_method"
-                        )
-                    ),
-                "failure_reason":
-                    safe_string(
-                        row.get(
-                            "failure_reason"
-                        )
-                    ),
-                "scenario":
-                    safe_string(
-                        row.get(
-                            "scenario"
-                        )
-                    ),
-                "payment_status":
-                    safe_string(
-                        row.get(
-                            "payment_status"
-                        )
-                    ),
-                "recovered":
-                    bool(
-                        normalize_bool(
-                            row.get(
-                                "recovered"
-                            )
-                        )
-                    ),
-                "money_recovered":
-                    round(
-                        safe_float(
-                            row.get(
-                                "money_recovered"
-                            )
-                        ),
-                        2
-                    ),
-                "recovery_attempts":
-                    max(
-                        0,
-                        safe_int(
-                            live.get(
-                                "recovery_attempts",
-                                row.get(
-                                    "recovery_attempts",
-                                    0
-                                )
-                            )
-                        )
-                    ),
-                "recovery_probability":
-                    round(
-                        recovery_probability,
-                        4
-                    ),
-                "priority_score":
-                    round(
-                        priority_score,
-                        4
-                    ),
-                "priority":
-                    priority,
-                "strategy":
-                    strategy,
-                "expected_recovery_value":
-                    round(
-                        expected_recovery_value,
-                        2
-                    ),
-                "assessment_source":
-                    assessment_source,
-                "historical_agent_execution_available":
-                    has_historical_agent_execution,
-                "recovery_action":
-                    recovery_action,
-                "recommended_channel":
-                    recommended_channel,
-            }
-        )
-    # --------------------------------------------------------
-    # CUSTOMER TOTALS
-    # --------------------------------------------------------
-    total_value = sum(
-        safe_float(
-            transaction[
-                "transaction_amount"
-            ]
-        )
-        for transaction in transactions
-    )
-    recovered_cases = sum(
-        1
-        for transaction in transactions
-        if transaction["recovered"]
-    )
-    money_recovered = sum(
-        safe_float(
-            transaction[
-                "money_recovered"
-            ]
-        )
-        for transaction in transactions
-    )
-    return {
-        "success": True,
-        "customer": {
-            "customer_id":
-                customer_id,
-            "transactions":
-                transactions,
-            "transaction_count":
-                len(transactions),
-            "total_value":
-                round(
-                    total_value,
-                    2
-                ),
-            "recovered_cases":
-                recovered_cases,
-            "unrecovered_cases":
-                max(
-                    0,
-                    len(transactions)
-                    - recovered_cases
-                ),
-            "money_recovered":
-                round(
-                    money_recovered,
-                    2
-                ),
-        }
     }

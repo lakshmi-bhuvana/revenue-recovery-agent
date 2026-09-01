@@ -1,515 +1,580 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Customers - Recovery AI</title>
 
-    <link rel="stylesheet" href="/css/style.css">
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
 
     <style>
+
         /* =====================================================
            CUSTOMERS PAGE
-           ===================================================== */
+        ===================================================== */
 
-        * {
-            box-sizing: border-box;
+        .customers-page {
+            width: 100%;
         }
 
-        body {
-            margin: 0;
-            font-family: Inter, Arial, Helvetica, sans-serif;
-            background: #f5f7fb;
-            color: #101828;
-        }
 
         /* =====================================================
-           SIDEBAR
-           ===================================================== */
+           CUSTOMER HEADER
+        ===================================================== */
 
-        .sidebar {
-            position: fixed !important;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 270px !important;
-            background: #0d1729 !important;
-            color: white;
-            padding: 28px 18px;
-            z-index: 1000;
-            overflow-y: auto;
+        .customer-page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 30px;
         }
 
-        .sidebar-brand {
-            padding: 4px 14px 32px;
-        }
-
-        .brand-mark {
-            font-size: 14px;
-            font-weight: 700;
-            color: #93c5fd;
-            margin-bottom: 6px;
-        }
-
-        .brand-name {
-            font-size: 24px;
-            font-weight: 800;
+        .customer-page-title h1 {
+            margin: 0;
+            color: #0b1730;
+            font-size: 30px;
+            line-height: 1.2;
+            font-weight: 750;
             letter-spacing: -0.5px;
         }
 
-        .brand-subtitle {
-            margin-top: 7px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .nav-item {
-            display: flex !important;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 13px 14px !important;
-            border-radius: 10px;
-            color: #b8c4d8 !important;
-            text-decoration: none !important;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s ease;
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.07);
-            color: white !important;
-        }
-
-        .nav-item.active {
-            background: #2563eb !important;
-            color: white !important;
-            box-shadow: 0 7px 18px rgba(37, 99, 235, 0.25);
-        }
-
-        .nav-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 15px;
-        }
-
-        .sidebar-status {
-            margin-top: 35px;
-            padding: 14px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            color: #94a3b8;
-            font-size: 12px;
-        }
-
-        .system-online {
-            color: #22c55e;
-            font-weight: 700;
-            margin-top: 7px;
-        }
-
-        /* =====================================================
-           MAIN CONTENT
-           ===================================================== */
-
-        .main-content {
-            margin-left: 270px !important;
-            width: calc(100% - 270px) !important;
-            min-height: 100vh;
-            padding: 36px 42px !important;
-        }
-
-        .content-container {
-            max-width: 1450px;
-            margin: 0 auto;
-        }
-
-        /* =====================================================
-           HEADER
-           ===================================================== */
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-        }
-
-        .page-header h1 {
-            margin: 0;
-            font-size: 30px;
-            line-height: 1.2;
-            font-weight: 800;
-            letter-spacing: -0.7px;
-        }
-
-        .page-header p {
-            margin: 8px 0 0;
-            color: #667085;
+        .customer-page-title p {
+            margin-top: 8px;
+            color: #7183a0;
             font-size: 14px;
         }
 
-        .header-actions {
+        .customer-header-actions {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .live-status {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            color: #16a34a;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #22c55e;
-            display: inline-block;
-        }
-
-        .refresh-button {
-            border: 1px solid #d0d5dd;
-            background: white;
-            color: #344054;
-            padding: 9px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .refresh-button:hover {
-            background: #f8fafc;
-        }
 
         /* =====================================================
-           KPI CARDS
-           ===================================================== */
+           CUSTOMER METRICS
+        ===================================================== */
 
-        .metrics-grid {
-            display: grid !important;
-            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-            gap: 20px !important;
+        .customer-metrics {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 22px;
+
             margin-bottom: 30px;
         }
 
-        .metric-card {
-            background: white !important;
-            border: 1px solid #e4e7ec !important;
-            border-radius: 14px !important;
-            padding: 22px !important;
-            min-height: 145px;
-            box-shadow: 0 2px 7px rgba(16, 24, 40, 0.04);
+        .customer-metric-card {
+            min-width: 0;
+            min-height: 142px;
+
+            padding: 22px;
+
+            background: #ffffff;
+
+            border: 1px solid #dde5ef;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 2px 7px
+                rgba(15, 23, 42, 0.025);
         }
 
-        .metric-card-top {
+        .customer-metric-top {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 20px;
         }
 
-        .metric-label {
+        .customer-metric-label {
+            color: #64748b;
             font-size: 13px;
-            color: #667085;
-            font-weight: 600;
+            font-weight: 500;
         }
 
-        .metric-icon {
+        .customer-metric-icon {
             width: 38px;
             height: 38px;
-            border-radius: 10px;
+
+            flex: 0 0 38px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
+
+            border-radius: 10px;
+
             background: #eff6ff;
             color: #2563eb;
+
+            font-size: 17px;
+            font-weight: 700;
         }
 
-        .metric-value {
-            margin-top: 18px;
-            font-size: 27px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            color: #101828;
-        }
-
-        .metric-description {
-            margin-top: 5px;
-            font-size: 12px;
-            color: #667085;
-        }
-
-        /* =====================================================
-           SECTION CARDS
-           ===================================================== */
-
-        .section-card {
-            background: white;
-            border: 1px solid #e4e7ec;
-            border-radius: 14px;
-            box-shadow: 0 2px 7px rgba(16, 24, 40, 0.04);
-            margin-bottom: 24px;
-        }
-
-        .section-header {
-            padding: 22px 24px;
-            border-bottom: 1px solid #eaecf0;
-        }
-
-        .section-header h2 {
-            margin: 0;
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .section-header p {
-            margin: 6px 0 0;
-            color: #667085;
-            font-size: 13px;
-        }
-
-        /* =====================================================
-           CUSTOMER OVERVIEW
-           ===================================================== */
-
-        .overview-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-        }
-
-        .overview-item {
-            padding: 25px 24px;
-            border-right: 1px solid #eaecf0;
-        }
-
-        .overview-item:last-child {
-            border-right: none;
-        }
-
-        .overview-label {
-            font-size: 12px;
-            color: #667085;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .overview-value {
-            font-size: 25px;
-            font-weight: 800;
-            color: #101828;
-        }
-
-        .overview-value.blue {
-            color: #2563eb;
-        }
-
-        .overview-value.green {
+        .customer-metric-icon.success {
+            background: #ecfdf3;
             color: #16a34a;
         }
 
-        .progress-wrapper {
-            margin-top: 12px;
-        }
+        .customer-metric-value {
+            color: #0b1730;
 
-        .progress-track {
-            height: 7px;
-            background: #eaecf0;
-            border-radius: 20px;
+            font-size: 25px;
+            font-weight: 750;
+
+            line-height: 1.2;
+
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #2563eb;
-            border-radius: 20px;
-            transition: width 0.5s ease;
+        .customer-metric-description {
+            margin-top: 6px;
+
+            color: #7890ad;
+
+            font-size: 12px;
         }
 
-        .progress-bar.green {
-            background: #16a34a;
-        }
 
         /* =====================================================
-           STATUS
-           ===================================================== */
+           DIRECTORY PANEL
+        ===================================================== */
 
-        .status-list {
-            padding: 0;
+        .customer-directory {
+            margin-bottom: 40px;
         }
 
-        .status-row {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            gap: 20px;
-            min-height: 64px;
-            padding: 16px 24px !important;
-            border-bottom: 1px solid #eaecf0;
-        }
-
-        .status-row:last-child {
-            border-bottom: none;
-        }
-
-        .status-left {
+        .customer-directory-header {
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 22px 24px;
+
+            border-bottom:
+                1px solid #edf1f6;
         }
 
-        .status-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #344054;
+        .customer-directory-title h2 {
+            margin: 0;
+
+            color: #0b1730;
+
+            font-size: 18px;
+            font-weight: 750;
         }
 
-        .status-description {
+        .customer-directory-title p {
+            margin-top: 5px;
+
+            color: #7183a0;
+
             font-size: 12px;
-            color: #667085;
         }
 
-        .status-value {
-            font-size: 15px;
-            font-weight: 800;
-            color: #101828;
-            white-space: nowrap;
+
+        /* =====================================================
+           SEARCH
+        ===================================================== */
+
+        .customer-search-wrapper {
+            display: flex;
+            align-items: center;
         }
+
+        .customer-search {
+            width: 250px;
+            height: 40px;
+
+            padding: 0 13px;
+
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+
+            background: #ffffff;
+
+            color: #172033;
+
+            font-family: inherit;
+            font-size: 13px;
+
+            outline: none;
+        }
+
+        .customer-search::placeholder {
+            color: #94a3b8;
+        }
+
+        .customer-search:focus {
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(59, 130, 246, 0.10);
+        }
+
+
+        /* =====================================================
+           CUSTOMER TABLE
+        ===================================================== */
+
+        .customer-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .customer-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1050px;
+        }
+
+        .customer-table thead {
+            background: #f8fafc;
+        }
+
+        .customer-table th {
+            padding: 13px 18px;
+
+            text-align: left;
+
+            color: #64748b;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
+            white-space: nowrap;
+
+            border-bottom:
+                1px solid #e5ebf3;
+        }
+
+        .customer-table td {
+            padding: 16px 18px;
+
+            color: #536b88;
+
+            font-size: 13px;
+
+            white-space: nowrap;
+
+            border-bottom:
+                1px solid #edf1f6;
+        }
+
+        .customer-table tbody tr {
+            transition:
+                background 0.15s ease;
+        }
+
+        .customer-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .customer-table td.amount {
+            color: #172033;
+            font-weight: 650;
+        }
+
+
+        /* =====================================================
+           CUSTOMER LINK
+        ===================================================== */
+
+        .customer-id-link {
+            color: #2563eb;
+
+            text-decoration: none;
+
+            font-weight: 700;
+        }
+
+        .customer-id-link:hover {
+            text-decoration: underline;
+        }
+
+        .customer-action {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 32px;
+
+            padding: 0 11px;
+
+            border:
+                1px solid #dbe3ef;
+
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #2563eb;
+
+            text-decoration: none;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .customer-action:hover {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .customer-loading {
+            padding: 45px 20px !important;
+
+            text-align: center;
+
+            color: #7890ad;
+
+            font-size: 13px;
+        }
+
 
         /* =====================================================
            RESPONSIVE
-           ===================================================== */
+        ===================================================== */
 
-        @media (max-width: 1150px) {
+        @media (max-width: 1200px) {
 
-            .metrics-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            .customer-metrics {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        minmax(0, 1fr)
+                    );
             }
 
-            .overview-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .overview-item {
-                border-right: none;
-                border-bottom: 1px solid #eaecf0;
-            }
-
-            .overview-item:last-child {
-                border-bottom: none;
-            }
         }
+
 
         @media (max-width: 800px) {
 
-            .sidebar {
-                width: 220px !important;
-            }
-
-            .main-content {
-                margin-left: 220px !important;
-                width: calc(100% - 220px) !important;
-                padding: 25px !important;
-            }
-
-            .page-header {
+            .customer-page-header {
                 flex-direction: column;
-                gap: 15px;
             }
 
-            .metrics-grid {
-                grid-template-columns: 1fr !important;
+            .customer-header-actions {
+                width: 100%;
+                justify-content: space-between;
             }
+
+            .customer-directory-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .customer-search-wrapper {
+                width: 100%;
+            }
+
+            .customer-search {
+                width: 100%;
+            }
+
         }
+
+
+        @media (max-width: 600px) {
+
+            .customer-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .customer-header-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+<div
+    class="app"
+    id="app"
+>
+
+
     <!-- =====================================================
          SIDEBAR
-         ===================================================== -->
+    ====================================================== -->
 
-    <aside class="sidebar">
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <!-- BRAND -->
 
         <div class="sidebar-brand">
 
-            <div class="brand-mark">R</div>
-
-            <div class="brand-name">
-                Recovery AI
+            <div class="brand-logo">
+                R
             </div>
 
-            <div class="brand-subtitle">
-                Revenue Operations
+            <div class="brand-text">
+
+                <strong>
+                    Recovery AI
+                </strong>
+
+                <small>
+                    Revenue Operations
+                </small>
+
             </div>
 
         </div>
 
 
+        <!-- TOGGLE -->
+
+        <button
+            type="button"
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+
+            <span class="toggle-icon">
+                ‹
+            </span>
+
+        </button>
+
+
+        <!-- NAVIGATION -->
+
         <nav class="sidebar-nav">
 
-            <a href="/" class="nav-item">
+            <a
+                href="/index.html"
+                class="nav-item"
+            >
 
-                <span class="nav-icon">▦</span>
+                <span class="nav-icon">
+                    ▦
+                </span>
 
-                <span>Dashboard</span>
-
-            </a>
-
-
-            <a href="/recovery-cases.html" class="nav-item">
-
-                <span class="nav-icon">◈</span>
-
-                <span>Recovery Cases</span>
+                <span class="nav-text">
+                    Dashboard
+                </span>
 
             </a>
 
 
-            <a href="/customers.html" class="nav-item active">
+            <a
+                href="/recovery-cases.html"
+                class="nav-item"
+            >
 
-                <span class="nav-icon">●</span>
+                <span class="nav-icon">
+                    ◉
+                </span>
 
-                <span>Customers</span>
+                <span class="nav-text">
+                    Recovery Cases
+                </span>
 
             </a>
 
 
-            <a href="/analytics.html" class="nav-item">
+            <a
+                href="/customers.html"
+                class="nav-item active"
+            >
 
-                <span class="nav-icon">◒</span>
+                <span class="nav-icon">
+                    ◈
+                </span>
 
-                <span>Analytics</span>
+                <span class="nav-text">
+                    Customers
+                </span>
+
+            </a>
+
+
+            <a
+                href="/analytics.html"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">
+                    ◌
+                </span>
+
+                <span class="nav-text">
+                    Analytics
+                </span>
 
             </a>
 
         </nav>
 
 
-        <div class="sidebar-status">
+        <!-- STATUS -->
 
-            <div>
-                System Status
-            </div>
+        <div class="sidebar-footer">
 
-            <div class="system-online">
-                ● System Online
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="system-status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <span>
+                        AI Agent Active
+                    </span>
+
+                </div>
+
             </div>
 
         </div>
@@ -517,428 +582,460 @@
     </aside>
 
 
+
     <!-- =====================================================
          MAIN CONTENT
-         ===================================================== -->
+    ====================================================== -->
 
-    <main class="main-content">
-
-        <div class="content-container">
-
-
-            <!-- HEADER -->
-
-            <header class="page-header">
-
-                <div>
-
-                    <h1>
-                        Customers
-                    </h1>
-
-                    <p>
-                        Customer recovery performance and revenue insights
-                    </p>
-
-                </div>
+    <main
+        class="main-content"
+        id="main-content"
+    >
 
 
-                <div class="header-actions">
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
-                    <div class="live-status">
-                        <span class="live-dot"></span>
-                        Live
-                    </div>
+        <header class="customer-page-header">
 
-                    <button
-                        class="refresh-button"
-                        onclick="loadCustomerMetrics()"
-                    >
-                        ↻ Refresh
-                    </button>
+            <div class="customer-page-title">
 
-                </div>
+                <h1>
+                    Customers
+                </h1>
 
-            </header>
+                <p>
+                    All customers represented in the
+                    recovery dataset
+                </p>
 
-
-            <!-- =================================================
-                 KPI CARDS
-                 ================================================= -->
-
-            <section class="metrics-grid">
+            </div>
 
 
-                <!-- TOTAL CUSTOMERS -->
+            <div class="customer-header-actions">
 
-                <div class="metric-card">
+                <div class="live-status">
 
-                    <div class="metric-card-top">
+                    <span class="live-dot"></span>
 
-                        <div class="metric-label">
-                            Total Customers
-                        </div>
-
-                        <div class="metric-icon">
-                            #
-                        </div>
-
-                    </div>
-
-                    <div
-                        id="total-customers"
-                        class="metric-value"
-                    >
-                        —
-                    </div>
-
-                    <div class="metric-description">
-                        Customers in the system
-                    </div>
+                    Live
 
                 </div>
 
 
-                <!-- CUSTOMERS WITH CASES -->
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    id="customer-refresh"
+                >
+                    ↻ Refresh
+                </button>
 
-                <div class="metric-card">
+            </div>
 
-                    <div class="metric-card-top">
+        </header>
 
-                        <div class="metric-label">
-                            Customers With Cases
-                        </div>
 
-                        <div class="metric-icon">
-                            !
-                        </div>
 
+        <!-- =================================================
+             METRICS
+        ================================================== -->
+
+        <section class="customer-metrics">
+
+
+            <!-- TOTAL CUSTOMERS -->
+
+            <div class="customer-metric-card">
+
+                <div class="customer-metric-top">
+
+                    <div class="customer-metric-label">
+                        Total Customers
                     </div>
 
-                    <div
-                        id="customers-with-cases"
-                        class="metric-value"
-                    >
-                        —
-                    </div>
-
-                    <div class="metric-description">
-                        Customers requiring recovery
-                    </div>
-
-                </div>
-
-
-                <!-- RECOVERED CUSTOMERS -->
-
-                <div class="metric-card">
-
-                    <div class="metric-card-top">
-
-                        <div class="metric-label">
-                            Recovered Customers
-                        </div>
-
-                        <div
-                            class="metric-icon"
-                            style="color:#16a34a;background:#ecfdf3;"
-                        >
-                            ✓
-                        </div>
-
-                    </div>
-
-                    <div
-                        id="recovered-customers"
-                        class="metric-value"
-                    >
-                        —
-                    </div>
-
-                    <div class="metric-description">
-                        Customers successfully recovered
+                    <div class="customer-metric-icon">
+                        #
                     </div>
 
                 </div>
-
-
-                <!-- MONEY RECOVERED -->
-
-                <div class="metric-card">
-
-                    <div class="metric-card-top">
-
-                        <div class="metric-label">
-                            Money Recovered
-                        </div>
-
-                        <div
-                            class="metric-icon"
-                            style="color:#d97706;background:#fffaeb;"
-                        >
-                            ₹
-                        </div>
-
-                    </div>
-
-                    <div
-                        id="money-recovered"
-                        class="metric-value"
-                    >
-                        —
-                    </div>
-
-                    <div class="metric-description">
-                        Actual recovered revenue
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CUSTOMER RECOVERY OVERVIEW
-                 ================================================= -->
-
-            <section class="section-card">
-
-                <div class="section-header">
-
-                    <h2>
-                        Customer Recovery Overview
-                    </h2>
-
-                    <p>
-                        Performance of customers across the recovery pipeline
-                    </p>
-
-                </div>
-
-
-                <div class="overview-grid">
-
-
-                    <!-- COVERAGE -->
-
-                    <div class="overview-item">
-
-                        <div class="overview-label">
-                            Recovery Coverage
-                        </div>
-
-                        <div
-                            id="coverage-rate"
-                            class="overview-value blue"
-                        >
-                            —
-                        </div>
-
-                        <div class="progress-wrapper">
-
-                            <div class="progress-track">
-
-                                <div
-                                    id="coverage-progress"
-                                    class="progress-bar"
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- RECOVERY RATE -->
-
-                    <div class="overview-item">
-
-                        <div class="overview-label">
-                            Customer Recovery Rate
-                        </div>
-
-                        <div
-                            id="customer-recovery-rate"
-                            class="overview-value green"
-                        >
-                            —
-                        </div>
-
-                        <div class="progress-wrapper">
-
-                            <div class="progress-track">
-
-                                <div
-                                    id="recovery-progress"
-                                    class="progress-bar green"
-                                ></div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- AVERAGE RECOVERY -->
-
-                    <div class="overview-item">
-
-                        <div class="overview-label">
-                            Average Recovery / Customer
-                        </div>
-
-                        <div
-                            id="average-recovery"
-                            class="overview-value"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CUSTOMER STATUS
-                 ================================================= -->
-
-            <section class="section-card">
-
-                <div class="section-header">
-
-                    <h2>
-                        Customer Status
-                    </h2>
-
-                    <p>
-                        Current customer recovery statistics
-                    </p>
-
-                </div>
-
 
                 <div
-                    id="customer-status"
-                    class="status-list"
+                    id="total-customers"
+                    class="customer-metric-value"
                 >
+                    —
+                </div>
 
-                    <div class="status-row">
+                <div class="customer-metric-description">
+                    Complete customer population
+                </div>
 
-                        <div class="status-left">
+            </div>
 
-                            <div class="status-title">
-                                Customer data
-                            </div>
 
-                            <div class="status-description">
-                                Loading current statistics...
-                            </div>
 
-                        </div>
+            <!-- CUSTOMERS WITH TRANSACTIONS -->
 
-                        <div class="status-value">
-                            —
-                        </div>
+            <div class="customer-metric-card">
 
+                <div class="customer-metric-top">
+
+                    <div class="customer-metric-label">
+                        Customers With Transactions
+                    </div>
+
+                    <div class="customer-metric-icon">
+                        ◉
                     </div>
 
                 </div>
 
-            </section>
+                <div
+                    id="customers-with-cases"
+                    class="customer-metric-value"
+                >
+                    —
+                </div>
+
+                <div class="customer-metric-description">
+                    Customers represented in the dataset
+                </div>
+
+            </div>
 
 
-        </div>
+
+            <!-- RECOVERED CUSTOMERS -->
+
+            <div class="customer-metric-card">
+
+                <div class="customer-metric-top">
+
+                    <div class="customer-metric-label">
+                        Recovered Customers
+                    </div>
+
+                    <div class="customer-metric-icon success">
+                        ✓
+                    </div>
+
+                </div>
+
+                <div
+                    id="recovered-customers"
+                    class="customer-metric-value"
+                >
+                    —
+                </div>
+
+                <div class="customer-metric-description">
+                    Customers with at least one recovered case
+                </div>
+
+            </div>
+
+
+
+            <!-- MONEY RECOVERED -->
+
+            <div class="customer-metric-card">
+
+                <div class="customer-metric-top">
+
+                    <div class="customer-metric-label">
+                        Money Recovered
+                    </div>
+
+                    <div class="customer-metric-icon success">
+                        ₹
+                    </div>
+
+                </div>
+
+                <div
+                    id="customer-money-recovered"
+                    class="customer-metric-value"
+                >
+                    —
+                </div>
+
+                <div class="customer-metric-description">
+                    Recovered revenue across all customers
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CUSTOMER DIRECTORY
+        ================================================== -->
+
+        <section class="panel customer-directory">
+
+
+            <div class="customer-directory-header">
+
+                <div class="customer-directory-title">
+
+                    <h2>
+                        Customer Directory
+                    </h2>
+
+                    <p>
+                        Click a customer to see every transaction
+                        and recovery state
+                    </p>
+
+                </div>
+
+
+                <div class="customer-search-wrapper">
+
+                    <input
+                        type="search"
+                        id="customer-search"
+                        class="customer-search"
+                        placeholder="Search customer ID..."
+                        autocomplete="off"
+                        aria-label="Search customers"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="customer-table-wrapper">
+
+                <table class="customer-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Transactions
+                            </th>
+
+                            <th>
+                                Total Value
+                            </th>
+
+                            <th>
+                                Recovered
+                            </th>
+
+                            <th>
+                                Recovery Rate
+                            </th>
+
+                            <th>
+                                Money Recovered
+                            </th>
+
+                            <th>
+                                Avg Probability
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="customer-table-body"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="customer-loading"
+                            >
+                                Loading customers...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
 
     </main>
 
-
-    <!-- =====================================================
-         CUSTOMER JAVASCRIPT
-         ===================================================== -->
-
-    <script src="/js/customers.js"></script>
+</div>
 
 
-    <!-- =====================================================
-         PROGRESS BAR UPDATE
-         ===================================================== -->
 
-    <script>
+<!-- =====================================================
+     CUSTOMERS JAVASCRIPT
+====================================================== -->
 
-        function updateCustomerProgress() {
-
-            const coverage =
-                parseFloat(
-                    document
-                        .getElementById("coverage-rate")
-                        ?.textContent
-                        .replace("%", "")
-                ) || 0;
+<script src="/js/customers.js"></script>
 
 
-            const recovery =
-                parseFloat(
-                    document
-                        .getElementById("customer-recovery-rate")
-                        ?.textContent
-                        .replace("%", "")
-                ) || 0;
+<!-- =====================================================
+     SIDEBAR
+====================================================== -->
+
+<script>
+
+(function () {
+
+    function setupSidebar() {
+
+        const app =
+            document.getElementById(
+                "app"
+            );
+
+        const button =
+            document.getElementById(
+                "sidebar-toggle"
+            );
+
+        if (!app || !button) {
+            return;
+        }
 
 
-            const coverageProgress =
-                document.getElementById(
-                    "coverage-progress"
-                );
+        const saved =
+            localStorage.getItem(
+                "sidebarCollapsed"
+            );
 
 
-            const recoveryProgress =
-                document.getElementById(
-                    "recovery-progress"
-                );
+        if (saved === "true") {
 
-
-            if (coverageProgress) {
-
-                coverageProgress.style.width =
-                    Math.min(coverage, 100) + "%";
-
-            }
-
-
-            if (recoveryProgress) {
-
-                recoveryProgress.style.width =
-                    Math.min(recovery, 100) + "%";
-
-            }
+            app.classList.add(
+                "sidebar-collapsed"
+            );
 
         }
 
 
-        document.addEventListener(
-            "DOMContentLoaded",
-            () => {
+        updateSidebarButton();
 
-                setTimeout(
-                    updateCustomerProgress,
-                    500
+
+        button.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+
+                app.classList.toggle(
+                    "sidebar-collapsed"
                 );
 
-                setInterval(
-                    updateCustomerProgress,
-                    30000
+
+                localStorage.setItem(
+                    "sidebarCollapsed",
+                    app.classList.contains(
+                        "sidebar-collapsed"
+                    )
+                        ? "true"
+                        : "false"
                 );
+
+
+                updateSidebarButton();
 
             }
         );
 
-    </script>
+    }
+
+
+    function updateSidebarButton() {
+
+        const app =
+            document.getElementById(
+                "app"
+            );
+
+        const button =
+            document.getElementById(
+                "sidebar-toggle"
+            );
+
+        if (!app || !button) {
+            return;
+        }
+
+
+        const collapsed =
+            app.classList.contains(
+                "sidebar-collapsed"
+            );
+
+
+        const icon =
+            button.querySelector(
+                ".toggle-icon"
+            );
+
+
+        if (icon) {
+
+            icon.textContent =
+                collapsed
+                    ? "›"
+                    : "‹";
+
+        }
+
+
+        button.setAttribute(
+            "aria-label",
+            collapsed
+                ? "Expand sidebar"
+                : "Collapse sidebar"
+        );
+
+
+        button.setAttribute(
+            "title",
+            collapsed
+                ? "Expand sidebar"
+                : "Collapse sidebar"
+        );
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        setupSidebar
+    );
+
+})();
+
+</script>
 
 </body>
+
 </html>

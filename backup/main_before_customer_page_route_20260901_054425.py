@@ -3127,12 +3127,6 @@ async def dashboard():
     )
 
 
-
-@app.get("/index.html")
-async def dashboard_index_page():
-    return FileResponse(
-        FRONTEND_DIR / "index.html"
-    )
 @app.get("/recovery-cases.html")
 async def recovery_cases_page():
 
@@ -5081,11 +5075,6 @@ async def analytics_api():
 # They do NOT change ML scoring or escalation rules.
 
 
-@app.get("/customer.html")
-async def customer_page():
-    return FileResponse(
-        FRONTEND_DIR / "customer.html"
-    )
 @app.get("/recovery-case.html")
 async def recovery_case_page():
     return FileResponse(

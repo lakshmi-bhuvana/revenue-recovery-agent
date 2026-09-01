@@ -1,0 +1,491 @@
+{
+  "txn_001846": {
+    "transaction_id": "txn_001846",
+    "customer_id": "cust_0034",
+    "transaction_amount": 49005.67,
+    "payment_method": "WALLET",
+    "failure_reason": "invoice_overdue",
+    "retry_count": 0,
+    "customer_transaction_count": 28,
+    "customer_success_rate": 0.979,
+    "payment_method_success_rate": 0.748,
+    "channel": "mobile",
+    "preferred_channel": "whatsapp",
+    "product_interest_score": 0.737,
+    "checkout_progress": 0.773,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "b2b_receivable",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 1,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 49005.67,
+    "recovery_probability": 0.8825,
+    "expected_recovery_value": 43247.503775,
+    "customer_intent": 0.7514,
+    "customer_reliability": 0.9853,
+    "contactability": 1.0,
+    "recovery_friction": 0.0,
+    "priority_score": 0.904,
+    "priority": "HIGH",
+    "strategy": "standard_recovery",
+    "recommended_channel": "email",
+    "recovery_action": "send_invoice_reminder",
+    "recovery_action_display": "send_invoice_reminder"
+  },
+  "txn_002951": {
+    "transaction_id": "txn_002951",
+    "customer_id": "cust_0477",
+    "transaction_amount": 45367.55,
+    "payment_method": "UPI",
+    "failure_reason": "mandate_failed",
+    "retry_count": 0,
+    "customer_transaction_count": 17,
+    "customer_success_rate": 0.92,
+    "payment_method_success_rate": 0.791,
+    "channel": "subscription",
+    "preferred_channel": "sms",
+    "product_interest_score": 0.955,
+    "checkout_progress": 0.74,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "mandate_failure",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 3,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 45367.55,
+    "recovery_probability": 0.9383,
+    "expected_recovery_value": 42568.372165,
+    "customer_intent": 0.869,
+    "customer_reliability": 0.944,
+    "contactability": 1.0,
+    "recovery_friction": 0.0,
+    "priority_score": 0.9299,
+    "priority": "HIGH",
+    "strategy": "standard_recovery",
+    "recovery_action": "retry_mandate",
+    "recommended_channel": "whatsapp",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_002951",
+      "customer_id": "cust_0477",
+      "diagnosis": {
+        "diagnosis": "mandate_failed",
+        "reason": "The recurring payment mandate failed and requires recovery.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 45367.55
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.92
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.791
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 17
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 0
+          },
+          {
+            "field": "preferred_channel",
+            "value": "sms"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.9383,
+        "priority_score": 0.9299,
+        "priority": "HIGH",
+        "recommended_channel": "whatsapp",
+        "transaction_amount": 45367.55,
+        "customer_intent": 0.869,
+        "customer_reliability": 0.944,
+        "contactability": 1.0,
+        "recovery_friction": 0.0
+      },
+      "action": {
+        "strategy": "standard_recovery",
+        "recovery_action": "retry_mandate",
+        "channel": "whatsapp",
+        "priority": "HIGH",
+        "scenario": "mandate_failure"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_mandate",
+        "channel": "whatsapp",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 45367.55,
+        "execution_detail": "Recovery succeeded through retry_mandate using whatsapp for mandate_failure.",
+        "scenario": "mandate_failure",
+        "attempt_count": 3
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-08-31T22:58:03.969828",
+        "transaction_id": "txn_002951",
+        "customer_id": "cust_0477",
+        "scenario": "mandate_failure",
+        "transaction_amount": 45367.55,
+        "diagnosis": "mandate_failed",
+        "diagnosis_reason": "The recurring payment mandate failed and requires recovery.",
+        "recovery_probability": 0.9383,
+        "priority_score": 0.9299,
+        "priority": "HIGH",
+        "strategy": "standard_recovery",
+        "recovery_action": "retry_mandate",
+        "recommended_channel": "whatsapp",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 45367.55,
+        "attempt_increment": 1,
+        "attempt_count": 3,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "mandate_failure"
+    }
+  },
+  "txn_000189": {
+    "transaction_id": "txn_000189",
+    "customer_id": "cust_0518",
+    "transaction_amount": 47075.37,
+    "payment_method": "CARD",
+    "failure_reason": "mandate_failed",
+    "retry_count": 0,
+    "customer_transaction_count": 20,
+    "customer_success_rate": 0.908,
+    "payment_method_success_rate": 0.874,
+    "channel": "web",
+    "preferred_channel": "sms",
+    "product_interest_score": 0.99,
+    "checkout_progress": 0.325,
+    "customer_email_available": 0,
+    "customer_phone_available": 1,
+    "scenario": "mandate_failure",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 47075.37,
+    "recovery_probability": 0.8738,
+    "expected_recovery_value": 41134.458306,
+    "customer_intent": 0.724,
+    "customer_reliability": 0.9356,
+    "contactability": 0.5,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.8155,
+    "priority": "HIGH",
+    "strategy": "standard_recovery",
+    "recovery_action": "retry_mandate",
+    "recommended_channel": "whatsapp",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_000189",
+      "customer_id": "cust_0518",
+      "diagnosis": {
+        "diagnosis": "mandate_failed",
+        "reason": "The recurring payment mandate failed and requires recovery.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 47075.37
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.908
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.874
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 20
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "sms"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 0
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.8738,
+        "priority_score": 0.8155,
+        "priority": "HIGH",
+        "recommended_channel": "whatsapp",
+        "transaction_amount": 47075.37,
+        "customer_intent": 0.724,
+        "customer_reliability": 0.9356,
+        "contactability": 0.5,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "standard_recovery",
+        "recovery_action": "retry_mandate",
+        "channel": "whatsapp",
+        "priority": "HIGH",
+        "scenario": "mandate_failure"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_mandate",
+        "channel": "whatsapp",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 47075.37,
+        "execution_detail": "Recovery succeeded through retry_mandate using whatsapp for mandate_failure.",
+        "scenario": "mandate_failure",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-08-31T22:58:22.827666",
+        "transaction_id": "txn_000189",
+        "customer_id": "cust_0518",
+        "scenario": "mandate_failure",
+        "transaction_amount": 47075.37,
+        "diagnosis": "mandate_failed",
+        "diagnosis_reason": "The recurring payment mandate failed and requires recovery.",
+        "recovery_probability": 0.8738,
+        "priority_score": 0.8155,
+        "priority": "HIGH",
+        "strategy": "standard_recovery",
+        "recovery_action": "retry_mandate",
+        "recommended_channel": "whatsapp",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 47075.37,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "mandate_failure"
+    }
+  },
+  "txn_002564": {
+    "transaction_id": "txn_002564",
+    "customer_id": "cust_0046",
+    "transaction_amount": 48415.34,
+    "payment_method": "WALLET",
+    "failure_reason": "invoice_overdue",
+    "retry_count": 0,
+    "customer_transaction_count": 17,
+    "customer_success_rate": 0.937,
+    "payment_method_success_rate": 0.89,
+    "channel": "subscription",
+    "preferred_channel": "email",
+    "product_interest_score": 0.445,
+    "checkout_progress": 0.971,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "b2b_receivable",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 48415.34,
+    "recovery_probability": 0.8667,
+    "expected_recovery_value": 41961.575178,
+    "customer_intent": 0.6554,
+    "customer_reliability": 0.9559,
+    "contactability": 1.0,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.8564,
+    "priority": "HIGH",
+    "strategy": "standard_recovery",
+    "recovery_action": "send_invoice_reminder",
+    "recommended_channel": "email",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_002564",
+      "customer_id": "cust_0046",
+      "diagnosis": {
+        "diagnosis": "invoice_overdue",
+        "reason": "A B2B receivable is overdue and requires collection follow-up.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 48415.34
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.937
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.89
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 17
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "email"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.8667,
+        "priority_score": 0.8564,
+        "priority": "HIGH",
+        "recommended_channel": "email",
+        "transaction_amount": 48415.34,
+        "customer_intent": 0.6554,
+        "customer_reliability": 0.9559,
+        "contactability": 1.0,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "standard_recovery",
+        "recovery_action": "send_invoice_reminder",
+        "channel": "email",
+        "priority": "HIGH",
+        "scenario": "b2b_receivable"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "send_invoice_reminder",
+        "channel": "email",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 48415.34,
+        "execution_detail": "Recovery succeeded through send_invoice_reminder using email for b2b_receivable.",
+        "scenario": "b2b_receivable",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-01T00:30:54.705889",
+        "transaction_id": "txn_002564",
+        "customer_id": "cust_0046",
+        "scenario": "b2b_receivable",
+        "transaction_amount": 48415.34,
+        "diagnosis": "invoice_overdue",
+        "diagnosis_reason": "A B2B receivable is overdue and requires collection follow-up.",
+        "recovery_probability": 0.8667,
+        "priority_score": 0.8564,
+        "priority": "HIGH",
+        "strategy": "standard_recovery",
+        "recovery_action": "send_invoice_reminder",
+        "recommended_channel": "email",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 48415.34,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "b2b_receivable"
+    }
+  }
+}
