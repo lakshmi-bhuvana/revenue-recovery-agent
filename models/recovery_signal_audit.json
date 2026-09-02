@@ -1,0 +1,153 @@
+{
+  "dataset": {
+    "rows": 1643,
+    "features": 46,
+    "positive_count": 1259,
+    "negative_count": 384,
+    "positive_rate": 0.766281
+  },
+  "cross_validation": {
+    "folds": 5,
+    "roc_auc_mean": 0.598713,
+    "roc_auc_std": 0.037278,
+    "roc_auc_min": 0.528551,
+    "roc_auc_max": 0.631345
+  },
+  "dummy_baseline": {
+    "roc_auc_mean": 0.5,
+    "roc_auc_std": 0.0
+  },
+  "top_numeric_univariate_signal": [
+    {
+      "feature": "intent_x_reliability",
+      "absolute_univariate_auc": 0.621493,
+      "unique_values": 1642
+    },
+    {
+      "feature": "customer_intent",
+      "absolute_univariate_auc": 0.620537,
+      "unique_values": 1448
+    },
+    {
+      "feature": "product_interest_score",
+      "absolute_univariate_auc": 0.612772,
+      "unique_values": 808
+    },
+    {
+      "feature": "engagement_strength",
+      "absolute_univariate_auc": 0.612639,
+      "unique_values": 1121
+    },
+    {
+      "feature": "intent_x_contactability",
+      "absolute_univariate_auc": 0.603764,
+      "unique_values": 1481
+    },
+    {
+      "feature": "amount_x_intent",
+      "absolute_univariate_auc": 0.565694,
+      "unique_values": 1643
+    },
+    {
+      "feature": "payment_reliability",
+      "absolute_univariate_auc": 0.557653,
+      "unique_values": 651
+    },
+    {
+      "feature": "reliability_average",
+      "absolute_univariate_auc": 0.557653,
+      "unique_values": 651
+    },
+    {
+      "feature": "customer_success_rate",
+      "absolute_univariate_auc": 0.552991,
+      "unique_values": 449
+    },
+    {
+      "feature": "checkout_progress",
+      "absolute_univariate_auc": 0.551529,
+      "unique_values": 821
+    },
+    {
+      "feature": "intent_gap",
+      "absolute_univariate_auc": 0.54401,
+      "unique_values": 1318
+    },
+    {
+      "feature": "reliability_x_payment",
+      "absolute_univariate_auc": 0.541708,
+      "unique_values": 1641
+    },
+    {
+      "feature": "reliability_x_contactability",
+      "absolute_univariate_auc": 0.537529,
+      "unique_values": 1037
+    },
+    {
+      "feature": "customer_reliability",
+      "absolute_univariate_auc": 0.530321,
+      "unique_values": 860
+    },
+    {
+      "feature": "payment_method_success_rate",
+      "absolute_univariate_auc": 0.530253,
+      "unique_values": 291
+    }
+  ],
+  "missingness": {
+    "transaction_amount": 0.0,
+    "customer_transaction_count": 0.0,
+    "customer_success_rate": 0.0,
+    "payment_method": 0.0,
+    "payment_method_success_rate": 0.0,
+    "channel": 0.0,
+    "preferred_channel": 0.0,
+    "product_interest_score": 0.0,
+    "checkout_progress": 0.0,
+    "customer_email_available": 0.0,
+    "customer_phone_available": 0.0,
+    "scenario": 0.0,
+    "payment_status": 0.0,
+    "failure_reason": 0.0,
+    "recovery_attempts": 0.0,
+    "customer_reliability": 0.0,
+    "payment_reliability": 0.0,
+    "customer_intent": 0.0,
+    "contactability": 0.0,
+    "recovery_friction": 0.0,
+    "customer_vs_payment_success_gap": 0.0,
+    "reliability_average": 0.0,
+    "intent_gap": 0.0,
+    "engagement_strength": 0.0,
+    "available_channel_count": 0.0,
+    "has_contact_channel": 0.0,
+    "multi_channel_contact": 0.0,
+    "attempt_pressure": 0.0,
+    "attempts_remaining_ratio": 0.0,
+    "customer_history_strength": 0.0,
+    "transaction_amount_log": 0.0,
+    "transaction_amount_scaled": 0.0,
+    "reliability_x_payment": 0.0,
+    "intent_x_contactability": 0.0,
+    "reliability_x_contactability": 0.0,
+    "intent_x_reliability": 0.0,
+    "recovery_capacity": 0.0,
+    "amount_x_reliability": 0.0,
+    "amount_x_intent": 0.0,
+    "amount_x_contactability": 0.0,
+    "is_payment_failure": 0.0,
+    "is_checkout_abandonment": 0.0,
+    "is_failed_subscription": 0.0,
+    "is_b2b_receivable": 0.0,
+    "is_mandate_failure": 0.0,
+    "channel_matches_preference": 0.0
+  },
+  "leakage_excluded": [
+    "transaction_id",
+    "customer_id",
+    "revenue_at_risk",
+    "recovered",
+    "money_recovered",
+    "promise_to_pay"
+  ]
+}
