@@ -5,6 +5,7 @@ from src.agent.actions import execute_action
 from src.agent.stopping_rules import check_stopping_rule
 from src.agent.audit import create_audit_event
 from src.agent.escalation import check_escalation
+from src.agent.action_optimizer import optimize_recovery_action
 
 
 class RecoveryAgent:
@@ -119,7 +120,125 @@ class RecoveryAgent:
             score,
             diagnosis,
         )
-
+        # -----------------------------------------
+        # ACTION UTILITY OPTIMIZER
+        # -----------------------------------------
+        #
+        # ML predicts recoverability.
+        # The optimizer ranks the available recovery
+        # actions using pre-recovery signals.
+        #
+        # Human review is escalation only and is never
+        # passed to execute_action().
+        # -----------------------------------------
+        optimizer_result = optimize_recovery_action(
+            transaction,
+            score,
+            diagnosis,
+        )
+        optimizer_selected_action = (
+            optimizer_result.get(
+                "selected_action",
+                "",
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else ""
+        )
+        optimizer_selected_channel = (
+            optimizer_result.get(
+                "channel",
+                "",
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else ""
+        )
+        optimizer_selected_strategy = (
+            optimizer_result.get(
+                "strategy",
+                "",
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else ""
+        )
+        optimizer_requires_human_review = (
+            bool(
+                optimizer_result.get(
+                    "requires_human_review",
+                    False,
+                )
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else False
+        )
+        optimizer_reason = (
+            optimizer_result.get(
+                "reason",
+                "",
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else ""
+        )
+        optimizer_candidates = (
+            optimizer_result.get(
+                "candidates",
+                [],
+            )
+            if isinstance(
+                optimizer_result,
+                dict,
+            )
+            else []
+        )
+        # Keep the existing action-policy result as the
+        # fallback, but allow the optimizer to select the
+        # automated execution path.
+        action = dict(
+            action
+        )
+        if (
+            optimizer_selected_action
+            and not optimizer_requires_human_review
+        ):
+            action[
+                "recovery_action"
+            ] = optimizer_selected_action
+            if optimizer_selected_channel:
+                action[
+                    "channel"
+                ] = optimizer_selected_channel
+            if optimizer_selected_strategy:
+                action[
+                    "strategy"
+                ] = optimizer_selected_strategy
+        optimizer_evidence = {
+            "selected_action":
+                optimizer_selected_action,
+            "selected_channel":
+                optimizer_selected_channel,
+            "selected_strategy":
+                optimizer_selected_strategy,
+            "requires_human_review":
+                optimizer_requires_human_review,
+            "reason":
+                optimizer_reason,
+            "candidates":
+                optimizer_candidates,
+        }
         # -----------------------------------------
         # 5. POLICY CHECK
         # -----------------------------------------
@@ -307,6 +426,7 @@ class RecoveryAgent:
             "diagnosis": diagnosis,
             "score": score,
             "action": action,
+            "optimizer": optimizer_evidence,
             "policy": policy,
             "execution": execution,
             "stopping": stopping_result,
