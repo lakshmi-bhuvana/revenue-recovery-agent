@@ -400,7 +400,7 @@ def format_inr(value: float) -> str:
     )
 
     if len(integer_part) <= 3:
-        return f"Ã¢â€šÂ¹{integer_part}.{decimal_part}"
+        return f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹{integer_part}.{decimal_part}"
 
     last_three = integer_part[-3:]
     remaining = integer_part[:-3]
@@ -422,7 +422,7 @@ def format_inr(value: float) -> str:
         )
 
     return (
-        f"Ã¢â€šÂ¹{','.join(groups)},"
+        f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹{','.join(groups)},"
         f"{last_three}.{decimal_part}"
     )
 
@@ -1997,7 +1997,7 @@ def run_recovery_agent(
 
 
 # ============================================================
-# PROCESSED EVENT Ã¢â€ â€™ DATAFRAME ROW
+# PROCESSED EVENT ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ DATAFRAME ROW
 # ============================================================
 
 def processed_event_to_row(
@@ -2394,16 +2394,16 @@ def get_ai_answer(
     }:
 
         return (
-            "Hi! I'm your Recovery AI. Ã°Å¸â€˜â€¹\n\n"
+            "Hi! I'm your Recovery AI. ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹\n\n"
             "I can help you understand revenue risk, "
             "payment failures, recovery performance, "
             "prioritization, strategies, and agent decisions.\n\n"
             "Try asking:\n"
-            "Ã¢â‚¬Â¢ Why is revenue at risk?\n"
-            "Ã¢â‚¬Â¢ Why do transactions fail?\n"
-            "Ã¢â‚¬Â¢ What should I prioritize first?\n"
-            "Ã¢â‚¬Â¢ Which strategy performs best?\n"
-            "Ã¢â‚¬Â¢ Explain the reasoning behind the decision."
+            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Why is revenue at risk?\n"
+            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Why do transactions fail?\n"
+            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ What should I prioritize first?\n"
+            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Which strategy performs best?\n"
+            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Explain the reasoning behind the decision."
         )
 
     recovery_keywords = {
@@ -2592,17 +2592,17 @@ def get_ai_answer(
         return (
             f"The reasoning behind prioritizing transaction "
             f"{row['transaction_id']} is based on expected recovery value.\n\n"
-            f"Ã¢â‚¬Â¢ Amount at risk: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"Ã¢â‚¬Â¢ Recovery probability: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Expected recovery: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"Ã¢â‚¬Â¢ Customer intent: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Customer intent: "
             f"{row['customer_intent'] * 100:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Customer success rate: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Customer success rate: "
             f"{row['customer_success_rate'] * 100:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Priority score: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Priority score: "
             f"{row['priority_score'] * 100:.2f}%\n\n"
             "The system combines recovery probability, transaction "
             "value, customer intent, and customer success rate."
@@ -2667,10 +2667,10 @@ def get_ai_answer(
         return (
             f"The weakest recovery category is "
             f"'{worst_name}'.\n\n"
-            f"Ã¢â‚¬Â¢ Cases: {int(worst['cases']):,}\n"
-            f"Ã¢â‚¬Â¢ Transaction value: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(worst['cases']):,}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Transaction value: "
             f"{format_inr(worst['amount'])}\n"
-            f"Ã¢â‚¬Â¢ Recovery rate: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
             f"{worst['recovery_rate']:.2f}%\n\n"
             "This suggests that the failure type is creating "
             "additional recovery friction."
@@ -2733,10 +2733,10 @@ def get_ai_answer(
             f"The reasoning for the strongest strategy, "
             f"'{best_name}', is its observed recovery performance "
             "in the current dataset.\n\n"
-            f"Ã¢â‚¬Â¢ Recovery rate: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Cases: {int(best['cases']):,}\n"
-            f"Ã¢â‚¬Â¢ Money recovered: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(best['cases']):,}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -2748,11 +2748,11 @@ def get_ai_answer(
         return (
             "The revenue risk is driven by failed transactions "
             "that are still marked as recoverable opportunities.\n\n"
-            f"Ã¢â‚¬Â¢ Revenue at risk: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"Ã¢â‚¬Â¢ Expected recovery: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"Ã¢â‚¬Â¢ Unrecovered cases: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -2801,14 +2801,14 @@ def get_ai_answer(
             "HIGH-priority cases.\n\n"
             f"The top opportunity is transaction "
             f"{top['transaction_id']}.\n\n"
-            f"Ã¢â‚¬Â¢ Amount at risk: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
             f"{format_inr(top['transaction_amount'])}\n"
-            f"Ã¢â‚¬Â¢ Recovery probability: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
             f"{top['recovery_probability'] * 100:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Expected recovery: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
             f"{format_inr(top['expected_recovery_value'])}\n"
-            f"Ã¢â‚¬Â¢ Strategy: {top['strategy']}\n"
-            f"Ã¢â‚¬Â¢ Channel: {top['recommended_channel']}\n\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Strategy: {top['strategy']}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Channel: {top['recommended_channel']}\n\n"
             f"Among the top five opportunities, "
             f"{format_inr(total_high_value)} is at risk and "
             f"{format_inr(expected_high_value)} is expected to be recovered."
@@ -2847,15 +2847,15 @@ def get_ai_answer(
             "I would prioritize cases using expected recovery value "
             "rather than transaction amount alone.\n\n"
             f"Top opportunity: {row['transaction_id']}\n\n"
-            f"Ã¢â‚¬Â¢ Amount at risk: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"Ã¢â‚¬Â¢ Recovery probability: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Expected recovery: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"Ã¢â‚¬Â¢ Priority: {row['priority']}\n"
-            f"Ã¢â‚¬Â¢ Strategy: {row['strategy']}\n"
-            f"Ã¢â‚¬Â¢ Channel: {row['recommended_channel']}"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Priority: {row['priority']}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Strategy: {row['strategy']}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Channel: {row['recommended_channel']}"
         )
 
     if (
@@ -2995,10 +2995,10 @@ def get_ai_answer(
         return (
             f"The strongest-performing strategy in the current "
             f"data is '{best_name}'.\n\n"
-            f"Ã¢â‚¬Â¢ Recovery rate: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Cases: {int(best['cases']):,}\n"
-            f"Ã¢â‚¬Â¢ Money recovered: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(best['cases']):,}\n"
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -3056,7 +3056,7 @@ def get_ai_answer(
         ):
 
             lines.append(
-                f"Ã¢â‚¬Â¢ {failure_name}: "
+                f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ {failure_name}: "
                 f"{int(row['cases']):,} cases, "
                 f"{format_inr(row['amount'])} at risk"
             )
@@ -3093,17 +3093,17 @@ def get_ai_answer(
 
         return (
             "Here's the current recovery picture:\n\n"
-            f"Ã¢â‚¬Â¢ Revenue at risk: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"Ã¢â‚¬Â¢ Expected recovery: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"Ã¢â‚¬Â¢ Recovery rate: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
             f"{summary['recovery_rate']:.2f}%\n"
-            f"Ã¢â‚¬Â¢ Recovery cases: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery cases: "
             f"{summary['at_risk_cases']:,}\n"
-            f"Ã¢â‚¬Â¢ Recovered cases: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovered cases: "
             f"{summary['recovered_cases']:,}\n"
-            f"Ã¢â‚¬Â¢ Unrecovered cases: "
+            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -7016,19 +7016,19 @@ async def run_recovery_batch(
                     reassessment.get(
                         "action"
                     )
-                    or "â€”"
+                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
                 ),
                 "customer_response_type": (
                     customer_response.get(
                         "response_type"
                     )
-                    or "â€”"
+                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
                 ),
                 "customer_response": (
                     customer_response.get(
                         "response"
                     )
-                    or "â€”"
+                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
                 ),
                 "result": result,
             })
@@ -8203,155 +8203,209 @@ def build_agent_decision_layer(
         },
     ]
     # --------------------------------------------------------
-    # CANDIDATE ACTIONS
+    # ACTION UTILITY OPTIMIZER
+    # --------------------------------------------------------
+    optimizer_transaction = {
+        "transaction_id": txid,
+        "transaction_amount": safe_float(
+            score.get(
+                "transaction_amount",
+                event.get(
+                    "transaction_amount",
+                    0.0,
+                ),
+            )
+        ),
+        "scenario": scenario,
+        "recovery_attempts": attempts,
+    }
+    optimizer_result = {
+        "scenario": scenario,
+        "score": score,
+    }
+    optimizer_output = optimize_recovery_action(
+        optimizer_transaction,
+        optimizer_result,
+    )
+    optimizer_candidates = (
+        optimizer_output.get(
+            "candidates",
+            [],
+        )
+        if isinstance(
+            optimizer_output,
+            dict,
+        )
+        else []
+    )
+    optimizer_selected_action = safe_string(
+        (
+            optimizer_output.get(
+                "selected_action",
+                "",
+            )
+            if isinstance(
+                optimizer_output,
+                dict,
+            )
+            else ""
+        )
+    )
+    optimizer_selected_channel = safe_string(
+        (
+            optimizer_output.get(
+                "channel",
+                "",
+            )
+            if isinstance(
+                optimizer_output,
+                dict,
+            )
+            else ""
+        )
+    )
+    optimizer_selected_strategy = safe_string(
+        (
+            optimizer_output.get(
+                "strategy",
+                "",
+            )
+            if isinstance(
+                optimizer_output,
+                dict,
+            )
+            else ""
+        )
+    )
+    optimizer_reason = safe_string(
+        (
+            optimizer_output.get(
+                "reason",
+                "",
+            )
+            if isinstance(
+                optimizer_output,
+                dict,
+            )
+            else ""
+        )
+    )
+    optimizer_agrees_with_historical = (
+        optimizer_selected_action
+        == selected_action
+    )
+    # --------------------------------------------------------
+    # CONVERT OPTIMIZER RANKING TO DECISION-LAYER FORMAT
     # --------------------------------------------------------
     candidates = []
-    primary_score = (
-        0.55 * recovery_probability
-        + 0.20 * customer_reliability
-        + 0.15 * contactability
-        + 0.10 * (1 - recovery_friction)
-    )
-    if scenario == "mandate_failure":
-        candidates.append(
-            _decision_candidate(
-                "retry_mandate",
-                primary_score,
-                "The failure is mandate-specific and the case has sufficient recoverability and customer contactability.",
+    for optimizer_candidate in optimizer_candidates:
+        candidate_name = safe_string(
+            optimizer_candidate.get(
+                "name",
+                "",
             )
         )
-        candidates.append(
-            _decision_candidate(
-                "payment_link_follow_up",
-                max(
-                    0.0,
-                    primary_score - 0.14,
+        candidate_score = max(
+            0.0,
+            min(
+                1.0,
+                safe_float(
+                    optimizer_candidate.get(
+                        "suitability",
+                        0.0,
+                    )
                 ),
-                "A payment-link follow-up is a reasonable fallback if the mandate retry does not resolve the payment.",
+            ),
+        )
+        candidate_reason = safe_string(
+            optimizer_candidate.get(
+                "reason",
+                "",
             )
         )
-    elif scenario == "checkout_abandonment":
-        candidates.append(
-            _decision_candidate(
-                "checkout_reminder",
-                primary_score,
-                "The customer showed checkout intent and a reminder can recover the abandoned payment without unnecessary escalation.",
+        candidate = _decision_candidate(
+            candidate_name,
+            candidate_score,
+            candidate_reason,
+        )
+        candidate["optimizer_rank"] = (
+            len(candidates) + 1
+        )
+        candidate["optimizer_score"] = round(
+            candidate_score,
+            4,
+        )
+        candidate["optimizer_selected"] = (
+            candidate_name
+            == optimizer_selected_action
+        )
+        candidate["optimizer_channel"] = (
+            safe_string(
+                optimizer_candidate.get(
+                    "channel",
+                    "",
+                )
             )
         )
-        candidates.append(
-            _decision_candidate(
-                "payment_link_follow_up",
-                max(
-                    0.0,
-                    primary_score - 0.10,
-                ),
-                "A direct payment-link follow-up is a fallback when the customer needs another payment path.",
-            )
-        )
-    elif scenario == "b2b_receivable":
-        candidates.append(
-            _decision_candidate(
-                "send_invoice_reminder",
-                primary_score,
-                "The loss is tied to an overdue receivable, so an invoice reminder is the least-friction recovery path.",
-            )
-        )
-        candidates.append(
-            _decision_candidate(
-                "payment_link_follow_up",
-                max(
-                    0.0,
-                    primary_score - 0.12,
-                ),
-                "A payment-link follow-up can be used after the invoice reminder if payment remains outstanding.",
-            )
-        )
-    elif scenario == "failed_subscription":
-        candidates.append(
-            _decision_candidate(
-                "retry_subscription_payment",
-                primary_score,
-                "The failure is subscription-specific and retrying the subscription payment directly addresses the failure mode.",
+        candidate["optimizer_strategy"] = (
+            safe_string(
+                optimizer_candidate.get(
+                    "strategy",
+                    "",
+                )
             )
         )
         candidates.append(
-            _decision_candidate(
-                "payment_link_follow_up",
-                max(
-                    0.0,
-                    primary_score - 0.11,
-                ),
-                "A payment-link follow-up provides an alternative completion path after a failed subscription retry.",
-            )
+            candidate
         )
-    else:
-        candidates.append(
-            _decision_candidate(
-                selected_action or "retry_payment",
-                primary_score,
-                "The selected recovery path directly addresses the diagnosed payment-risk event while remaining within the recovery workflow.",
-            )
-        )
-        candidates.append(
-            _decision_candidate(
-                "payment_link_follow_up",
-                max(
-                    0.0,
-                    primary_score - 0.12,
-                ),
-                "A payment-link follow-up is a lower-friction fallback if the primary recovery attempt does not succeed.",
-            )
-        )
-    escalation_suitability = (
-        0.20
-        + (0.35 * recovery_friction)
-        + (0.25 * min(attempts / 3, 1.0))
-        + (0.20 * (1 - recovery_probability))
-    )
-    if priority == "HIGH" and attempts >= 1:
-        escalation_suitability += 0.05
-    candidates.append(
-        _decision_candidate(
-            "human_review",
-            escalation_suitability,
-            "Human review becomes more appropriate when recovery friction, repeated attempts, or weak recoverability increase.",
-        )
-    )
     # --------------------------------------------------------
-    # MARK SELECTED PATH
+    # HISTORICAL ACTION PRESERVATION
+    # --------------------------------------------------------
+    # The transaction's persisted action remains authoritative
+    # for historical audit purposes. If the optimizer produced
+    # a different recommendation, retain the historical action
+    # as an explicit candidate rather than rewriting history.
+    historical_action_present = any(
+        candidate.get("name")
+        == selected_action
+        for candidate in candidates
+    )
+    if (
+        selected_action
+        and not historical_action_present
+    ):
+        candidates.append(
+            _decision_candidate(
+                selected_action,
+                primary_score,
+                (
+                    "Historical Recovery Agent action retained "
+                    "for audit integrity."
+                ),
+            )
+        )
+    # --------------------------------------------------------
+    # MARK HISTORICAL ACTION
     # --------------------------------------------------------
     selected_index = None
     for index, candidate in enumerate(
         candidates
     ):
+        candidate["status"] = "alternative"
         if (
             selected_action
-            and candidate["name"]
+            and candidate.get("name")
             == selected_action
         ):
             selected_index = index
-            break
+            candidate["status"] = "selected"
+            candidate["historical_selected"] = True
+        else:
+            candidate["historical_selected"] = False
     if selected_index is None:
-        # The existing recovery action may use a name that is
-        # not one of the scenario-specific candidate labels.
-        candidates.insert(
-            0,
-            _decision_candidate(
-                selected_action or "recovery_action",
-                primary_score,
-                "Selected by the existing bounded recovery policy.",
-                "selected",
-            ),
-        )
         selected_index = 0
-    for index, candidate in enumerate(
-        candidates
-    ):
-        candidate["status"] = (
-            "selected"
-            if index == selected_index
-            else "alternative"
-        )
+        if candidates:
+            candidates[0]["status"] = "selected"
     # --------------------------------------------------------
     # WHY THIS ACTION?
     # --------------------------------------------------------
@@ -8467,6 +8521,15 @@ def build_agent_decision_layer(
             "selected_action": selected_action,
             "channel": selected_channel,
             "why_selected": why_selected,
+            "optimizer": {
+                "selected_action": optimizer_selected_action,
+                "channel": optimizer_selected_channel,
+                "strategy": optimizer_selected_strategy,
+                "reason": optimizer_reason,
+                "agrees_with_historical":
+                    optimizer_agrees_with_historical,
+                "candidates": optimizer_candidates,
+            },
         },
         "customer_engagement": {
             "mode": "simulated",
