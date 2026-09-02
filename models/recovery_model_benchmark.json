@@ -1,0 +1,44 @@
+{
+  "dataset_rows": 3000,
+  "train_rows": 2400,
+  "test_rows": 600,
+  "feature_count": 17,
+  "target": "recovered",
+  "excluded_leakage_columns": [
+    "customer_id",
+    "money_recovered",
+    "recovered",
+    "transaction_id"
+  ],
+  "selection_rule": "Primary: ROC-AUC; secondary: PR-AUC; tertiary: lower Brier Score.",
+  "models": [
+    {
+      "model": "Logistic Regression",
+      "precision": 0.997183,
+      "recall": 0.676864,
+      "f1": 0.806378,
+      "roc_auc": 0.8782,
+      "pr_auc": 0.981528,
+      "brier_score": 0.158836
+    },
+    {
+      "model": "Random Forest",
+      "precision": 0.938053,
+      "recall": 0.810707,
+      "f1": 0.869744,
+      "roc_auc": 0.85096,
+      "pr_auc": 0.977345,
+      "brier_score": 0.114376
+    },
+    {
+      "model": "HistGradientBoosting",
+      "precision": 0.876543,
+      "recall": 0.950287,
+      "f1": 0.911927,
+      "roc_auc": 0.820094,
+      "pr_auc": 0.972884,
+      "brier_score": 0.107972
+    }
+  ],
+  "best_model": "Logistic Regression"
+}

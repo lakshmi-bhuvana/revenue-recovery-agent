@@ -102,93 +102,158 @@
   </div>
 </section>
 
-<section class="panel opportunities audit-panel" id="execution-history">
-  <div class="panel-header">
-    <div>
-      <h3>Agent Executions</h3>
-      <p>Search and inspect the complete persisted Recovery Agent execution history</p>
-    </div>
-  </div>
-  <div class="execution-controls">
-    <input
-      id="agent-execution-search"
-      class="execution-search"
-      type="search"
-      placeholder="Search transaction or customer…"
-      autocomplete="off"
+
+    <!-- =====================================================
+         AGENT EXECUTION HISTORY
+    ====================================================== -->
+
+<section
+        class="panel"
+        id="execution-history"
+        style="margin-top:18px;"
     >
-    <select
-      id="agent-scenario-filter"
-      class="execution-filter"
-    >
-      <option value="">All scenarios</option>
-      <option value="payment_failure">Payment Failure</option>
-      <option value="checkout_abandonment">Checkout Abandonment</option>
-      <option value="failed_subscription">Failed Subscription</option>
-      <option value="b2b_receivable">B2B Receivable</option>
-      <option value="mandate_failure">Mandate Failure</option>
-      <option value="promise_to_pay">Promise to Pay</option>
-    </select>
-    <select
-      id="agent-result-filter"
-      class="execution-filter"
-    >
-      <option value="">All results</option>
-      <option value="recovered">Recovered</option>
-      <option value="not_recovered">Not Recovered</option>
-    </select>
-  </div>
-  <div class="execution-toolbar">
-    <span id="execution-count">
-      Loading executions…
-    </span>
-    <span>
-      50 records per page
-    </span>
-  </div>
-  <div class="table-wrapper execution-table-wrapper">
-    <table class="data-table agent-execution-table">
-      <colgroup>
-        <col class="col-transaction">
-        <col class="col-customer">
-        <col class="col-scenario">
-        <col class="col-diagnosis">
-        <col class="col-action">
-        <col class="col-channel">
-        <col class="col-result">
-        <col class="col-money">
-        <col class="col-attempts">
-        <col class="col-stop">
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Transaction</th>
-          <th>Customer</th>
-          <th>Scenario</th>
-          <th>Diagnosis</th>
-          <th>Action</th>
-          <th>Channel</th>
-          <th>Result</th>
-          <th>Money Recovered</th>
-          <th>Attempts</th>
-          <th>Stop Reason</th>
-        </tr>
-      </thead>
-      <tbody id="recent-body">
-        <tr>
-          <td colspan="10" class="loading">
-            Loading agent executions…
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="agent-pagination" class="agent-pagination"></div>
-</section>
-<section class="panel audit-panel">
-  <div class="panel-header"><div><h3>Selected Audit Record</h3><p>Structured evidence and stage-by-stage timeline for the selected execution</p></div></div>
-  <div id="audit-content" class="audit-empty">Select a transaction above.</div>
-</section>
+        <div class="panel-header">
+            <div>
+                <h3>
+                    Agent Executions
+                </h3>
+                <p>
+                    Search and inspect the complete persisted
+                    Recovery Agent execution history
+                </p>
+            </div>
+        </div>
+        <!-- FILTERS -->
+        <div
+            class="execution-controls"
+            style="
+                padding:16px 18px;
+                display:flex;
+                flex-wrap:wrap;
+                gap:10px;
+                align-items:center;
+            "
+        >
+            <input
+                id="agent-execution-search"
+                class="execution-search"
+                type="search"
+                placeholder="Search transaction or customer..."
+            >
+            <select
+                id="agent-scenario-filter"
+                class="execution-filter"
+            >
+                <option value="">
+                    All scenarios
+                </option>
+                <option value="payment_failure">
+                    Payment Failure
+                </option>
+                <option value="checkout_abandonment">
+                    Checkout Abandonment
+                </option>
+                <option value="failed_subscription">
+                    Failed Subscription
+                </option>
+                <option value="b2b_receivable">
+                    B2B Receivable
+                </option>
+                <option value="mandate_failure">
+                    Mandate Failure
+                </option>
+                <option value="promise_to_pay">
+                    Promise to Pay
+                </option>
+            </select>
+            <select
+                id="agent-result-filter"
+                class="execution-filter"
+            >
+                <option value="">
+                    All results
+                </option>
+                <option value="recovered">
+                    Recovered
+                </option>
+                <option value="not_recovered">
+                    Not Recovered
+                </option>
+            </select>
+        </div>
+        <!-- COUNT -->
+        <div
+            id="execution-count"
+            style="
+                padding:0 18px 12px;
+                color:#7183a0;
+                font-size:11px;
+            "
+        >
+            Showing 0 of 0 executions
+        </div>
+        <!-- TABLE -->
+        <div
+            class="table-wrapper"
+            style="margin:0 18px 18px;"
+        >
+            <table
+                class="data-table"
+            >
+                <thead>
+                    <tr>
+                        <th>
+                            Transaction
+                        </th>
+                        <th>
+                            Customer
+                        </th>
+                        <th>
+                            Scenario
+                        </th>
+                        <th>
+                            Diagnosis
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                        <th>
+                            Channel
+                        </th>
+                        <th>
+                            Result
+                        </th>
+                        <th>
+                            Money Recovered
+                        </th>
+                        <th>
+                            Attempts
+                        </th>
+                        <th>
+                            Stop Reason
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="recent-body">
+                    <tr>
+                        <td
+                            colspan="10"
+                            class="loading"
+                        >
+                            Loading agent executions...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- PAGINATION -->
+        <div
+            id="agent-pagination"
+            style="
+                padding:0 18px 20px;
+            "
+        ></div>
+    </section>
 </main></div>
 <script src="/js/recovery-agent.js"></script>
 </body></html>

@@ -5923,5 +5923,1304 @@
       },
       "scenario": "payment_failure"
     }
+  },
+  "txn_000071": {
+    "transaction_id": "txn_000071",
+    "customer_id": "cust_0761",
+    "transaction_amount": 34934.08,
+    "payment_method": "NETBANKING",
+    "failure_reason": "mandate_failed",
+    "retry_count": 0,
+    "customer_transaction_count": 13,
+    "customer_success_rate": 0.616,
+    "payment_method_success_rate": 0.952,
+    "channel": "mobile",
+    "preferred_channel": "whatsapp",
+    "product_interest_score": 0.708,
+    "checkout_progress": 0.837,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "payment_failure",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 34934.08,
+    "recovery_probability": 0.8886,
+    "expected_recovery_value": 31042.423488,
+    "customer_intent": 0.7596,
+    "customer_reliability": 0.7312,
+    "contactability": 1.0,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.8107,
+    "priority": "HIGH",
+    "strategy": "aggressive_recovery",
+    "recovery_action": "retry_payment",
+    "recommended_channel": "whatsapp",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_000071",
+      "customer_id": "cust_0761",
+      "diagnosis": {
+        "diagnosis": "payment_failure",
+        "reason": "The payment transaction failed and requires recovery.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 34934.08
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.616
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.952
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 13
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "whatsapp"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.8886,
+        "priority_score": 0.8107,
+        "priority": "HIGH",
+        "recommended_channel": "whatsapp",
+        "transaction_amount": 34934.08,
+        "customer_intent": 0.7596,
+        "customer_reliability": 0.7312,
+        "contactability": 1.0,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "channel": "whatsapp",
+        "priority": "HIGH",
+        "scenario": "payment_failure"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_payment",
+        "channel": "whatsapp",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 34934.08,
+        "execution_detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure.",
+        "scenario": "payment_failure",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-02T01:43:58.986408",
+        "transaction_id": "txn_000071",
+        "customer_id": "cust_0761",
+        "scenario": "payment_failure",
+        "transaction_amount": 34934.08,
+        "diagnosis": "payment_failure",
+        "diagnosis_reason": "The payment transaction failed and requires recovery.",
+        "recovery_probability": 0.8886,
+        "priority_score": 0.8107,
+        "priority": "HIGH",
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "recommended_channel": "whatsapp",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 34934.08,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "payment_failure",
+      "adaptive_loop": {
+        "mode": "batch_simulation",
+        "customer_response": {
+          "response_type": "payment_completed",
+          "response": "Payment completed after the recovery intervention.",
+          "interpretation": "PAYMENT_SUCCESS"
+        },
+        "reassessment": {
+          "state": "STOP",
+          "action": "stop",
+          "reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "instruction": "Payment success satisfies the recovery stopping rule."
+        },
+        "timeline": [
+          {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": "Revenue-risk event received and evaluated."
+          },
+          {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": "The payment transaction failed and requires recovery.",
+            "diagnosis": "payment_failure"
+          },
+          {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": "Recovery probability 88.86%.",
+            "recovery_probability": 0.8886
+          },
+          {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": "Selected retry_payment on whatsapp.",
+            "recovery_action": "retry_payment"
+          },
+          {
+            "stage": "ACT",
+            "status": "recovered",
+            "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+          },
+          {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": "Payment completed after the recovery intervention.",
+            "response_type": "payment_completed"
+          },
+          {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+          },
+          {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": "Payment success satisfies the recovery stopping rule."
+          },
+          {
+            "stage": "STOP",
+            "status": "stopped",
+            "detail": "Payment success satisfies the recovery stopping rule.",
+            "reason": "PAYMENT_SUCCESS"
+          }
+        ]
+      }
+    },
+    "adaptive_loop": {
+      "mode": "batch_simulation",
+      "customer_response": {
+        "response_type": "payment_completed",
+        "response": "Payment completed after the recovery intervention.",
+        "interpretation": "PAYMENT_SUCCESS"
+      },
+      "reassessment": {
+        "state": "STOP",
+        "action": "stop",
+        "reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "instruction": "Payment success satisfies the recovery stopping rule."
+      },
+      "timeline": [
+        {
+          "stage": "DETECT",
+          "status": "completed",
+          "detail": "Revenue-risk event received and evaluated."
+        },
+        {
+          "stage": "DIAGNOSE",
+          "status": "completed",
+          "detail": "The payment transaction failed and requires recovery.",
+          "diagnosis": "payment_failure"
+        },
+        {
+          "stage": "PREDICT",
+          "status": "completed",
+          "detail": "Recovery probability 88.86%.",
+          "recovery_probability": 0.8886
+        },
+        {
+          "stage": "DECIDE",
+          "status": "completed",
+          "detail": "Selected retry_payment on whatsapp.",
+          "recovery_action": "retry_payment"
+        },
+        {
+          "stage": "ACT",
+          "status": "recovered",
+          "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+        },
+        {
+          "stage": "CUSTOMER",
+          "status": "simulated",
+          "detail": "Payment completed after the recovery intervention.",
+          "response_type": "payment_completed"
+        },
+        {
+          "stage": "INTERPRET",
+          "status": "completed",
+          "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+        },
+        {
+          "stage": "REASSESS",
+          "status": "completed",
+          "detail": "Payment success satisfies the recovery stopping rule."
+        },
+        {
+          "stage": "STOP",
+          "status": "stopped",
+          "detail": "Payment success satisfies the recovery stopping rule.",
+          "reason": "PAYMENT_SUCCESS"
+        }
+      ]
+    }
+  },
+  "txn_002978": {
+    "transaction_id": "txn_002978",
+    "customer_id": "cust_0556",
+    "transaction_amount": 35185.51,
+    "payment_method": "WALLET",
+    "failure_reason": "invoice_overdue",
+    "retry_count": 0,
+    "customer_transaction_count": 18,
+    "customer_success_rate": 0.954,
+    "payment_method_success_rate": 0.725,
+    "channel": "web",
+    "preferred_channel": "sms",
+    "product_interest_score": 0.372,
+    "checkout_progress": 0.866,
+    "customer_email_available": 1,
+    "customer_phone_available": 0,
+    "scenario": "b2b_receivable",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 1,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 35185.51,
+    "recovery_probability": 0.8356,
+    "expected_recovery_value": 29401.012156,
+    "customer_intent": 0.5696,
+    "customer_reliability": 0.9678,
+    "contactability": 0.5,
+    "recovery_friction": 0.0,
+    "priority_score": 0.7571,
+    "priority": "HIGH",
+    "strategy": "standard_recovery",
+    "recovery_action": "send_invoice_reminder",
+    "recommended_channel": "email",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_002978",
+      "customer_id": "cust_0556",
+      "diagnosis": {
+        "diagnosis": "invoice_overdue",
+        "reason": "A B2B receivable is overdue and requires collection follow-up.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 35185.51
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.954
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.725
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 18
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 0
+          },
+          {
+            "field": "preferred_channel",
+            "value": "sms"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 0
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.8356,
+        "priority_score": 0.7571,
+        "priority": "HIGH",
+        "recommended_channel": "email",
+        "transaction_amount": 35185.51,
+        "customer_intent": 0.5696,
+        "customer_reliability": 0.9678,
+        "contactability": 0.5,
+        "recovery_friction": 0.0
+      },
+      "action": {
+        "strategy": "standard_recovery",
+        "recovery_action": "send_invoice_reminder",
+        "channel": "email",
+        "priority": "HIGH",
+        "scenario": "b2b_receivable"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "send_invoice_reminder",
+        "channel": "email",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 35185.51,
+        "execution_detail": "Recovery succeeded through send_invoice_reminder using email for b2b_receivable.",
+        "scenario": "b2b_receivable",
+        "attempt_count": 1
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-02T01:43:59.061832",
+        "transaction_id": "txn_002978",
+        "customer_id": "cust_0556",
+        "scenario": "b2b_receivable",
+        "transaction_amount": 35185.51,
+        "diagnosis": "invoice_overdue",
+        "diagnosis_reason": "A B2B receivable is overdue and requires collection follow-up.",
+        "recovery_probability": 0.8356,
+        "priority_score": 0.7571,
+        "priority": "HIGH",
+        "strategy": "standard_recovery",
+        "recovery_action": "send_invoice_reminder",
+        "recommended_channel": "email",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 35185.51,
+        "attempt_increment": 1,
+        "attempt_count": 1,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "b2b_receivable",
+      "adaptive_loop": {
+        "mode": "batch_simulation",
+        "customer_response": {
+          "response_type": "payment_completed",
+          "response": "Payment completed after the recovery intervention.",
+          "interpretation": "PAYMENT_SUCCESS"
+        },
+        "reassessment": {
+          "state": "STOP",
+          "action": "stop",
+          "reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "instruction": "Payment success satisfies the recovery stopping rule."
+        },
+        "timeline": [
+          {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": "Revenue-risk event received and evaluated."
+          },
+          {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": "A B2B receivable is overdue and requires collection follow-up.",
+            "diagnosis": "invoice_overdue"
+          },
+          {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": "Recovery probability 83.56%.",
+            "recovery_probability": 0.8356
+          },
+          {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": "Selected send_invoice_reminder on email.",
+            "recovery_action": "send_invoice_reminder"
+          },
+          {
+            "stage": "ACT",
+            "status": "recovered",
+            "detail": "Recovery succeeded through send_invoice_reminder using email for b2b_receivable."
+          },
+          {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": "Payment completed after the recovery intervention.",
+            "response_type": "payment_completed"
+          },
+          {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+          },
+          {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": "Payment success satisfies the recovery stopping rule."
+          },
+          {
+            "stage": "STOP",
+            "status": "stopped",
+            "detail": "Payment success satisfies the recovery stopping rule.",
+            "reason": "PAYMENT_SUCCESS"
+          }
+        ]
+      }
+    },
+    "adaptive_loop": {
+      "mode": "batch_simulation",
+      "customer_response": {
+        "response_type": "payment_completed",
+        "response": "Payment completed after the recovery intervention.",
+        "interpretation": "PAYMENT_SUCCESS"
+      },
+      "reassessment": {
+        "state": "STOP",
+        "action": "stop",
+        "reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "instruction": "Payment success satisfies the recovery stopping rule."
+      },
+      "timeline": [
+        {
+          "stage": "DETECT",
+          "status": "completed",
+          "detail": "Revenue-risk event received and evaluated."
+        },
+        {
+          "stage": "DIAGNOSE",
+          "status": "completed",
+          "detail": "A B2B receivable is overdue and requires collection follow-up.",
+          "diagnosis": "invoice_overdue"
+        },
+        {
+          "stage": "PREDICT",
+          "status": "completed",
+          "detail": "Recovery probability 83.56%.",
+          "recovery_probability": 0.8356
+        },
+        {
+          "stage": "DECIDE",
+          "status": "completed",
+          "detail": "Selected send_invoice_reminder on email.",
+          "recovery_action": "send_invoice_reminder"
+        },
+        {
+          "stage": "ACT",
+          "status": "recovered",
+          "detail": "Recovery succeeded through send_invoice_reminder using email for b2b_receivable."
+        },
+        {
+          "stage": "CUSTOMER",
+          "status": "simulated",
+          "detail": "Payment completed after the recovery intervention.",
+          "response_type": "payment_completed"
+        },
+        {
+          "stage": "INTERPRET",
+          "status": "completed",
+          "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+        },
+        {
+          "stage": "REASSESS",
+          "status": "completed",
+          "detail": "Payment success satisfies the recovery stopping rule."
+        },
+        {
+          "stage": "STOP",
+          "status": "stopped",
+          "detail": "Payment success satisfies the recovery stopping rule.",
+          "reason": "PAYMENT_SUCCESS"
+        }
+      ]
+    }
+  },
+  "txn_001290": {
+    "transaction_id": "txn_001290",
+    "customer_id": "cust_0739",
+    "transaction_amount": 45159.37,
+    "payment_method": "NETBANKING",
+    "failure_reason": "insufficient_funds",
+    "retry_count": 0,
+    "customer_transaction_count": 4,
+    "customer_success_rate": 0.801,
+    "payment_method_success_rate": 0.847,
+    "channel": "subscription",
+    "preferred_channel": "sms",
+    "product_interest_score": 0.773,
+    "checkout_progress": 0.104,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "payment_failure",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 45159.37,
+    "recovery_probability": 0.7942,
+    "expected_recovery_value": 35865.571654,
+    "customer_intent": 0.5054,
+    "customer_reliability": 0.6807,
+    "contactability": 1.0,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.75,
+    "priority": "MEDIUM",
+    "strategy": "aggressive_recovery",
+    "recovery_action": "retry_payment",
+    "recommended_channel": "whatsapp",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_001290",
+      "customer_id": "cust_0739",
+      "diagnosis": {
+        "diagnosis": "insufficient_funds",
+        "reason": "The payment failed because sufficient funds were not available.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 45159.37
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.801
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.847
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 4
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "sms"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.7942,
+        "priority_score": 0.75,
+        "priority": "MEDIUM",
+        "recommended_channel": "whatsapp",
+        "transaction_amount": 45159.37,
+        "customer_intent": 0.5054,
+        "customer_reliability": 0.6807,
+        "contactability": 1.0,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "channel": "whatsapp",
+        "priority": "MEDIUM",
+        "scenario": "payment_failure"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_payment",
+        "channel": "whatsapp",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 45159.37,
+        "execution_detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure.",
+        "scenario": "payment_failure",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-02T01:43:59.141216",
+        "transaction_id": "txn_001290",
+        "customer_id": "cust_0739",
+        "scenario": "payment_failure",
+        "transaction_amount": 45159.37,
+        "diagnosis": "insufficient_funds",
+        "diagnosis_reason": "The payment failed because sufficient funds were not available.",
+        "recovery_probability": 0.7942,
+        "priority_score": 0.75,
+        "priority": "MEDIUM",
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "recommended_channel": "whatsapp",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 45159.37,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "payment_failure",
+      "adaptive_loop": {
+        "mode": "batch_simulation",
+        "customer_response": {
+          "response_type": "payment_completed",
+          "response": "Payment completed after the recovery intervention.",
+          "interpretation": "PAYMENT_SUCCESS"
+        },
+        "reassessment": {
+          "state": "STOP",
+          "action": "stop",
+          "reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "instruction": "Payment success satisfies the recovery stopping rule."
+        },
+        "timeline": [
+          {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": "Revenue-risk event received and evaluated."
+          },
+          {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": "The payment failed because sufficient funds were not available.",
+            "diagnosis": "insufficient_funds"
+          },
+          {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": "Recovery probability 79.42%.",
+            "recovery_probability": 0.7942
+          },
+          {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": "Selected retry_payment on whatsapp.",
+            "recovery_action": "retry_payment"
+          },
+          {
+            "stage": "ACT",
+            "status": "recovered",
+            "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+          },
+          {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": "Payment completed after the recovery intervention.",
+            "response_type": "payment_completed"
+          },
+          {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+          },
+          {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": "Payment success satisfies the recovery stopping rule."
+          },
+          {
+            "stage": "STOP",
+            "status": "stopped",
+            "detail": "Payment success satisfies the recovery stopping rule.",
+            "reason": "PAYMENT_SUCCESS"
+          }
+        ]
+      }
+    },
+    "adaptive_loop": {
+      "mode": "batch_simulation",
+      "customer_response": {
+        "response_type": "payment_completed",
+        "response": "Payment completed after the recovery intervention.",
+        "interpretation": "PAYMENT_SUCCESS"
+      },
+      "reassessment": {
+        "state": "STOP",
+        "action": "stop",
+        "reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "instruction": "Payment success satisfies the recovery stopping rule."
+      },
+      "timeline": [
+        {
+          "stage": "DETECT",
+          "status": "completed",
+          "detail": "Revenue-risk event received and evaluated."
+        },
+        {
+          "stage": "DIAGNOSE",
+          "status": "completed",
+          "detail": "The payment failed because sufficient funds were not available.",
+          "diagnosis": "insufficient_funds"
+        },
+        {
+          "stage": "PREDICT",
+          "status": "completed",
+          "detail": "Recovery probability 79.42%.",
+          "recovery_probability": 0.7942
+        },
+        {
+          "stage": "DECIDE",
+          "status": "completed",
+          "detail": "Selected retry_payment on whatsapp.",
+          "recovery_action": "retry_payment"
+        },
+        {
+          "stage": "ACT",
+          "status": "recovered",
+          "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+        },
+        {
+          "stage": "CUSTOMER",
+          "status": "simulated",
+          "detail": "Payment completed after the recovery intervention.",
+          "response_type": "payment_completed"
+        },
+        {
+          "stage": "INTERPRET",
+          "status": "completed",
+          "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+        },
+        {
+          "stage": "REASSESS",
+          "status": "completed",
+          "detail": "Payment success satisfies the recovery stopping rule."
+        },
+        {
+          "stage": "STOP",
+          "status": "stopped",
+          "detail": "Payment success satisfies the recovery stopping rule.",
+          "reason": "PAYMENT_SUCCESS"
+        }
+      ]
+    }
+  },
+  "txn_002623": {
+    "transaction_id": "txn_002623",
+    "customer_id": "cust_0237",
+    "transaction_amount": 39304.53,
+    "payment_method": "CARD",
+    "failure_reason": "authentication_failed",
+    "retry_count": 0,
+    "customer_transaction_count": 4,
+    "customer_success_rate": 0.938,
+    "payment_method_success_rate": 0.788,
+    "channel": "subscription",
+    "preferred_channel": "whatsapp",
+    "product_interest_score": 0.498,
+    "checkout_progress": 0.505,
+    "customer_email_available": 0,
+    "customer_phone_available": 1,
+    "scenario": "payment_failure",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 39304.53,
+    "recovery_probability": 0.7013,
+    "expected_recovery_value": 27564.266889000002,
+    "customer_intent": 0.5008,
+    "customer_reliability": 0.7766,
+    "contactability": 0.5,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.6634,
+    "priority": "MEDIUM",
+    "strategy": "aggressive_recovery",
+    "recovery_action": "retry_payment",
+    "recommended_channel": "whatsapp",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_002623",
+      "customer_id": "cust_0237",
+      "diagnosis": {
+        "diagnosis": "payment_failure",
+        "reason": "The payment transaction failed and requires recovery.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 39304.53
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.938
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.788
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 4
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "whatsapp"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 0
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.7013,
+        "priority_score": 0.6634,
+        "priority": "MEDIUM",
+        "recommended_channel": "whatsapp",
+        "transaction_amount": 39304.53,
+        "customer_intent": 0.5008,
+        "customer_reliability": 0.7766,
+        "contactability": 0.5,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "channel": "whatsapp",
+        "priority": "MEDIUM",
+        "scenario": "payment_failure"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_payment",
+        "channel": "whatsapp",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 39304.53,
+        "execution_detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure.",
+        "scenario": "payment_failure",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-02T01:43:59.245442",
+        "transaction_id": "txn_002623",
+        "customer_id": "cust_0237",
+        "scenario": "payment_failure",
+        "transaction_amount": 39304.53,
+        "diagnosis": "payment_failure",
+        "diagnosis_reason": "The payment transaction failed and requires recovery.",
+        "recovery_probability": 0.7013,
+        "priority_score": 0.6634,
+        "priority": "MEDIUM",
+        "strategy": "aggressive_recovery",
+        "recovery_action": "retry_payment",
+        "recommended_channel": "whatsapp",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 39304.53,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "payment_failure",
+      "adaptive_loop": {
+        "mode": "batch_simulation",
+        "customer_response": {
+          "response_type": "payment_completed",
+          "response": "Payment completed after the recovery intervention.",
+          "interpretation": "PAYMENT_SUCCESS"
+        },
+        "reassessment": {
+          "state": "STOP",
+          "action": "stop",
+          "reason": "PAYMENT_SUCCESS",
+          "escalate": false,
+          "escalation_level": "NONE",
+          "instruction": "Payment success satisfies the recovery stopping rule."
+        },
+        "timeline": [
+          {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": "Revenue-risk event received and evaluated."
+          },
+          {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": "The payment transaction failed and requires recovery.",
+            "diagnosis": "payment_failure"
+          },
+          {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": "Recovery probability 70.13%.",
+            "recovery_probability": 0.7013
+          },
+          {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": "Selected retry_payment on whatsapp.",
+            "recovery_action": "retry_payment"
+          },
+          {
+            "stage": "ACT",
+            "status": "recovered",
+            "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+          },
+          {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": "Payment completed after the recovery intervention.",
+            "response_type": "payment_completed"
+          },
+          {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+          },
+          {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": "Payment success satisfies the recovery stopping rule."
+          },
+          {
+            "stage": "STOP",
+            "status": "stopped",
+            "detail": "Payment success satisfies the recovery stopping rule.",
+            "reason": "PAYMENT_SUCCESS"
+          }
+        ]
+      }
+    },
+    "adaptive_loop": {
+      "mode": "batch_simulation",
+      "customer_response": {
+        "response_type": "payment_completed",
+        "response": "Payment completed after the recovery intervention.",
+        "interpretation": "PAYMENT_SUCCESS"
+      },
+      "reassessment": {
+        "state": "STOP",
+        "action": "stop",
+        "reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "instruction": "Payment success satisfies the recovery stopping rule."
+      },
+      "timeline": [
+        {
+          "stage": "DETECT",
+          "status": "completed",
+          "detail": "Revenue-risk event received and evaluated."
+        },
+        {
+          "stage": "DIAGNOSE",
+          "status": "completed",
+          "detail": "The payment transaction failed and requires recovery.",
+          "diagnosis": "payment_failure"
+        },
+        {
+          "stage": "PREDICT",
+          "status": "completed",
+          "detail": "Recovery probability 70.13%.",
+          "recovery_probability": 0.7013
+        },
+        {
+          "stage": "DECIDE",
+          "status": "completed",
+          "detail": "Selected retry_payment on whatsapp.",
+          "recovery_action": "retry_payment"
+        },
+        {
+          "stage": "ACT",
+          "status": "recovered",
+          "detail": "Recovery succeeded through retry_payment using whatsapp for payment_failure."
+        },
+        {
+          "stage": "CUSTOMER",
+          "status": "simulated",
+          "detail": "Payment completed after the recovery intervention.",
+          "response_type": "payment_completed"
+        },
+        {
+          "stage": "INTERPRET",
+          "status": "completed",
+          "detail": "Customer response interpreted as PAYMENT_SUCCESS."
+        },
+        {
+          "stage": "REASSESS",
+          "status": "completed",
+          "detail": "Payment success satisfies the recovery stopping rule."
+        },
+        {
+          "stage": "STOP",
+          "status": "stopped",
+          "detail": "Payment success satisfies the recovery stopping rule.",
+          "reason": "PAYMENT_SUCCESS"
+        }
+      ]
+    }
+  },
+  "txn_001506": {
+    "transaction_id": "txn_001506",
+    "customer_id": "cust_0133",
+    "transaction_amount": 14654.78,
+    "payment_method": "WALLET",
+    "failure_reason": "bank_decline",
+    "retry_count": 0,
+    "customer_transaction_count": 23,
+    "customer_success_rate": 0.97,
+    "payment_method_success_rate": 0.894,
+    "channel": "subscription",
+    "preferred_channel": "sms",
+    "product_interest_score": 0.49,
+    "checkout_progress": 0.437,
+    "customer_email_available": 1,
+    "customer_phone_available": 1,
+    "scenario": "failed_subscription",
+    "payment_status": "paid",
+    "revenue_at_risk": 1,
+    "recovery_attempts": 2,
+    "promise_to_pay": 0,
+    "recovered": 1,
+    "money_recovered": 14654.78,
+    "recovery_probability": 0.8441,
+    "expected_recovery_value": 12370.099798,
+    "customer_intent": 0.4688,
+    "customer_reliability": 0.979,
+    "contactability": 1.0,
+    "recovery_friction": 0.3333,
+    "priority_score": 0.7134,
+    "priority": "MEDIUM",
+    "strategy": "assisted_recovery",
+    "recovery_action": "retry_subscription_payment",
+    "recommended_channel": "email",
+    "_agent_result": {
+      "status": "recovered",
+      "transaction_id": "txn_001506",
+      "customer_id": "cust_0133",
+      "diagnosis": {
+        "diagnosis": "subscription_payment_failed",
+        "reason": "A recurring subscription payment failed.",
+        "evidence": [
+          {
+            "field": "transaction_amount",
+            "value": 14654.78
+          },
+          {
+            "field": "customer_success_rate",
+            "value": 0.97
+          },
+          {
+            "field": "payment_method_success_rate",
+            "value": 0.894
+          },
+          {
+            "field": "customer_transaction_count",
+            "value": 23
+          },
+          {
+            "field": "recovery_attempts",
+            "value": 1
+          },
+          {
+            "field": "preferred_channel",
+            "value": "sms"
+          },
+          {
+            "field": "customer_email_available",
+            "value": 1
+          },
+          {
+            "field": "customer_phone_available",
+            "value": 1
+          }
+        ]
+      },
+      "score": {
+        "recovery_probability": 0.8441,
+        "priority_score": 0.7134,
+        "priority": "MEDIUM",
+        "recommended_channel": "email",
+        "transaction_amount": 14654.78,
+        "customer_intent": 0.4688,
+        "customer_reliability": 0.979,
+        "contactability": 1.0,
+        "recovery_friction": 0.3333
+      },
+      "action": {
+        "strategy": "assisted_recovery",
+        "recovery_action": "retry_subscription_payment",
+        "channel": "email",
+        "priority": "MEDIUM",
+        "scenario": "failed_subscription"
+      },
+      "policy": {
+        "allowed": true,
+        "reason": "action_within_recovery_policy"
+      },
+      "execution": {
+        "execution_status": "simulated",
+        "action": "retry_subscription_payment",
+        "channel": "email",
+        "attempt_increment": 1,
+        "message_sent": true,
+        "recovered": true,
+        "money_recovered": 14654.78,
+        "execution_detail": "Recovery succeeded through retry_subscription_payment using email for failed_subscription.",
+        "scenario": "failed_subscription",
+        "attempt_count": 2
+      },
+      "stopping": {
+        "stop": true,
+        "reason": "PAYMENT_SUCCESS"
+      },
+      "escalation": {
+        "escalate": false,
+        "escalation_level": "NONE",
+        "reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "audit": {
+        "timestamp": "2026-09-02T02:27:14.954658",
+        "transaction_id": "txn_001506",
+        "customer_id": "cust_0133",
+        "scenario": "failed_subscription",
+        "transaction_amount": 14654.78,
+        "diagnosis": "subscription_payment_failed",
+        "diagnosis_reason": "A recurring subscription payment failed.",
+        "recovery_probability": 0.8441,
+        "priority_score": 0.7134,
+        "priority": "MEDIUM",
+        "strategy": "assisted_recovery",
+        "recovery_action": "retry_subscription_payment",
+        "recommended_channel": "email",
+        "policy_allowed": true,
+        "policy_reason": "action_within_recovery_policy",
+        "execution_status": "simulated",
+        "recovered": true,
+        "money_recovered": 14654.78,
+        "attempt_increment": 1,
+        "attempt_count": 2,
+        "stopped": true,
+        "stopping_reason": "PAYMENT_SUCCESS",
+        "escalate": false,
+        "escalation_level": "NONE",
+        "escalation_reason": "payment_recovered",
+        "recommended_team": null
+      },
+      "scenario": "failed_subscription"
+    }
   }
 }

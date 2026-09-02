@@ -3141,7 +3141,17 @@ def build_agent_recovery_summary() -> dict[str, Any]:
     They are deliberately separate from the dataset's historical recovery
     population so the demo can distinguish predicted risk from agent action.
     """
-    total_executions = len(PROCESSED_RECOVERY_EVENTS)
+    total_executions = sum(
+    1
+    for event in PROCESSED_RECOVERY_EVENTS.values()
+    if (
+        isinstance(event, dict)
+        and isinstance(
+            event.get("_agent_result"),
+            dict
+        )
+    )
+)
     recovered_executions = 0
     total_money_recovered = 0.0
     total_attempts = 0
@@ -3166,7 +3176,12 @@ def build_agent_recovery_summary() -> dict[str, Any]:
         )
         action_name = safe_string(action.get("recovery_action"))
         stop_reason = safe_string(stopping.get("reason"))
-        recovered = bool(execution.get("recovered", normalize_bool(event.get("recovered"))))
+        recovered = normalize_bool(
+    execution.get(
+        "recovered",
+        False
+    )
+)
         money = safe_float(execution.get("money_recovered", event.get("money_recovered", 0.0)))
         attempt_count = safe_int(
             execution.get(
@@ -6133,42 +6148,888 @@ async def run_recovery_for_transaction(transaction_id: str):
     }
 
 
+# ============================================================
+# ADAPTIVE BATCH RECOVERY
+# ============================================================
+def _simulate_batch_customer_response(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Simulated customer response used by the demonstration batch.
+    This is simulation data only. No real customer communication
+    is sent.
+    """
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    if normalize_bool(
+        execution.get("recovered")
+    ):
+        return {
+            "response_type": "payment_completed",
+            "response": (
+                "Payment completed after the recovery intervention."
+            ),
+            "interpretation": "PAYMENT_SUCCESS",
+        }
+    scenario = safe_string(
+        row.get("scenario")
+        or agent_result.get("scenario")
+        or ""
+    ).strip().lower()
+    customer_intent = safe_float(
+        row.get("customer_intent"),
+        0.0,
+    )
+    attempts = safe_int(
+        execution.get("attempt_count")
+        or row.get("recovery_attempts"),
+        0,
+    )
+    if scenario == "promise_to_pay":
+        return {
+            "response_type": "promise_to_pay",
+            "response": (
+                'Customer responded: "I\'ll pay tomorrow."'
+            ),
+            "interpretation": "PROMISE_TO_PAY",
+        }
+    if customer_intent >= 0.80:
+        return {
+            "response_type": "promise_to_pay",
+            "response": (
+                'Customer responded: "I\'ll pay tomorrow."'
+            ),
+            "interpretation": "PROMISE_TO_PAY",
+        }
+    if customer_intent <= 0.25:
+        return {
+            "response_type": "declined",
+            "response": (
+                "Customer indicated they cannot make the payment."
+            ),
+            "interpretation": "NEGATIVE_PAYMENT_INTENT",
+        }
+    if attempts >= MAX_RECOVERY_ATTEMPTS:
+        return {
+            "response_type": "no_response",
+            "response": (
+                "No customer response was received."
+            ),
+            "interpretation": "UNRESOLVED",
+        }
+    return {
+        "response_type": "no_response",
+        "response": (
+            "No customer response was received."
+        ),
+        "interpretation": "UNRESOLVED",
+    }
+def _adaptive_reassessment(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+    customer_response: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Reassess the case after the simulated customer response.
+    This determines the next bounded action. It does not perform
+    a second payment execution.
+    """
+    response_type = safe_string(
+        customer_response.get(
+            "response_type"
+        )
+    )
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    attempts = safe_int(
+        execution.get("attempt_count")
+        or row.get("recovery_attempts"),
+        0,
+    )
+    if response_type == "payment_completed":
+        return {
+            "state": "STOP",
+            "action": "stop",
+            "reason": "PAYMENT_SUCCESS",
+            "escalate": False,
+            "escalation_level": "NONE",
+            "instruction": (
+                "Payment success satisfies the recovery stopping rule."
+            ),
+        }
+    if response_type == "promise_to_pay":
+        return {
+            "state": "CONTINUE",
+            "action": "follow_up_promise_to_pay",
+            "reason": "PROMISE_TO_PAY",
+            "escalate": False,
+            "escalation_level": "NONE",
+            "instruction": (
+                "Positive payment intent supports a bounded "
+                "promise-to-pay follow-up."
+            ),
+        }
+    if response_type == "declined":
+        return {
+            "state": "ESCALATE",
+            "action": "human_review",
+            "reason": "RECOVERY_ESCALATION_REQUIRED",
+            "escalate": True,
+            "escalation_level": "HUMAN_REVIEW",
+            "instruction": (
+                "Negative customer intent crosses the automated "
+                "recovery boundary."
+            ),
+        }
+    if attempts >= MAX_RECOVERY_ATTEMPTS:
+        return {
+            "state": "ESCALATE",
+            "action": "human_review",
+            "reason": "MAX_RECOVERY_ATTEMPTS_REACHED",
+            "escalate": True,
+            "escalation_level": "HUMAN_REVIEW",
+            "instruction": (
+                "The maximum automated recovery limit has been reached."
+            ),
+        }
+    return {
+        "state": "CONTINUE",
+        "action": "payment_link_follow_up",
+        "reason": "UNRESOLVED_CUSTOMER_RESPONSE",
+        "escalate": False,
+        "escalation_level": "NONE",
+        "instruction": (
+            "No response was received, so move to a lower-friction "
+            "fallback before escalation."
+        ),
+    }
+def _attach_adaptive_batch_trace(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Add the adaptive customer-response and reassessment trace
+    to the existing persisted agent result.
+    """
+    customer_response = (
+        _simulate_batch_customer_response(
+            row,
+            agent_result,
+        )
+    )
+    reassessment = (
+        _adaptive_reassessment(
+            row,
+            agent_result,
+            customer_response,
+        )
+    )
+    diagnosis = (
+        agent_result.get("diagnosis")
+        if isinstance(
+            agent_result.get("diagnosis"),
+            dict,
+        )
+        else {}
+    )
+    score = (
+        agent_result.get("score")
+        if isinstance(
+            agent_result.get("score"),
+            dict,
+        )
+        else {}
+    )
+    action = (
+        agent_result.get("action")
+        if isinstance(
+            agent_result.get("action"),
+            dict,
+        )
+        else {}
+    )
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    probability = safe_float(
+        score.get("recovery_probability"),
+        0.0,
+    )
+    timeline = [
+        {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": (
+                "Revenue-risk event received and evaluated."
+            ),
+        },
+        {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": (
+                diagnosis.get(
+                    "reason",
+                    "Recovery issue diagnosed.",
+                )
+            ),
+            "diagnosis": diagnosis.get(
+                "diagnosis"
+            ),
+        },
+        {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": (
+                f"Recovery probability {probability * 100:.2f}%."
+            ),
+            "recovery_probability": probability,
+        },
+        {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": (
+                f"Selected "
+                f"{safe_string(action.get('recovery_action') or 'recovery action')} "
+                f"on "
+                f"{safe_string(action.get('channel') or 'recommended channel')}."
+            ),
+            "recovery_action": action.get(
+                "recovery_action"
+            ),
+        },
+        {
+            "stage": "ACT",
+            "status": (
+                "recovered"
+                if normalize_bool(
+                    execution.get("recovered")
+                )
+                else "simulated"
+            ),
+            "detail": execution.get(
+                "execution_detail",
+                "Recovery action executed in simulation.",
+            ),
+        },
+        {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": customer_response[
+                "response"
+            ],
+            "response_type": customer_response[
+                "response_type"
+            ],
+        },
+        {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": (
+                "Customer response interpreted as "
+                + customer_response[
+                    "interpretation"
+                ]
+                + "."
+            ),
+        },
+        {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": reassessment[
+                "instruction"
+            ],
+        },
+        {
+            "stage": (
+                "STOP"
+                if reassessment["state"] == "STOP"
+                else (
+                    "ESCALATE"
+                    if reassessment["state"] == "ESCALATE"
+                    else "NEXT ACTION"
+                )
+            ),
+            "status": (
+                "stopped"
+                if reassessment["state"] == "STOP"
+                else (
+                    "escalated"
+                    if reassessment["state"] == "ESCALATE"
+                    else "continued"
+                )
+            ),
+            "detail": (
+                reassessment["instruction"]
+            ),
+            "reason": (
+                reassessment["reason"]
+            ),
+        },
+    ]
+    agent_result["adaptive_loop"] = {
+        "mode": "batch_simulation",
+        "customer_response": customer_response,
+        "reassessment": reassessment,
+        "timeline": timeline,
+    }
+    return agent_result
+# ============================================================
+# ADAPTIVE BATCH RECOVERY
+# ============================================================
+def _simulate_batch_customer_response(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Simulated customer response used by the demonstration batch.
+    This is simulation data only. No real customer communication
+    is sent.
+    """
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    if normalize_bool(
+        execution.get("recovered")
+    ):
+        return {
+            "response_type": "payment_completed",
+            "response": (
+                "Payment completed after the recovery intervention."
+            ),
+            "interpretation": "PAYMENT_SUCCESS",
+        }
+    scenario = safe_string(
+        row.get("scenario")
+        or agent_result.get("scenario")
+        or ""
+    ).strip().lower()
+    customer_intent = safe_float(
+        row.get("customer_intent"),
+        0.0,
+    )
+    attempts = safe_int(
+        execution.get("attempt_count")
+        or row.get("recovery_attempts"),
+        0,
+    )
+    if scenario == "promise_to_pay":
+        return {
+            "response_type": "promise_to_pay",
+            "response": (
+                'Customer responded: "I\'ll pay tomorrow."'
+            ),
+            "interpretation": "PROMISE_TO_PAY",
+        }
+    if customer_intent >= 0.80:
+        return {
+            "response_type": "promise_to_pay",
+            "response": (
+                'Customer responded: "I\'ll pay tomorrow."'
+            ),
+            "interpretation": "PROMISE_TO_PAY",
+        }
+    if customer_intent <= 0.25:
+        return {
+            "response_type": "declined",
+            "response": (
+                "Customer indicated they cannot make the payment."
+            ),
+            "interpretation": "NEGATIVE_PAYMENT_INTENT",
+        }
+    if attempts >= MAX_RECOVERY_ATTEMPTS:
+        return {
+            "response_type": "no_response",
+            "response": (
+                "No customer response was received."
+            ),
+            "interpretation": "UNRESOLVED",
+        }
+    return {
+        "response_type": "no_response",
+        "response": (
+            "No customer response was received."
+        ),
+        "interpretation": "UNRESOLVED",
+    }
+def _adaptive_reassessment(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+    customer_response: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Reassess the case after the simulated customer response.
+    This determines the next bounded action. It does not perform
+    a second payment execution.
+    """
+    response_type = safe_string(
+        customer_response.get(
+            "response_type"
+        )
+    )
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    attempts = safe_int(
+        execution.get("attempt_count")
+        or row.get("recovery_attempts"),
+        0,
+    )
+    if response_type == "payment_completed":
+        return {
+            "state": "STOP",
+            "action": "stop",
+            "reason": "PAYMENT_SUCCESS",
+            "escalate": False,
+            "escalation_level": "NONE",
+            "instruction": (
+                "Payment success satisfies the recovery stopping rule."
+            ),
+        }
+    if response_type == "promise_to_pay":
+        return {
+            "state": "CONTINUE",
+            "action": "follow_up_promise_to_pay",
+            "reason": "PROMISE_TO_PAY",
+            "escalate": False,
+            "escalation_level": "NONE",
+            "instruction": (
+                "Positive payment intent supports a bounded "
+                "promise-to-pay follow-up."
+            ),
+        }
+    if response_type == "declined":
+        return {
+            "state": "ESCALATE",
+            "action": "human_review",
+            "reason": "RECOVERY_ESCALATION_REQUIRED",
+            "escalate": True,
+            "escalation_level": "HUMAN_REVIEW",
+            "instruction": (
+                "Negative customer intent crosses the automated "
+                "recovery boundary."
+            ),
+        }
+    if attempts >= MAX_RECOVERY_ATTEMPTS:
+        return {
+            "state": "ESCALATE",
+            "action": "human_review",
+            "reason": "MAX_RECOVERY_ATTEMPTS_REACHED",
+            "escalate": True,
+            "escalation_level": "HUMAN_REVIEW",
+            "instruction": (
+                "The maximum automated recovery limit has been reached."
+            ),
+        }
+    return {
+        "state": "CONTINUE",
+        "action": "payment_link_follow_up",
+        "reason": "UNRESOLVED_CUSTOMER_RESPONSE",
+        "escalate": False,
+        "escalation_level": "NONE",
+        "instruction": (
+            "No response was received, so move to a lower-friction "
+            "fallback before escalation."
+        ),
+    }
+def _attach_adaptive_batch_trace(
+    row: dict[str, Any],
+    agent_result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Add the adaptive customer-response and reassessment trace
+    to the existing persisted agent result.
+    """
+    customer_response = (
+        _simulate_batch_customer_response(
+            row,
+            agent_result,
+        )
+    )
+    reassessment = (
+        _adaptive_reassessment(
+            row,
+            agent_result,
+            customer_response,
+        )
+    )
+    diagnosis = (
+        agent_result.get("diagnosis")
+        if isinstance(
+            agent_result.get("diagnosis"),
+            dict,
+        )
+        else {}
+    )
+    score = (
+        agent_result.get("score")
+        if isinstance(
+            agent_result.get("score"),
+            dict,
+        )
+        else {}
+    )
+    action = (
+        agent_result.get("action")
+        if isinstance(
+            agent_result.get("action"),
+            dict,
+        )
+        else {}
+    )
+    execution = (
+        agent_result.get("execution")
+        if isinstance(
+            agent_result.get("execution"),
+            dict,
+        )
+        else {}
+    )
+    probability = safe_float(
+        score.get("recovery_probability"),
+        0.0,
+    )
+    timeline = [
+        {
+            "stage": "DETECT",
+            "status": "completed",
+            "detail": (
+                "Revenue-risk event received and evaluated."
+            ),
+        },
+        {
+            "stage": "DIAGNOSE",
+            "status": "completed",
+            "detail": (
+                diagnosis.get(
+                    "reason",
+                    "Recovery issue diagnosed.",
+                )
+            ),
+            "diagnosis": diagnosis.get(
+                "diagnosis"
+            ),
+        },
+        {
+            "stage": "PREDICT",
+            "status": "completed",
+            "detail": (
+                f"Recovery probability {probability * 100:.2f}%."
+            ),
+            "recovery_probability": probability,
+        },
+        {
+            "stage": "DECIDE",
+            "status": "completed",
+            "detail": (
+                f"Selected "
+                f"{safe_string(action.get('recovery_action') or 'recovery action')} "
+                f"on "
+                f"{safe_string(action.get('channel') or 'recommended channel')}."
+            ),
+            "recovery_action": action.get(
+                "recovery_action"
+            ),
+        },
+        {
+            "stage": "ACT",
+            "status": (
+                "recovered"
+                if normalize_bool(
+                    execution.get("recovered")
+                )
+                else "simulated"
+            ),
+            "detail": execution.get(
+                "execution_detail",
+                "Recovery action executed in simulation.",
+            ),
+        },
+        {
+            "stage": "CUSTOMER",
+            "status": "simulated",
+            "detail": customer_response[
+                "response"
+            ],
+            "response_type": customer_response[
+                "response_type"
+            ],
+        },
+        {
+            "stage": "INTERPRET",
+            "status": "completed",
+            "detail": (
+                "Customer response interpreted as "
+                + customer_response[
+                    "interpretation"
+                ]
+                + "."
+            ),
+        },
+        {
+            "stage": "REASSESS",
+            "status": "completed",
+            "detail": reassessment[
+                "instruction"
+            ],
+        },
+        {
+            "stage": (
+                "STOP"
+                if reassessment["state"] == "STOP"
+                else (
+                    "ESCALATE"
+                    if reassessment["state"] == "ESCALATE"
+                    else "NEXT ACTION"
+                )
+            ),
+            "status": (
+                "stopped"
+                if reassessment["state"] == "STOP"
+                else (
+                    "escalated"
+                    if reassessment["state"] == "ESCALATE"
+                    else "continued"
+                )
+            ),
+            "detail": (
+                reassessment["instruction"]
+            ),
+            "reason": (
+                reassessment["reason"]
+            ),
+        },
+    ]
+    agent_result["adaptive_loop"] = {
+        "mode": "batch_simulation",
+        "customer_response": customer_response,
+        "reassessment": reassessment,
+        "timeline": timeline,
+    }
+    return agent_result
 @app.post("/recovery/run-batch")
-async def run_recovery_batch(request: RecoveryBatchRequest):
+async def run_recovery_batch(
+    request: RecoveryBatchRequest
+):
+    """
+    Run a bounded batch of active recovery cases.
+    Each processed case receives:
+      - the normal Recovery Agent execution
+      - a simulated customer response
+      - adaptive interpretation
+      - bounded reassessment
+      - persisted adaptive audit trace
+    Customer communication remains simulation-only.
+    """
     results = []
     processed_count = 0
-
+    recovered_count = 0
+    escalated_count = 0
     for raw_id in request.transaction_ids:
-        transaction_id = safe_string(raw_id)
+        transaction_id = safe_string(
+            raw_id
+        )
         if not transaction_id:
             continue
-
-        row = _recovery_case_row(transaction_id)
+        row = _recovery_case_row(
+            transaction_id
+        )
         if row is None:
             results.append({
                 "transaction_id": transaction_id,
                 "success": False,
                 "status": "not_found",
-                "message": "Active recovery case not found.",
+                "message": (
+                    "Active recovery case not found."
+                ),
             })
             continue
-
-        if normalize_bool(row.get("recovered")):
+        if normalize_bool(
+            row.get("recovered")
+        ):
             results.append({
                 "transaction_id": transaction_id,
                 "success": False,
                 "status": "already_recovered",
             })
             continue
-
         try:
-            event = _event_from_recovery_row(row)
-            result = await process_recovery_event(event)
+            event = _event_from_recovery_row(
+                row
+            )
+            # -----------------------------------------------
+            # Existing authoritative Recovery Agent execution
+            # -----------------------------------------------
+            result = await process_recovery_event(
+                event
+            )
             processed_count += 1
+            if not isinstance(result, dict):
+                result = {}
+            agent_result = result.get(
+                "agent_result"
+            )
+            if not isinstance(
+                agent_result,
+                dict
+            ):
+                agent_result = {}
+            # -----------------------------------------------
+            # Add adaptive customer-response reasoning.
+            # -----------------------------------------------
+            agent_result = (
+                _attach_adaptive_batch_trace(
+                    row,
+                    agent_result,
+                )
+            )
+            adaptive_loop = (
+                agent_result.get(
+                    "adaptive_loop"
+                )
+                if isinstance(
+                    agent_result.get(
+                        "adaptive_loop"
+                    ),
+                    dict,
+                )
+                else {}
+            )
+            execution = (
+                agent_result.get(
+                    "execution"
+                )
+                if isinstance(
+                    agent_result.get(
+                        "execution"
+                    ),
+                    dict,
+                )
+                else {}
+            )
+            recovered = normalize_bool(
+                execution.get(
+                    "recovered"
+                )
+            )
+            if recovered:
+                recovered_count += 1
+            reassessment = (
+                adaptive_loop.get(
+                    "reassessment"
+                )
+                if isinstance(
+                    adaptive_loop.get(
+                        "reassessment"
+                    ),
+                    dict,
+                )
+                else {}
+            )
+            escalated = normalize_bool(
+                reassessment.get(
+                    "escalate"
+                )
+            )
+            if escalated:
+                escalated_count += 1
+            # -----------------------------------------------
+            # Persist enriched agent execution.
+            # -----------------------------------------------
+            persisted = (
+                PROCESSED_RECOVERY_EVENTS.get(
+                    transaction_id
+                )
+            )
+            if not isinstance(
+                persisted,
+                dict
+            ):
+                persisted = {}
+            persisted["_agent_result"] = (
+                agent_result
+            )
+            persisted["adaptive_loop"] = (
+                adaptive_loop
+            )
+            PROCESSED_RECOVERY_EVENTS[
+                transaction_id
+            ] = persisted
+            persist_recovery_events()
+            customer_response = (
+                adaptive_loop.get(
+                    "customer_response"
+                )
+                if isinstance(
+                    adaptive_loop.get(
+                        "customer_response"
+                    ),
+                    dict,
+                )
+                else {}
+            )
             results.append({
                 "transaction_id": transaction_id,
                 "success": True,
                 "status": "processed",
+                "recovered": recovered,
+                "money_recovered": safe_float(
+                    execution.get(
+                        "money_recovered"
+                    ),
+                    0.0,
+                ),
+                "adaptive_state": (
+                    reassessment.get(
+                        "state"
+                    )
+                    or "CONTINUE"
+                ),
+                "adaptive_next_action": (
+                    reassessment.get(
+                        "action"
+                    )
+                    or "—"
+                ),
+                "customer_response_type": (
+                    customer_response.get(
+                        "response_type"
+                    )
+                    or "—"
+                ),
+                "customer_response": (
+                    customer_response.get(
+                        "response"
+                    )
+                    or "—"
+                ),
                 "result": result,
             })
         except Exception as exc:
@@ -6178,17 +7039,17 @@ async def run_recovery_batch(request: RecoveryBatchRequest):
                 "status": "error",
                 "message": str(exc),
             })
-
     return {
         "success": True,
         "status": "completed",
-        "requested": len(request.transaction_ids),
+        "requested": len(
+            request.transaction_ids
+        ),
         "processed": processed_count,
+        "recovered": recovered_count,
+        "escalated": escalated_count,
         "results": results,
     }
-
-
-
 
 # ============================================================
 # COMPLETE CUSTOMER DETAIL API
@@ -6632,3 +7493,525 @@ async def customer_detail_api(customer_id: str):
         }
     }
 
+
+
+# ============================================================
+# AGENT DECISION LAYER
+# ============================================================
+#
+# This layer makes the agent's decision process explicit:
+# assessment -> candidate actions -> selected action ->
+# simulated customer engagement -> observed outcome ->
+# next-step / stop decision.
+#
+# It does not bypass the existing recovery policy or execution
+# layer. It explains the bounded decision that was made.
+# ============================================================
+def _decision_candidate(
+    name: str,
+    suitability: float,
+    reason: str,
+    status: str = "candidate",
+):
+    return {
+        "name": name,
+        "suitability": round(
+            max(0.0, min(1.0, float(suitability))),
+            2,
+        ),
+        "reason": reason,
+        "status": status,
+    }
+def build_agent_decision_layer(
+    transaction_id: str,
+):
+    txid = safe_string(
+        transaction_id
+    ).strip()
+    event = PROCESSED_RECOVERY_EVENTS.get(
+        txid
+    )
+    if not isinstance(event, dict):
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                f"No persisted Recovery Agent execution found "
+                f"for {txid}."
+            ),
+        )
+    diagnosis, score, action, execution, stopping, escalation = (
+        _agent_result_parts(event)
+    )
+    diagnosis = dict(diagnosis or {})
+    score = dict(score or {})
+    action = dict(action or {})
+    execution = dict(execution or {})
+    stopping = dict(stopping or {})
+    escalation = dict(escalation or {})
+    scenario = safe_string(
+        action.get(
+            "scenario",
+            event.get("scenario"),
+        )
+    ).lower()
+    if not scenario:
+        scenario = "payment_failure"
+    recovery_probability = safe_float(
+        score.get(
+            "recovery_probability",
+            0.0,
+        )
+    )
+    priority_score = safe_float(
+        score.get(
+            "priority_score",
+            0.0,
+        )
+    )
+    priority = safe_string(
+        score.get(
+            "priority",
+            "LOW",
+        )
+    ).upper()
+    customer_intent = safe_float(
+        score.get(
+            "customer_intent",
+            0.0,
+        )
+    )
+    customer_reliability = safe_float(
+        score.get(
+            "customer_reliability",
+            0.0,
+        )
+    )
+    contactability = safe_float(
+        score.get(
+            "contactability",
+            0.0,
+        )
+    )
+    recovery_friction = safe_float(
+        score.get(
+            "recovery_friction",
+            0.0,
+        )
+    )
+    amount = safe_float(
+        event.get(
+            "transaction_amount",
+            score.get(
+                "transaction_amount",
+                0.0,
+            ),
+        )
+    )
+    attempts = safe_int(
+        execution.get(
+            "attempt_count",
+            event.get(
+                "recovery_attempts",
+                0,
+            ),
+        )
+    )
+    selected_action = safe_string(
+        action.get(
+            "recovery_action"
+        )
+    )
+    selected_channel = safe_string(
+        action.get(
+            "channel",
+            score.get(
+                "recommended_channel",
+            ),
+        )
+    )
+    if not selected_channel:
+        selected_channel = safe_string(
+            score.get(
+                "recommended_channel",
+                "none",
+            )
+        )
+    # --------------------------------------------------------
+    # CASE ASSESSMENT
+    # --------------------------------------------------------
+    diagnosis_name = safe_string(
+        diagnosis.get(
+            "diagnosis",
+            event.get(
+                "failure_reason",
+                "revenue_risk",
+            ),
+        )
+    )
+    diagnosis_reason = safe_string(
+        diagnosis.get(
+            "reason",
+            "Revenue-risk event requires recovery evaluation.",
+        )
+    )
+    assessment_factors = [
+        {
+            "factor": "recovery_probability",
+            "value": round(
+                recovery_probability,
+                4,
+            ),
+        },
+        {
+            "factor": "priority_score",
+            "value": round(
+                priority_score,
+                4,
+            ),
+        },
+        {
+            "factor": "customer_reliability",
+            "value": round(
+                customer_reliability,
+                4,
+            ),
+        },
+        {
+            "factor": "contactability",
+            "value": round(
+                contactability,
+                4,
+            ),
+        },
+        {
+            "factor": "recovery_friction",
+            "value": round(
+                recovery_friction,
+                4,
+            ),
+        },
+    ]
+    # --------------------------------------------------------
+    # CANDIDATE ACTIONS
+    # --------------------------------------------------------
+    candidates = []
+    primary_score = (
+        0.55 * recovery_probability
+        + 0.20 * customer_reliability
+        + 0.15 * contactability
+        + 0.10 * (1 - recovery_friction)
+    )
+    if scenario == "mandate_failure":
+        candidates.append(
+            _decision_candidate(
+                "retry_mandate",
+                primary_score,
+                "The failure is mandate-specific and the case has sufficient recoverability and customer contactability.",
+            )
+        )
+        candidates.append(
+            _decision_candidate(
+                "payment_link_follow_up",
+                max(
+                    0.0,
+                    primary_score - 0.14,
+                ),
+                "A payment-link follow-up is a reasonable fallback if the mandate retry does not resolve the payment.",
+            )
+        )
+    elif scenario == "checkout_abandonment":
+        candidates.append(
+            _decision_candidate(
+                "checkout_reminder",
+                primary_score,
+                "The customer showed checkout intent and a reminder can recover the abandoned payment without unnecessary escalation.",
+            )
+        )
+        candidates.append(
+            _decision_candidate(
+                "payment_link_follow_up",
+                max(
+                    0.0,
+                    primary_score - 0.10,
+                ),
+                "A direct payment-link follow-up is a fallback when the customer needs another payment path.",
+            )
+        )
+    elif scenario == "b2b_receivable":
+        candidates.append(
+            _decision_candidate(
+                "send_invoice_reminder",
+                primary_score,
+                "The loss is tied to an overdue receivable, so an invoice reminder is the least-friction recovery path.",
+            )
+        )
+        candidates.append(
+            _decision_candidate(
+                "payment_link_follow_up",
+                max(
+                    0.0,
+                    primary_score - 0.12,
+                ),
+                "A payment-link follow-up can be used after the invoice reminder if payment remains outstanding.",
+            )
+        )
+    elif scenario == "failed_subscription":
+        candidates.append(
+            _decision_candidate(
+                "retry_subscription_payment",
+                primary_score,
+                "The failure is subscription-specific and retrying the subscription payment directly addresses the failure mode.",
+            )
+        )
+        candidates.append(
+            _decision_candidate(
+                "payment_link_follow_up",
+                max(
+                    0.0,
+                    primary_score - 0.11,
+                ),
+                "A payment-link follow-up provides an alternative completion path after a failed subscription retry.",
+            )
+        )
+    else:
+        candidates.append(
+            _decision_candidate(
+                selected_action or "retry_payment",
+                primary_score,
+                "The selected recovery path directly addresses the diagnosed payment-risk event while remaining within the recovery workflow.",
+            )
+        )
+        candidates.append(
+            _decision_candidate(
+                "payment_link_follow_up",
+                max(
+                    0.0,
+                    primary_score - 0.12,
+                ),
+                "A payment-link follow-up is a lower-friction fallback if the primary recovery attempt does not succeed.",
+            )
+        )
+    escalation_suitability = (
+        0.20
+        + (0.35 * recovery_friction)
+        + (0.25 * min(attempts / 3, 1.0))
+        + (0.20 * (1 - recovery_probability))
+    )
+    if priority == "HIGH" and attempts >= 1:
+        escalation_suitability += 0.05
+    candidates.append(
+        _decision_candidate(
+            "human_review",
+            escalation_suitability,
+            "Human review becomes more appropriate when recovery friction, repeated attempts, or weak recoverability increase.",
+        )
+    )
+    # --------------------------------------------------------
+    # MARK SELECTED PATH
+    # --------------------------------------------------------
+    selected_index = None
+    for index, candidate in enumerate(
+        candidates
+    ):
+        if (
+            selected_action
+            and candidate["name"]
+            == selected_action
+        ):
+            selected_index = index
+            break
+    if selected_index is None:
+        # The existing recovery action may use a name that is
+        # not one of the scenario-specific candidate labels.
+        candidates.insert(
+            0,
+            _decision_candidate(
+                selected_action or "recovery_action",
+                primary_score,
+                "Selected by the existing bounded recovery policy.",
+                "selected",
+            ),
+        )
+        selected_index = 0
+    for index, candidate in enumerate(
+        candidates
+    ):
+        candidate["status"] = (
+            "selected"
+            if index == selected_index
+            else "alternative"
+        )
+    # --------------------------------------------------------
+    # WHY THIS ACTION?
+    # --------------------------------------------------------
+    selected = candidates[selected_index]
+    why_selected = (
+        f"{diagnosis_name.replace('_', ' ').capitalize()} "
+        f"with {recovery_probability * 100:.2f}% predicted recovery "
+        f"probability, priority {priority}, "
+        f"{customer_reliability * 100:.1f}% customer reliability, "
+        f"and {contactability * 100:.1f}% contactability "
+        f"supports the selected recovery path."
+    )
+    # --------------------------------------------------------
+    # SIMULATED CUSTOMER ENGAGEMENT
+    # --------------------------------------------------------
+    messages = {
+        "retry_mandate": (
+            "Your recurring payment could not be completed. "
+            "Please complete the payment using the secure link "
+            "provided by the merchant."
+        ),
+        "retry_payment": (
+            "Your recent payment could not be completed. "
+            "Please retry the payment using the secure payment link."
+        ),
+        "checkout_reminder": (
+            "You left a payment unfinished. "
+            "Please return to checkout to complete your purchase."
+        ),
+        "send_invoice_reminder": (
+            "Your invoice is overdue. "
+            "Please complete payment using the secure invoice link."
+        ),
+        "retry_subscription_payment": (
+            "Your subscription payment could not be completed. "
+            "Please complete the payment using the secure link."
+        ),
+    }
+    message = messages.get(
+        selected_action,
+        (
+            "A payment recovery action is available. "
+            "Please use the secure payment path provided by the merchant."
+        ),
+    )
+    recovered = bool(
+        execution.get(
+            "recovered",
+            False,
+        )
+    )
+    if recovered:
+        simulated_response = (
+            "Payment completed after the recovery intervention."
+        )
+    else:
+        simulated_response = (
+            "No payment was completed from this simulated intervention."
+        )
+    stop_reason = safe_string(
+        stopping.get(
+            "reason"
+        )
+    )
+    if not stop_reason:
+        stop_reason = safe_string(
+            execution.get(
+                "stopping_reason"
+            )
+        )
+    if not stop_reason:
+        stop_reason = (
+            "Continue recovery workflow"
+        )
+    return {
+        "success": True,
+        "transaction_id": txid,
+        "case": {
+            "scenario": scenario,
+            "diagnosis": diagnosis_name,
+            "diagnosis_reason": diagnosis_reason,
+            "transaction_amount": round(
+                amount,
+                2,
+            ),
+        },
+        "assessment": {
+            "recovery_probability": round(
+                recovery_probability,
+                4,
+            ),
+            "priority_score": round(
+                priority_score,
+                4,
+            ),
+            "priority": priority,
+            "customer_reliability": round(
+                customer_reliability,
+                4,
+            ),
+            "contactability": round(
+                contactability,
+                4,
+            ),
+            "recovery_friction": round(
+                recovery_friction,
+                4,
+            ),
+            "factors": assessment_factors,
+        },
+        "candidate_actions": candidates,
+        "decision": {
+            "selected_action": selected_action,
+            "channel": selected_channel,
+            "why_selected": why_selected,
+        },
+        "customer_engagement": {
+            "mode": "simulated",
+            "channel": selected_channel or "none",
+            "message": message,
+            "delivery_status": "simulated",
+            "response": simulated_response,
+        },
+        "outcome": {
+            "recovered": recovered,
+            "money_recovered": round(
+                safe_float(
+                    execution.get(
+                        "money_recovered",
+                        0.0,
+                    )
+                ),
+                2,
+            ),
+            "attempt_count": attempts,
+            "execution_status": safe_string(
+                execution.get(
+                    "execution_status",
+                    "not_recorded",
+                )
+            ),
+        },
+        "next_step": {
+            "stopping_reason": stop_reason,
+            "stopped": bool(
+                stopping.get(
+                    "stop",
+                    False,
+                )
+            ),
+            "escalate": bool(
+                escalation.get(
+                    "escalate",
+                    False,
+                )
+            ),
+            "escalation_level": safe_string(
+                escalation.get(
+                    "escalation_level",
+                    "NONE",
+                )
+            ),
+        },
+    }
+@app.get(
+    "/recovery-agent/decision/{transaction_id}"
+)
+async def recovery_agent_decision_api(
+    transaction_id: str,
+):
+    """Return explicit agent decision reasoning for one execution."""
+    return build_agent_decision_layer(
+        transaction_id
+    )

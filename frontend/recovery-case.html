@@ -516,7 +516,244 @@
 
         }
 
-    </style>
+    <style id="agent-decision-case-style">
+/* ============================================================
+   AGENT DECISION — TRANSACTION DETAIL PAGE
+   ============================================================ */
+.agent-case-summary-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.agent-case-stat {
+    min-width: 0;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #dde5ef;
+    border-radius: 10px;
+}
+.agent-case-stat span {
+    display: block;
+    margin-bottom: 7px;
+    color: #7183a0;
+    font-size: 10px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+.agent-case-stat strong {
+    display: block;
+    color: #172033;
+    font-size: 18px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+.agent-case-reason {
+    margin-bottom: 18px;
+    padding: 16px;
+    background: #f8fafc;
+    border: 1px solid #edf1f6;
+    border-radius: 10px;
+}
+.agent-case-reason h4,
+.agent-case-box h4 {
+    margin: 0 0 8px;
+    color: #27364d;
+    font-size: 13px;
+    font-weight: 750;
+}
+.agent-case-reason p,
+.agent-case-box p {
+    margin: 0;
+    color: #52657f;
+    font-size: 12px;
+    line-height: 1.65;
+}
+.agent-case-box {
+    min-width: 0;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #dde5ef;
+    border-radius: 10px;
+}
+.agent-case-grid-2 {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+.agent-case-candidates {
+    display: grid;
+    gap: 8px;
+}
+.agent-case-candidate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+}
+.agent-case-candidate.selected {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+.agent-case-candidate-main {
+    min-width: 0;
+}
+.agent-case-candidate-main strong {
+    display: block;
+    color: #27364d;
+    font-size: 12px;
+}
+.agent-case-candidate-main p {
+    margin: 4px 0 0;
+    color: #718096;
+    font-size: 10px;
+    line-height: 1.5;
+}
+.agent-case-candidate-score {
+    flex: 0 0 auto;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+}
+.agent-case-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 9px;
+    color: #7183a0;
+    font-size: 11px;
+}
+.agent-case-detail-row:last-child {
+    margin-bottom: 0;
+}
+.agent-case-detail-row strong {
+    color: #334155;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+.agent-case-message {
+    margin: 12px 0;
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid #edf1f6;
+    border-radius: 9px;
+    color: #475569;
+    font-size: 11px;
+    line-height: 1.65;
+}
+.agent-case-outcome {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+.agent-case-outcome-item {
+    padding: 13px;
+    background: #f8fafc;
+    border: 1px solid #edf1f6;
+    border-radius: 9px;
+}
+.agent-case-outcome-item span {
+    display: block;
+    margin-bottom: 5px;
+    color: #7183a0;
+    font-size: 10px;
+}
+.agent-case-outcome-item strong {
+    color: #172033;
+    font-size: 12px;
+}
+.agent-case-timeline {
+    display: grid;
+    gap: 0;
+}
+.agent-case-timeline-item {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+    position: relative;
+    min-height: 62px;
+}
+.agent-case-timeline-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: 0;
+    width: 1px;
+    background: #dbe4ef;
+}
+.agent-case-timeline-marker {
+    position: relative;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 800;
+}
+.agent-case-timeline-content {
+    padding-bottom: 18px;
+}
+.agent-case-timeline-stage {
+    margin-bottom: 4px;
+    color: #27364d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .3px;
+}
+.agent-case-timeline-detail {
+    color: #7183a0;
+    font-size: 11px;
+    line-height: 1.55;
+}
+.agent-case-recovered {
+    border-color: #bbf7d0;
+    background: #f0fdf4;
+}
+.agent-case-escalated {
+    border-color: #fed7aa;
+    background: #fff7ed;
+}
+@media (max-width: 1000px) {
+    .agent-case-summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+    .agent-case-outcome {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 700px) {
+    .agent-case-grid-2 {
+        grid-template-columns: 1fr;
+    }
+    .agent-case-summary-grid {
+        grid-template-columns: 1fr;
+    }
+    .agent-case-outcome {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</style>
 
 </head>
 
@@ -977,6 +1214,234 @@
 
 
             <!-- =================================================
+                 AGENT DECISION
+            ================================================== -->
+            <section
+                class="case-section"
+                id="agent-decision-section"
+            >
+                <div class="case-section-header">
+                    <h3>
+                        Agent Decision
+                    </h3>
+                    <p>
+                        Why the Recovery Agent selected this path,
+                        what alternatives were considered, and how
+                        simulated customer engagement was handled.
+                    </p>
+                </div>
+                <div
+                    class="case-section-body"
+                    id="agent-decision-content"
+                >
+                    <div class="not-available">
+                        Loading agent decision...
+                    </div>
+                </div>
+            </section>
+            <!-- =================================================
+                 ADAPTIVE RECOVERY LOOP
+            ================================================== -->
+            <section
+                class="case-section"
+                id="adaptive-recovery-loop"
+            >
+                <div class="case-section-header">
+                    <h3>
+                        Adaptive Recovery Loop
+                    </h3>
+                    <p>
+                        Customer response → agent interpretation →
+                        next action → stop or escalation
+                    </p>
+                </div>
+                <div class="case-section-body">
+                    <!-- CURRENT AGENT STATE -->
+                    <div
+                        class="agent-case-reason"
+                        style="margin-bottom:18px;"
+                    >
+                        <h4>
+                            Agent State
+                        </h4>
+                        <div
+                            style="
+                                display:grid;
+                                grid-template-columns:
+                                    repeat(3,minmax(0,1fr));
+                                gap:12px;
+                                margin-top:12px;
+                            "
+                        >
+                            <div class="detail-item">
+                                <small>
+                                    Transaction
+                                </small>
+                                <strong
+                                    id="adaptive-transaction"
+                                >
+                                    —
+                                </strong>
+                            </div>
+                            <div class="detail-item">
+                                <small>
+                                    Current Action
+                                </small>
+                                <strong
+                                    id="adaptive-current-action"
+                                >
+                                    —
+                                </strong>
+                            </div>
+                            <div class="detail-item">
+                                <small>
+                                    Current Attempt
+                                </small>
+                                <strong
+                                    id="adaptive-current-attempt"
+                                >
+                                    —
+                                </strong>
+                            </div>
+                        </div>
+                        <div
+                            style="
+                                margin-top:12px;
+                                padding:13px;
+                                border-radius:9px;
+                                background:#f8fafc;
+                                border:1px solid #edf1f6;
+                                color:#52657f;
+                                font-size:11px;
+                                line-height:1.6;
+                            "
+                            id="adaptive-state-detail"
+                        >
+                            Loading agent state...
+                        </div>
+                    </div>
+                    <!-- INTERACTION -->
+                    <div
+                        class="agent-case-grid-2"
+                    >
+                        <div
+                            class="agent-case-box"
+                        >
+                            <h4>
+                                Simulated Customer Response
+                            </h4>
+                            <select
+                                id="adaptive-customer-response"
+                                style="
+                                    width:100%;
+                                    min-height:40px;
+                                    margin-top:4px;
+                                    padding:0 11px;
+                                    border:1px solid #dbe3ee;
+                                    border-radius:8px;
+                                    background:#fff;
+                                    color:#334155;
+                                    font-family:inherit;
+                                    font-size:12px;
+                                "
+                            >
+                                <option value="">
+                                    Choose a response...
+                                </option>
+                                <option value="paid">
+                                    Payment completed
+                                </option>
+                                <option value="promise_to_pay">
+                                    "I'll pay tomorrow."
+                                </option>
+                                <option value="declined">
+                                    "I can't make the payment."
+                                </option>
+                                <option value="no_response">
+                                    No response
+                                </option>
+                                <option value="wrong_channel">
+                                    Customer requests another channel
+                                </option>
+                            </select>
+                            <button
+                                type="button"
+                                id="adaptive-apply-response"
+                                class="case-run-button"
+                                style="
+                                    width:100%;
+                                    margin-top:10px;
+                                "
+                            >
+                                Let Agent Reassess
+                            </button>
+                        </div>
+                        <div
+                            class="agent-case-box"
+                        >
+                            <h4>
+                                Agent Interpretation
+                            </h4>
+                            <div
+                                id="adaptive-interpretation"
+                                style="
+                                    margin-top:8px;
+                                    min-height:70px;
+                                    color:#52657f;
+                                    font-size:11px;
+                                    line-height:1.65;
+                                "
+                            >
+                                Waiting for customer response.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- NEXT ACTION -->
+                    <div
+                        class="agent-case-reason"
+                        style="margin-top:18px;"
+                    >
+                        <h4>
+                            Next Agent Action
+                        </h4>
+                        <strong
+                            id="adaptive-next-action"
+                            style="
+                                display:block;
+                                margin-top:8px;
+                                color:#172033;
+                                font-size:16px;
+                            "
+                        >
+                            —
+                        </strong>
+                        <p
+                            id="adaptive-next-reason"
+                            style="margin-top:6px;"
+                        >
+                            —
+                        </p>
+                    </div>
+                    <!-- ADAPTIVE TIMELINE -->
+                    <div
+                        class="agent-case-box"
+                        style="margin-top:18px;"
+                    >
+                        <h4>
+                            Adaptive Decision Timeline
+                        </h4>
+                        <div
+                            id="adaptive-timeline"
+                            class="agent-case-timeline"
+                            style="margin-top:14px;"
+                        >
+                            <div class="not-available">
+                                Loading timeline...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>            <!-- =================================================
                  RECOVERY CONTROL
             ================================================== -->
 
@@ -1431,6 +1896,7 @@
             renderCase(
                 data.case
             );
+            loadAgentDecision();
 
 
         } catch (error) {
@@ -2307,8 +2773,1227 @@
 
 
     /* ========================================================
+       AGENT DECISION
+    ======================================================== */    /* ========================================================
+       AGENT DECISION
+    ======================================================== */    /* ========================================================
+       AGENT DECISION
+    ======================================================== */
+    async function loadAgentDecision() {
+        const container =
+            document.getElementById(
+                "agent-decision-content"
+            );
+        if (!container) {
+            return;
+        }
+        if (!transactionId) {
+            return;
+        }
+        container.innerHTML = `
+            <div class="not-available">
+                Loading agent decision...
+            </div>
+        `;
+        try {
+            const response =
+                await fetch(
+                    "/recovery-agent/decision/"
+                    + encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+            const data =
+                await response.json()
+                    .catch(
+                        () => ({})
+                    );
+            if (!response.ok) {
+                if (response.status === 404) {
+                    container.innerHTML = `
+                        <div class="not-available">
+                            <strong>
+                                No historical agent decision
+                            </strong>
+                            This transaction does not have
+                            a persisted Recovery Agent decision.
+                        </div>
+                    `;
+                    return;
+                }
+                throw new Error(
+                    data.detail ||
+                    `Decision request failed (${response.status}).`
+                );
+            }
+            const assessment =
+                data.assessment || {};
+            const decision =
+                data.decision || {};
+            const engagement =
+                data.customer_engagement || {};
+            const outcome =
+                data.outcome || {};
+            const nextStep =
+                data.next_step || {};
+            const candidates =
+                Array.isArray(
+                    data.candidate_actions
+                )
+                    ? data.candidate_actions
+                    : [];
+            const moneyRecovered =
+                money(
+                    outcome.money_recovered
+                );
+            const probability =
+                (
+                    Number(
+                        assessment.recovery_probability ||
+                        0
+                    ) * 100
+                ).toFixed(2);
+            const candidateMarkup =
+                candidates
+                    .map(
+                        item => {
+                            const selected =
+                                item.status === "selected";
+                            return `
+                                <div
+                                    class="
+                                        agent-case-candidate
+                                        ${
+                                            selected
+                                                ? "selected"
+                                                : ""
+                                        }
+                                    "
+                                >
+                                    <div
+                                        class="agent-case-candidate-main"
+                                    >
+                                        <strong>
+                                            ${escapeHtml(
+                                                titleCase(
+                                                    item.name
+                                                )
+                                            )}
+                                        </strong>
+                                        <p>
+                                            ${escapeHtml(
+                                                item.reason ||
+                                                ""
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="agent-case-candidate-score"
+                                    >
+                                        ${(
+                                            Number(
+                                                item.suitability || 0
+                                            ) * 100
+                                        ).toFixed(0)}%
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    )
+                    .join("");
+            /* ====================================================
+               BUILD REAL TIMELINE FROM ACTUAL API DATA
+               No fabricated timestamps or outcomes.
+               ==================================================== */
+            const timeline = [
+                {
+                    stage: "DETECT",
+                    detail:
+                        "Revenue-risk event received and evaluated."
+                },
+                {
+                    stage: "DIAGNOSE",
+                    detail:
+                        data.case?.diagnosis_reason ||
+                        "Recovery failure diagnosed."
+                },
+                {
+                    stage: "PREDICT",
+                    detail:
+                        `Recovery probability ${probability}%.`
+                },
+                {
+                    stage: "DECIDE",
+                    detail:
+                        decision.selected_action
+                            ? `Selected ${titleCase(
+                                decision.selected_action
+                              )}. ${
+                                data?.policy?.reason ||
+                                "Action selected within the recovery policy."
+                              }`
+                            : (
+                                decision.why_selected ||
+                                "Recovery action selected by policy."
+                              )
+                },
+                {
+                    stage: "ACT",
+                    detail:
+                        engagement.channel
+                            ? `Simulated ${titleCase(
+                                engagement.channel
+                              )} engagement using ${titleCase(
+                                decision.selected_action
+                              ) || "the selected recovery action"}.`
+                            : (
+                                `Recovery action executed: ${
+                                    titleCase(
+                                        decision.selected_action
+                                    ) || "selected action"
+                                }.`
+                              )
+                },
+                {
+                    stage: "MEASURE",
+                    detail:
+                        outcome.recovered
+                            ? `Money recovered: ${moneyRecovered}.`
+                            : `Money recovered: ${moneyRecovered}.`
+                },
+                {
+                    stage: "STOP / ESCALATE",
+                    detail:
+                        nextStep.stopping_reason
+                            ? `${titleCase(
+                                nextStep.stopping_reason
+                              )}${
+                                nextStep.escalate
+                                    ? ` · Escalation: ${
+                                        titleCase(
+                                            nextStep.escalation_level ||
+                                            "HUMAN_REVIEW"
+                                        )
+                                      }`
+                                    : " · No escalation"
+                              }`
+                            : (
+                                nextStep.escalate
+                                    ? `Escalation required: ${
+                                        titleCase(
+                                            nextStep.escalation_level ||
+                                            "HUMAN_REVIEW"
+                                        )
+                                      }`
+                                    : "Recovery workflow completed."
+                              )
+                }
+            ];
+            const timelineMarkup =
+                timeline
+                    .map(
+                        (item, index) => {
+                            return `
+                                <div
+                                    class="agent-case-timeline-item"
+                                >
+                                    <div
+                                        class="agent-case-timeline-marker"
+                                    >
+                                        ✓
+                                    </div>
+                                    <div
+                                        class="agent-case-timeline-content"
+                                    >
+                                        <div
+                                            class="agent-case-timeline-stage"
+                                        >
+                                            ${escapeHtml(
+                                                item.stage
+                                            )}
+                                        </div>
+                                        <div
+                                            class="agent-case-timeline-detail"
+                                        >
+                                            ${escapeHtml(
+                                                item.detail
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    )
+                    .join("");
+            container.innerHTML = `
+                <div
+                    class="agent-case-summary-grid"
+                >
+                    <div
+                        class="agent-case-stat"
+                    >
+                        <span>
+                            Recovery Probability
+                        </span>
+                        <strong>
+                            ${probability}%
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-stat"
+                    >
+                        <span>
+                            Priority
+                        </span>
+                        <strong>
+                            ${escapeHtml(
+                                assessment.priority ||
+                                "LOW"
+                            )}
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-stat"
+                    >
+                        <span>
+                            Selected Action
+                        </span>
+                        <strong>
+                            ${escapeHtml(
+                                titleCase(
+                                    decision.selected_action
+                                )
+                            )}
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-stat"
+                    >
+                        <span>
+                            Attempts
+                        </span>
+                        <strong>
+                            ${Number(
+                                outcome.attempt_count ||
+                                0
+                            )}
+                        </strong>
+                    </div>
+                </div>
+                <div
+                    class="agent-case-reason"
+                >
+                    <h4>
+                        Why did the agent choose this?
+                    </h4>
+                    <p>
+                        ${escapeHtml(
+                            decision.why_selected ||
+                            "The bounded recovery policy selected this action."
+                        )}
+                    </p>
+                </div>
+                <div
+                    class="agent-case-box"
+                    style="margin-bottom:18px;"
+                >
+                    <h4>
+                        Candidate Recovery Paths
+                    </h4>
+                    <div
+                        class="agent-case-candidates"
+                    >
+                        ${candidateMarkup}
+                    </div>
+                </div>
+                <div
+                    class="agent-case-grid-2"
+                >
+                    <div
+                        class="agent-case-box"
+                    >
+                        <h4>
+                            Simulated Customer Engagement
+                        </h4>
+                        <div
+                            class="agent-case-detail-row"
+                        >
+                            <span>
+                                Channel
+                            </span>
+                            <strong>
+                                ${escapeHtml(
+                                    engagement.channel ||
+                                    "none"
+                                )}
+                            </strong>
+                        </div>
+                        <div
+                            class="agent-case-message"
+                        >
+                            ${escapeHtml(
+                                engagement.message ||
+                                "No message recorded."
+                            )}
+                        </div>
+                        <div
+                            class="agent-case-detail-row"
+                        >
+                            <span>
+                                Delivery
+                            </span>
+                            <strong>
+                                ${escapeHtml(
+                                    engagement.delivery_status ||
+                                    "simulated"
+                                )}
+                            </strong>
+                        </div>
+                    </div>
+                    <div
+                        class="agent-case-box"
+                    >
+                        <h4>
+                            Customer Response
+                        </h4>
+                        <p>
+                            ${escapeHtml(
+                                engagement.response ||
+                                "No customer response recorded."
+                            )}
+                        </p>
+                        <div
+                            class="agent-case-detail-row"
+                            style="margin-top:14px;"
+                        >
+                            <span>
+                                Money Recovered
+                            </span>
+                            <strong>
+                                ${moneyRecovered}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="agent-case-outcome"
+                >
+                    <div
+                        class="agent-case-outcome-item"
+                    >
+                        <span>
+                            Customer Reliability
+                        </span>
+                        <strong>
+                            ${(
+                                Number(
+                                    assessment.customer_reliability ||
+                                    0
+                                ) * 100
+                            ).toFixed(2)}%
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-outcome-item"
+                    >
+                        <span>
+                            Contactability
+                        </span>
+                        <strong>
+                            ${(
+                                Number(
+                                    assessment.contactability ||
+                                    0
+                                ) * 100
+                            ).toFixed(2)}%
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-outcome-item"
+                    >
+                        <span>
+                            Stop Reason
+                        </span>
+                        <strong>
+                            ${escapeHtml(
+                                nextStep.stopping_reason ||
+                                "—"
+                            )}
+                        </strong>
+                    </div>
+                    <div
+                        class="agent-case-outcome-item"
+                    >
+                        <span>
+                            Escalation
+                        </span>
+                        <strong>
+                            ${
+                                nextStep.escalate
+                                    ? escapeHtml(
+                                        nextStep.escalation_level ||
+                                        "HUMAN_REVIEW"
+                                      )
+                                    : "None"
+                            }
+                        </strong>
+                    </div>
+                </div>
+                <div
+                    class="agent-case-box"
+                >
+                    <h4>
+                        Agent Timeline
+                    </h4>
+                    <div
+                        class="agent-case-timeline"
+                        style="margin-top:14px;"
+                    >
+                        ${timelineMarkup}
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            console.error(
+                "Agent decision error:",
+                error
+            );
+            container.innerHTML = `
+                <div class="not-available">
+                    <strong>
+                        Agent decision unavailable
+                    </strong>
+                    ${escapeHtml(
+                        error.message
+                    )}
+                </div>
+            `;
+        }
+    }    /* ========================================================
        RUN RECOVERY
     ======================================================== */
+    /* ========================================================
+       ADAPTIVE RECOVERY LOOP
+       Transaction-specific demonstration layer.
+       Uses the transaction_id already present in this page URL.
+       ======================================================== */
+    let adaptiveCaseData = null;
+    let adaptiveTimeline = [];
+    function adaptiveSet(
+        id,
+        value
+    ) {
+        const element =
+            document.getElementById(
+                id
+            );
+        if (element) {
+            element.textContent =
+                value;
+        }
+    }
+    function adaptiveAddTimeline(
+        stage,
+        detail
+    ) {
+        adaptiveTimeline.push({
+            stage: stage,
+            detail: detail
+        });
+        const container =
+            document.getElementById(
+                "adaptive-timeline"
+            );
+        if (!container) {
+            return;
+        }
+        container.innerHTML =
+            adaptiveTimeline
+                .map(
+                    (item, index) => `
+                        <div
+                            class="agent-case-timeline-item"
+                        >
+                            <div
+                                class="agent-case-timeline-marker completed"
+                            >
+                                ✓
+                            </div>
+                            <div
+                                class="agent-case-timeline-content"
+                            >
+                                <div
+                                    class="agent-case-timeline-stage"
+                                >
+                                    ${escapeHtml(
+                                        item.stage
+                                    )}
+                                </div>
+                                <div
+                                    class="agent-case-timeline-detail"
+                                >
+                                    ${escapeHtml(
+                                        item.detail
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    `
+                )
+                .join("");
+    }
+    function initializeAdaptiveCase(
+        data
+    ) {
+        adaptiveCaseData =
+            data || {};
+        adaptiveTimeline = [];
+        const assessment =
+            data?.assessment ||
+            {};
+        const decision =
+            data?.decision ||
+            {};
+        const outcome =
+            data?.outcome ||
+            {};
+        const scenario =
+            data?.case?.scenario ||
+            "";
+        const transaction =
+            data?.transaction_id ||
+            transactionId;
+        adaptiveSet(
+            "adaptive-transaction",
+            transaction
+        );
+        adaptiveSet(
+            "adaptive-current-action",
+            titleCase(
+                decision.selected_action
+            )
+        );
+        adaptiveSet(
+            "adaptive-current-attempt",
+            String(
+                Number(
+                    outcome.attempt_count ||
+                    0
+                )
+            )
+        );
+        adaptiveSet(
+            "adaptive-state-detail",
+            `The agent has selected ${
+                titleCase(
+                    decision.selected_action
+                ) || "a recovery action"
+            } for this ${
+                titleCase(
+                    scenario
+                ) || "recovery"
+            } case. Choose a simulated customer response to see how the agent reassesses the case.`
+        );
+        adaptiveSet(
+            "adaptive-next-action",
+            titleCase(
+                decision.selected_action
+            ) ||
+            "—"
+        );
+        adaptiveSet(
+            "adaptive-next-reason",
+            decision.why_selected ||
+            "Primary action selected by the bounded recovery policy."
+        );
+        adaptiveSet(
+            "adaptive-interpretation",
+            "Waiting for customer response."
+        );
+        adaptiveAddTimeline(
+            "DETECT",
+            "Revenue-risk transaction loaded for recovery."
+        );
+        adaptiveAddTimeline(
+            "DIAGNOSE",
+            data?.case?.diagnosis_reason ||
+            "Recovery issue diagnosed."
+        );
+        adaptiveAddTimeline(
+            "PREDICT",
+            `Recovery probability ${(
+                Number(
+                    assessment.recovery_probability ||
+                    0
+                ) * 100
+            ).toFixed(2)}%.`
+        );
+        adaptiveAddTimeline(
+            "DECIDE",
+            `${titleCase(
+                decision.selected_action
+            )} selected on ${
+                decision.channel ||
+                "the recommended channel"
+            }.`
+        );
+    }
+    async function loadAdaptiveCase() {
+        if (!transactionId) {
+            adaptiveSet(
+                "adaptive-state-detail",
+                "No transaction_id was provided in the URL."
+            );
+            return;
+        }
+        try {
+            /*
+             * ====================================================
+             * FIRST: LOAD THE PERSISTED AGENT AUDIT
+             *
+             * This is the authoritative source for a transaction
+             * that was processed by the measured batch.
+             * ====================================================
+             */
+            const auditResponse =
+                await fetch(
+                    "/recovery-agent/audit/"
+                    + encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+            const auditData =
+                await auditResponse
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+            if (!auditResponse.ok) {
+                throw new Error(
+                    auditData.detail ||
+                    `Audit request failed (${auditResponse.status}).`
+                );
+            }
+            const agentResult =
+                auditData?.agent_result ||
+                {};
+            const persistedAdaptive =
+                agentResult?.adaptive_loop ||
+                null;
+            /*
+             * ====================================================
+             * PERSISTED BATCH ADAPTIVE RESULT
+             * ====================================================
+             */
+            if (
+                persistedAdaptive &&
+                persistedAdaptive.mode ===
+                    "batch_simulation"
+            ) {
+                const action =
+                    agentResult?.action ||
+                    {};
+                const score =
+                    agentResult?.score ||
+                    {};
+                const execution =
+                    agentResult?.execution ||
+                    {};
+                const customerResponse =
+                    persistedAdaptive
+                        ?.customer_response ||
+                    {};
+                const reassessment =
+                    persistedAdaptive
+                        ?.reassessment ||
+                    {};
+                adaptiveCaseData = {
+                    transaction_id:
+                        auditData?.transaction_id ||
+                        transactionId,
+                    case: {
+                        scenario:
+                            auditData?.scenario ||
+                            agentResult?.scenario ||
+                            "",
+                        transaction_amount:
+                            score?.transaction_amount ||
+                            auditData?.event
+                                ?.transaction_amount ||
+                            0
+                    },
+                    assessment: {
+                        recovery_probability:
+                            score?.recovery_probability ||
+                            0
+                    },
+                    decision: {
+                        selected_action:
+                            action?.recovery_action ||
+                            "",
+                        channel:
+                            action?.channel ||
+                            ""
+                    },
+                    outcome:
+                        execution,
+                    adaptive_loop:
+                        persistedAdaptive
+                };
+                /*
+                 * ------------------------------------------------
+                 * Agent state
+                 * ------------------------------------------------
+                 */
+                adaptiveSet(
+                    "adaptive-transaction",
+                    auditData?.transaction_id ||
+                    transactionId
+                );
+                adaptiveSet(
+                    "adaptive-current-action",
+                    titleCase(
+                        action?.recovery_action ||
+                        "—"
+                    )
+                );
+                adaptiveSet(
+                    "adaptive-current-attempt",
+                    String(
+                        Number(
+                            execution?.attempt_count ||
+                            0
+                        )
+                    )
+                );
+                /*
+                 * ------------------------------------------------
+                 * Persisted batch status
+                 * ------------------------------------------------
+                 */
+                adaptiveSet(
+                    "adaptive-state-detail",
+                    "Batch Adaptive Result: "
+                    + (
+                        customerResponse?.response ||
+                        "No simulated customer response recorded."
+                    )
+                );
+                adaptiveSet(
+                    "adaptive-interpretation",
+                    customerResponse?.interpretation
+                        ? `Customer response interpreted as ${customerResponse.interpretation}.`
+                        : "No customer interpretation recorded."
+                );
+                adaptiveSet(
+                    "adaptive-next-action",
+                    titleCase(
+                        reassessment?.action ||
+                        "—"
+                    )
+                );
+                adaptiveSet(
+                    "adaptive-next-reason",
+                    reassessment?.instruction ||
+                    reassessment?.reason ||
+                    "No reassessment instruction recorded."
+                );
+                /*
+                 * ------------------------------------------------
+                 * Persisted adaptive timeline
+                 * ------------------------------------------------
+                 */
+                adaptiveTimeline = [];
+                const persistedTimeline =
+                    Array.isArray(
+                        persistedAdaptive?.timeline
+                    )
+                        ? persistedAdaptive.timeline
+                        : [];
+                persistedTimeline.forEach(
+                    item => {
+                        adaptiveTimeline.push({
+                            stage:
+                                item?.stage ||
+                                "",
+                            detail:
+                                item?.detail ||
+                                item?.reason ||
+                                ""
+                        });
+                    }
+                );
+                const timelineContainer =
+                    document.getElementById(
+                        "adaptive-timeline"
+                    );
+                if (
+                    timelineContainer
+                ) {
+                    if (
+                        adaptiveTimeline.length === 0
+                    ) {
+                        timelineContainer.innerHTML =
+                            `
+                                <div class="not-available">
+                                    No persisted adaptive timeline is available.
+                                </div>
+                            `;
+                    } else {
+                        timelineContainer.innerHTML =
+                            adaptiveTimeline
+                                .map(
+                                    item => `
+                                        <div
+                                            class="agent-case-timeline-item"
+                                        >
+                                            <div
+                                                class="agent-case-timeline-marker completed"
+                                            >
+                                                ✓
+                                            </div>
+                                            <div
+                                                class="agent-case-timeline-content"
+                                            >
+                                                <div
+                                                    class="agent-case-timeline-stage"
+                                                >
+                                                    ${escapeHtml(
+                                                        item.stage
+                                                    )}
+                                                </div>
+                                                <div
+                                                    class="agent-case-timeline-detail"
+                                                >
+                                                    ${escapeHtml(
+                                                        item.detail
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `
+                                )
+                                .join("");
+                    }
+                }
+                /*
+                 * ------------------------------------------------
+                 * Make it clear this is historical batch evidence.
+                 * ------------------------------------------------
+                 */
+                const adaptiveSection =
+                    document.getElementById(
+                        "adaptive-recovery-loop"
+                    );
+                if (adaptiveSection) {
+                    const header =
+                        adaptiveSection.querySelector(
+                            ".case-section-header p"
+                        );
+                    if (header) {
+                        header.textContent =
+                            "Persisted batch result: customer response → agent interpretation → reassessment → stop or next action";
+                    }
+                }
+                /*
+                 * The selector remains available below as a
+                 * WHAT-IF simulator. It does not modify the
+                 * historical batch result.
+                 */
+                const responseSelector =
+                    document.getElementById(
+                        "adaptive-customer-response"
+                    );
+                if (responseSelector) {
+                    responseSelector.value =
+                        "";
+                }
+                return;
+            }
+            /*
+             * ====================================================
+             * NO PERSISTED BATCH TRACE
+             *
+             * Fall back to the decision endpoint so the page
+             * remains useful for manually exploring a case.
+             * ====================================================
+             */
+            const response =
+                await fetch(
+                    "/recovery-agent/decision/"
+                    + encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+            const data =
+                await response
+                    .json()
+                    .catch(
+                        () => ({})
+                    );
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    `Decision request failed (${response.status}).`
+                );
+            }
+            initializeAdaptiveCase(
+                data
+            );
+        } catch (error) {
+            console.error(
+                "Adaptive recovery initialization error:",
+                error
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                `Unable to load agent decision: ${error.message}`
+            );
+        }
+    }
+    function applyAdaptiveCustomerResponse() {
+        if (!adaptiveCaseData) {
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent decision is still loading."
+            );
+            return;
+        }
+        const select =
+            document.getElementById(
+                "adaptive-customer-response"
+            );
+        const response =
+            select?.value ||
+            "";
+        if (!response) {
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Choose a simulated customer response first."
+            );
+            return;
+        }
+        const amount =
+            Number(
+                adaptiveCaseData?.case?.transaction_amount ||
+                0
+            );
+        /* ====================================================
+           PAYMENT SUCCESS
+           ==================================================== */
+        if (response === "paid") {
+            adaptiveAddTimeline(
+                "CUSTOMER",
+                "Customer completed the payment."
+            );
+            adaptiveAddTimeline(
+                "INTERPRET",
+                "Agent interprets the response as confirmed payment success."
+            );
+            adaptiveAddTimeline(
+                "MEASURE",
+                `Payment recovered: ${money(amount)}.`
+            );
+            adaptiveAddTimeline(
+                "STOP",
+                "PAYMENT_SUCCESS · Agent stops further intervention."
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                `Payment success detected. ${money(amount)} recovered.`
+            );
+            adaptiveSet(
+                "adaptive-next-action",
+                "STOP"
+            );
+            adaptiveSet(
+                "adaptive-next-reason",
+                "Payment success satisfies the recovery stopping rule."
+            );
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent interpretation: PAYMENT_SUCCESS → stop."
+            );
+            return;
+        }
+        /* ====================================================
+           PROMISE TO PAY
+           ==================================================== */
+        if (
+            response ===
+            "promise_to_pay"
+        ) {
+            adaptiveAddTimeline(
+                "CUSTOMER",
+                'Customer responded: "I\'ll pay tomorrow."'
+            );
+            adaptiveAddTimeline(
+                "INTERPRET",
+                "Agent interprets the response as PROMISE_TO_PAY."
+            );
+            adaptiveAddTimeline(
+                "REASSESS",
+                "Positive payment intent reduces the need for immediate escalation."
+            );
+            adaptiveAddTimeline(
+                "DECIDE",
+                "Agent switches to a bounded promise-to-pay follow-up."
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                "The customer is willing to pay, so the agent adapts instead of escalating."
+            );
+            adaptiveSet(
+                "adaptive-next-action",
+                "Promise To Pay Follow-up"
+            );
+            adaptiveSet(
+                "adaptive-next-reason",
+                "Positive customer intent supports a lower-friction follow-up."
+            );
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent interpretation: PROMISE_TO_PAY → follow-up."
+            );
+            return;
+        }
+        /* ====================================================
+           CUSTOMER DECLINED
+           ==================================================== */
+        if (
+            response ===
+            "declined"
+        ) {
+            adaptiveAddTimeline(
+                "CUSTOMER",
+                "Customer indicated they cannot make the payment."
+            );
+            adaptiveAddTimeline(
+                "INTERPRET",
+                "Agent interprets the response as negative payment intent."
+            );
+            adaptiveAddTimeline(
+                "REASSESS",
+                "Automated recovery should stop because customer intent is negative."
+            );
+            adaptiveAddTimeline(
+                "ESCALATE",
+                "RECOVERY_ESCALATION_REQUIRED · HUMAN_REVIEW"
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                "The customer declined payment, so automated recovery stops."
+            );
+            adaptiveSet(
+                "adaptive-next-action",
+                "ESCALATE"
+            );
+            adaptiveSet(
+                "adaptive-next-reason",
+                "Negative payment intent crosses the automated recovery boundary."
+            );
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent interpretation: declined payment → HUMAN_REVIEW."
+            );
+            return;
+        }
+        /* ====================================================
+           NO RESPONSE
+           ==================================================== */
+        if (
+            response ===
+            "no_response"
+        ) {
+            adaptiveAddTimeline(
+                "CUSTOMER",
+                "No customer response was received."
+            );
+            adaptiveAddTimeline(
+                "INTERPRET",
+                "Agent treats the case as unresolved rather than assuming payment failure."
+            );
+            adaptiveAddTimeline(
+                "REASSESS",
+                "A lower-friction fallback can be attempted before escalation, subject to attempt limits."
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                "No response was received. The agent moves toward a bounded fallback."
+            );
+            adaptiveSet(
+                "adaptive-next-action",
+                "Payment Link Follow Up"
+            );
+            adaptiveSet(
+                "adaptive-next-reason",
+                "Use a lower-friction recovery path before human escalation."
+            );
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent interpretation: unresolved → fallback recovery."
+            );
+            return;
+        }
+        /* ====================================================
+           CUSTOMER REQUESTS ANOTHER CHANNEL
+           ==================================================== */
+        if (
+            response ===
+            "wrong_channel"
+        ) {
+            adaptiveAddTimeline(
+                "CUSTOMER",
+                "Customer requested a different communication channel."
+            );
+            adaptiveAddTimeline(
+                "INTERPRET",
+                "Agent interprets the response as a channel preference update."
+            );
+            adaptiveAddTimeline(
+                "REASSESS",
+                "Recovery objective remains the same while communication adapts."
+            );
+            adaptiveSet(
+                "adaptive-state-detail",
+                "The agent preserves the recovery objective but changes the communication approach."
+            );
+            adaptiveSet(
+                "adaptive-next-action",
+                "Repeat Recovery On Preferred Channel"
+            );
+            adaptiveSet(
+                "adaptive-next-reason",
+                "Respecting customer channel preference can improve engagement."
+            );
+            adaptiveSet(
+                "adaptive-interpretation",
+                "Agent interpretation: channel mismatch → adapt channel."
+            );
+        }
+    }
+    function setupAdaptiveRecoveryLoop() {
+        const button =
+            document.getElementById(
+                "adaptive-apply-response"
+            );
+        if (button) {
+            button.addEventListener(
+                "click",
+                applyAdaptiveCustomerResponse
+            );
+        }
+        loadAdaptiveCase();
+    }
 
     async function runRecovery() {
 
@@ -2443,6 +4128,8 @@
         function () {
 
             setupSidebar();
+
+            setupAdaptiveRecoveryLoop();
 
 
             const button =
