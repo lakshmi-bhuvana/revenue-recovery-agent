@@ -1,9 +1,10 @@
 {
-  "evaluation_type": "held_out_test_set",
-  "description": "Metrics are calculated on a stratified 20% holdout that was not used to fit the selected model.",
+  "evaluation_type": "held_out_test_set_with_validation_threshold_selection",
+  "description": "Models were evaluated on the same stratified 20% holdout. Classification thresholds were selected using a validation split from the training population.",
   "dataset": {
     "total_at_risk_cases": 1643,
     "training_samples": 1314,
+    "validation_samples": 329,
     "testing_samples": 329,
     "test_positive_rate": 0.765957
   },
@@ -21,70 +22,120 @@
     "identifiers_excluded": true,
     "future_outcome_fields_excluded": true
   },
+  "threshold_selection": {
+    "method": "validation_f1",
+    "min_threshold": 0.2,
+    "max_threshold": 0.8,
+    "step": 0.01
+  },
   "models": {
     "logistic_regression": {
-      "accuracy": 0.762918,
-      "balanced_accuracy": 0.507035,
-      "precision": 0.768519,
-      "recall": 0.988095,
-      "f1": 0.864583,
-      "roc_auc": 0.598639,
-      "pr_auc": 0.817602,
-      "brier_score": 0.177666,
-      "positive_prediction_rate": 0.984802,
-      "confusion_matrix": [
-        [
-          2,
-          75
+      "validation": {
+        "best_threshold": 0.2,
+        "validation_f1": 0.86747
+      },
+      "held_out_test": {
+        "accuracy": 0.765957,
+        "balanced_accuracy": 0.5,
+        "precision": 0.765957,
+        "recall": 1.0,
+        "f1": 0.86747,
+        "roc_auc": 0.583333,
+        "pr_auc": 0.801294,
+        "brier_score": 0.17926,
+        "positive_prediction_rate": 1.0,
+        "confusion_matrix": [
+          [
+            0,
+            77
+          ],
+          [
+            0,
+            252
+          ]
         ],
-        [
-          3,
-          249
-        ]
-      ]
+        "threshold": 0.2
+      }
     },
     "random_forest": {
-      "accuracy": 0.659574,
-      "balanced_accuracy": 0.556818,
-      "precision": 0.794118,
-      "recall": 0.75,
-      "f1": 0.771429,
-      "roc_auc": 0.58055,
-      "pr_auc": 0.824857,
-      "brier_score": 0.212694,
-      "positive_prediction_rate": 0.723404,
-      "confusion_matrix": [
-        [
-          28,
-          49
+      "validation": {
+        "best_threshold": 0.2,
+        "validation_f1": 0.86747
+      },
+      "held_out_test": {
+        "accuracy": 0.765957,
+        "balanced_accuracy": 0.5,
+        "precision": 0.765957,
+        "recall": 1.0,
+        "f1": 0.86747,
+        "roc_auc": 0.580447,
+        "pr_auc": 0.827395,
+        "brier_score": 0.215746,
+        "positive_prediction_rate": 1.0,
+        "confusion_matrix": [
+          [
+            0,
+            77
+          ],
+          [
+            0,
+            252
+          ]
         ],
-        [
-          63,
-          189
-        ]
-      ]
+        "threshold": 0.2
+      }
+    },
+    "histgradientboosting": {
+      "validation": {
+        "best_threshold": 0.2,
+        "validation_f1": 0.868512
+      },
+      "held_out_test": {
+        "accuracy": 0.765957,
+        "balanced_accuracy": 0.5,
+        "precision": 0.765957,
+        "recall": 1.0,
+        "f1": 0.86747,
+        "roc_auc": 0.564884,
+        "pr_auc": 0.817245,
+        "brier_score": 0.192953,
+        "positive_prediction_rate": 1.0,
+        "confusion_matrix": [
+          [
+            0,
+            77
+          ],
+          [
+            0,
+            252
+          ]
+        ],
+        "threshold": 0.2
+      }
     }
   },
   "selected_model": "Logistic Regression",
   "selected_model_metrics": {
-    "accuracy": 0.762918,
-    "balanced_accuracy": 0.507035,
-    "precision": 0.768519,
-    "recall": 0.988095,
-    "f1": 0.864583,
-    "roc_auc": 0.598639,
-    "pr_auc": 0.817602,
-    "brier_score": 0.177666,
-    "positive_prediction_rate": 0.984802,
+    "accuracy": 0.765957,
+    "balanced_accuracy": 0.5,
+    "precision": 0.765957,
+    "recall": 1.0,
+    "f1": 0.86747,
+    "roc_auc": 0.583333,
+    "pr_auc": 0.801294,
+    "brier_score": 0.17926,
+    "positive_prediction_rate": 1.0,
     "confusion_matrix": [
       [
-        2,
-        75
+        0,
+        77
       ],
       [
-        3,
-        249
+        0,
+        252
       ]
-    ]
-  }
+    ],
+    "threshold": 0.2
+  },
+  "selected_decision_threshold": 0.2
 }
