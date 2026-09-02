@@ -400,7 +400,7 @@ def format_inr(value: float) -> str:
     )
 
     if len(integer_part) <= 3:
-        return f"â‚¹{integer_part}.{decimal_part}"
+        return f"Ã¢â€šÂ¹{integer_part}.{decimal_part}"
 
     last_three = integer_part[-3:]
     remaining = integer_part[:-3]
@@ -422,7 +422,7 @@ def format_inr(value: float) -> str:
         )
 
     return (
-        f"â‚¹{','.join(groups)},"
+        f"Ã¢â€šÂ¹{','.join(groups)},"
         f"{last_three}.{decimal_part}"
     )
 
@@ -1997,7 +1997,7 @@ def run_recovery_agent(
 
 
 # ============================================================
-# PROCESSED EVENT â†’ DATAFRAME ROW
+# PROCESSED EVENT Ã¢â€ â€™ DATAFRAME ROW
 # ============================================================
 
 def processed_event_to_row(
@@ -2394,16 +2394,16 @@ def get_ai_answer(
     }:
 
         return (
-            "Hi! I'm your Recovery AI. ðŸ‘‹\n\n"
+            "Hi! I'm your Recovery AI. Ã°Å¸â€˜â€¹\n\n"
             "I can help you understand revenue risk, "
             "payment failures, recovery performance, "
             "prioritization, strategies, and agent decisions.\n\n"
             "Try asking:\n"
-            "â€¢ Why is revenue at risk?\n"
-            "â€¢ Why do transactions fail?\n"
-            "â€¢ What should I prioritize first?\n"
-            "â€¢ Which strategy performs best?\n"
-            "â€¢ Explain the reasoning behind the decision."
+            "Ã¢â‚¬Â¢ Why is revenue at risk?\n"
+            "Ã¢â‚¬Â¢ Why do transactions fail?\n"
+            "Ã¢â‚¬Â¢ What should I prioritize first?\n"
+            "Ã¢â‚¬Â¢ Which strategy performs best?\n"
+            "Ã¢â‚¬Â¢ Explain the reasoning behind the decision."
         )
 
     recovery_keywords = {
@@ -2592,17 +2592,17 @@ def get_ai_answer(
         return (
             f"The reasoning behind prioritizing transaction "
             f"{row['transaction_id']} is based on expected recovery value.\n\n"
-            f"â€¢ Amount at risk: "
+            f"Ã¢â‚¬Â¢ Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"Ã¢â‚¬Â¢ Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"Ã¢â‚¬Â¢ Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"â€¢ Customer intent: "
+            f"Ã¢â‚¬Â¢ Customer intent: "
             f"{row['customer_intent'] * 100:.2f}%\n"
-            f"â€¢ Customer success rate: "
+            f"Ã¢â‚¬Â¢ Customer success rate: "
             f"{row['customer_success_rate'] * 100:.2f}%\n"
-            f"â€¢ Priority score: "
+            f"Ã¢â‚¬Â¢ Priority score: "
             f"{row['priority_score'] * 100:.2f}%\n\n"
             "The system combines recovery probability, transaction "
             "value, customer intent, and customer success rate."
@@ -2667,10 +2667,10 @@ def get_ai_answer(
         return (
             f"The weakest recovery category is "
             f"'{worst_name}'.\n\n"
-            f"â€¢ Cases: {int(worst['cases']):,}\n"
-            f"â€¢ Transaction value: "
+            f"Ã¢â‚¬Â¢ Cases: {int(worst['cases']):,}\n"
+            f"Ã¢â‚¬Â¢ Transaction value: "
             f"{format_inr(worst['amount'])}\n"
-            f"â€¢ Recovery rate: "
+            f"Ã¢â‚¬Â¢ Recovery rate: "
             f"{worst['recovery_rate']:.2f}%\n\n"
             "This suggests that the failure type is creating "
             "additional recovery friction."
@@ -2733,10 +2733,10 @@ def get_ai_answer(
             f"The reasoning for the strongest strategy, "
             f"'{best_name}', is its observed recovery performance "
             "in the current dataset.\n\n"
-            f"â€¢ Recovery rate: "
+            f"Ã¢â‚¬Â¢ Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"â€¢ Cases: {int(best['cases']):,}\n"
-            f"â€¢ Money recovered: "
+            f"Ã¢â‚¬Â¢ Cases: {int(best['cases']):,}\n"
+            f"Ã¢â‚¬Â¢ Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -2748,11 +2748,11 @@ def get_ai_answer(
         return (
             "The revenue risk is driven by failed transactions "
             "that are still marked as recoverable opportunities.\n\n"
-            f"â€¢ Revenue at risk: "
+            f"Ã¢â‚¬Â¢ Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"â€¢ Expected recovery: "
+            f"Ã¢â‚¬Â¢ Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"â€¢ Unrecovered cases: "
+            f"Ã¢â‚¬Â¢ Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -2801,14 +2801,14 @@ def get_ai_answer(
             "HIGH-priority cases.\n\n"
             f"The top opportunity is transaction "
             f"{top['transaction_id']}.\n\n"
-            f"â€¢ Amount at risk: "
+            f"Ã¢â‚¬Â¢ Amount at risk: "
             f"{format_inr(top['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"Ã¢â‚¬Â¢ Recovery probability: "
             f"{top['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"Ã¢â‚¬Â¢ Expected recovery: "
             f"{format_inr(top['expected_recovery_value'])}\n"
-            f"â€¢ Strategy: {top['strategy']}\n"
-            f"â€¢ Channel: {top['recommended_channel']}\n\n"
+            f"Ã¢â‚¬Â¢ Strategy: {top['strategy']}\n"
+            f"Ã¢â‚¬Â¢ Channel: {top['recommended_channel']}\n\n"
             f"Among the top five opportunities, "
             f"{format_inr(total_high_value)} is at risk and "
             f"{format_inr(expected_high_value)} is expected to be recovered."
@@ -2847,15 +2847,15 @@ def get_ai_answer(
             "I would prioritize cases using expected recovery value "
             "rather than transaction amount alone.\n\n"
             f"Top opportunity: {row['transaction_id']}\n\n"
-            f"â€¢ Amount at risk: "
+            f"Ã¢â‚¬Â¢ Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"â€¢ Recovery probability: "
+            f"Ã¢â‚¬Â¢ Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"â€¢ Expected recovery: "
+            f"Ã¢â‚¬Â¢ Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"â€¢ Priority: {row['priority']}\n"
-            f"â€¢ Strategy: {row['strategy']}\n"
-            f"â€¢ Channel: {row['recommended_channel']}"
+            f"Ã¢â‚¬Â¢ Priority: {row['priority']}\n"
+            f"Ã¢â‚¬Â¢ Strategy: {row['strategy']}\n"
+            f"Ã¢â‚¬Â¢ Channel: {row['recommended_channel']}"
         )
 
     if (
@@ -2995,10 +2995,10 @@ def get_ai_answer(
         return (
             f"The strongest-performing strategy in the current "
             f"data is '{best_name}'.\n\n"
-            f"â€¢ Recovery rate: "
+            f"Ã¢â‚¬Â¢ Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"â€¢ Cases: {int(best['cases']):,}\n"
-            f"â€¢ Money recovered: "
+            f"Ã¢â‚¬Â¢ Cases: {int(best['cases']):,}\n"
+            f"Ã¢â‚¬Â¢ Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -3056,7 +3056,7 @@ def get_ai_answer(
         ):
 
             lines.append(
-                f"â€¢ {failure_name}: "
+                f"Ã¢â‚¬Â¢ {failure_name}: "
                 f"{int(row['cases']):,} cases, "
                 f"{format_inr(row['amount'])} at risk"
             )
@@ -3093,17 +3093,17 @@ def get_ai_answer(
 
         return (
             "Here's the current recovery picture:\n\n"
-            f"â€¢ Revenue at risk: "
+            f"Ã¢â‚¬Â¢ Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"â€¢ Expected recovery: "
+            f"Ã¢â‚¬Â¢ Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"â€¢ Recovery rate: "
+            f"Ã¢â‚¬Â¢ Recovery rate: "
             f"{summary['recovery_rate']:.2f}%\n"
-            f"â€¢ Recovery cases: "
+            f"Ã¢â‚¬Â¢ Recovery cases: "
             f"{summary['at_risk_cases']:,}\n"
-            f"â€¢ Recovered cases: "
+            f"Ã¢â‚¬Â¢ Recovered cases: "
             f"{summary['recovered_cases']:,}\n"
-            f"â€¢ Unrecovered cases: "
+            f"Ã¢â‚¬Â¢ Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -7016,19 +7016,19 @@ async def run_recovery_batch(
                     reassessment.get(
                         "action"
                     )
-                    or "—"
+                    or "â€”"
                 ),
                 "customer_response_type": (
                     customer_response.get(
                         "response_type"
                     )
-                    or "—"
+                    or "â€”"
                 ),
                 "customer_response": (
                     customer_response.get(
                         "response"
                     )
-                    or "—"
+                    or "â€”"
                 ),
                 "result": result,
             })
@@ -7522,6 +7522,517 @@ def _decision_candidate(
         "reason": reason,
         "status": status,
     }
+
+# ============================================================
+# ACTION UTILITY OPTIMIZER
+# ============================================================
+def optimize_recovery_action(
+    transaction: dict[str, Any],
+    result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Rank recovery actions using pre-recovery signals.
+    ML estimates recoverability.
+    This layer ranks the available recovery actions.
+    Future outcome fields are never used.
+    """
+    score = (
+        result.get("score")
+        if isinstance(result.get("score"), dict)
+        else {}
+    )
+    scenario = normalize_scenario(
+        transaction.get("scenario")
+        or result.get("scenario")
+        or "payment_failure"
+    )
+    recovery_probability = max(
+        0.0,
+        min(
+            1.0,
+            safe_float(
+                score.get(
+                    "recovery_probability",
+                    0.0,
+                )
+            ),
+        ),
+    )
+    customer_reliability = max(
+        0.0,
+        min(
+            1.0,
+            safe_float(
+                score.get(
+                    "customer_reliability",
+                    0.0,
+                )
+            ),
+        ),
+    )
+    customer_intent = max(
+        0.0,
+        min(
+            1.0,
+            safe_float(
+                score.get(
+                    "customer_intent",
+                    0.0,
+                )
+            ),
+        ),
+    )
+    contactability = max(
+        0.0,
+        min(
+            1.0,
+            safe_float(
+                score.get(
+                    "contactability",
+                    0.0,
+                )
+            ),
+        ),
+    )
+    recovery_friction = max(
+        0.0,
+        min(
+            1.0,
+            safe_float(
+                score.get(
+                    "recovery_friction",
+                    0.0,
+                )
+            ),
+        ),
+    )
+    attempts = max(
+        0,
+        safe_int(
+            transaction.get(
+                "recovery_attempts",
+                0,
+            )
+        ),
+    )
+    amount = max(
+        0.0,
+        safe_float(
+            score.get(
+                "transaction_amount",
+                transaction.get(
+                    "transaction_amount",
+                    0.0,
+                ),
+            )
+        ),
+    )
+    remaining_capacity = max(
+        0.0,
+        1.0 - min(
+            attempts / MAX_RECOVERY_ATTEMPTS,
+            1.0,
+        ),
+    )
+    value_factor = min(
+        1.0,
+        amount / 50000.0,
+    )
+    candidates: list[dict[str, Any]] = []
+    def add_candidate(
+        name: str,
+        suitability: float,
+        reason: str,
+        channel: str,
+        strategy: str,
+    ) -> None:
+        candidates.append(
+            {
+                "name": name,
+                "suitability": round(
+                    max(
+                        0.0,
+                        min(
+                            0.99,
+                            suitability,
+                        ),
+                    ),
+                    4,
+                ),
+                "reason": reason,
+                "channel": channel,
+                "strategy": strategy,
+            }
+        )
+    # --------------------------------------------------------
+    # PAYMENT FAILURE
+    # --------------------------------------------------------
+    if scenario == "payment_failure":
+        add_candidate(
+            "retry_payment",
+            (
+                0.40 * recovery_probability
+                + 0.20 * customer_reliability
+                + 0.15 * contactability
+                + 0.15 * (1.0 - recovery_friction)
+                + 0.10 * remaining_capacity
+            ),
+            (
+                "Direct payment retry is favored when "
+                "predicted recoverability, customer reliability, "
+                "reachability and retry capacity are strong."
+            ),
+            safe_string(
+                score.get(
+                    "recommended_channel",
+                    "whatsapp",
+                )
+            ),
+            "model_guided_recovery",
+        )
+        add_candidate(
+            "payment_link_follow_up",
+            (
+                0.30 * recovery_probability
+                + 0.20 * customer_intent
+                + 0.20 * contactability
+                + 0.20 * (1.0 - recovery_friction)
+                + 0.10 * value_factor
+            ),
+            (
+                "A payment-link follow-up provides a lower-friction "
+                "path when direct retry is less attractive."
+            ),
+            "whatsapp",
+            "adaptive_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.35 * (1.0 - recovery_probability)
+                + 0.25 * (1.0 - customer_reliability)
+                + 0.20 * recovery_friction
+                + 0.20 * (1.0 - remaining_capacity)
+            ),
+            (
+                "Human review becomes more attractive as "
+                "recoverability weakens, friction rises, or "
+                "automated capacity is exhausted."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    # --------------------------------------------------------
+    # CHECKOUT ABANDONMENT
+    # --------------------------------------------------------
+    elif scenario == "checkout_abandonment":
+        add_candidate(
+            "checkout_reminder",
+            (
+                0.35 * customer_intent
+                + 0.25 * recovery_probability
+                + 0.20 * contactability
+                + 0.10 * customer_reliability
+                + 0.10 * (1.0 - recovery_friction)
+            ),
+            (
+                "Checkout reminder is favored when purchase "
+                "intent and contactability indicate the customer "
+                "is close to completing payment."
+            ),
+            "whatsapp",
+            "intent_guided_recovery",
+        )
+        add_candidate(
+            "payment_link_follow_up",
+            (
+                0.30 * customer_intent
+                + 0.20 * recovery_probability
+                + 0.25 * contactability
+                + 0.15 * (1.0 - recovery_friction)
+                + 0.10 * value_factor
+            ),
+            (
+                "Payment-link follow-up creates a direct "
+                "completion path when the customer needs a "
+                "simpler recovery route."
+            ),
+            "whatsapp",
+            "adaptive_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.30 * (1.0 - customer_intent)
+                + 0.25 * (1.0 - recovery_probability)
+                + 0.20 * recovery_friction
+                + 0.15 * (1.0 - customer_reliability)
+                + 0.10 * value_factor
+            ),
+            (
+                "Human review becomes more appropriate when "
+                "intent weakens or recovery friction increases."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    # --------------------------------------------------------
+    # FAILED SUBSCRIPTION
+    # --------------------------------------------------------
+    elif scenario == "failed_subscription":
+        add_candidate(
+            "retry_subscription_payment",
+            (
+                0.40 * recovery_probability
+                + 0.25 * customer_reliability
+                + 0.15 * contactability
+                + 0.10 * (1.0 - recovery_friction)
+                + 0.10 * customer_intent
+            ),
+            (
+                "Subscription retry is favored when customer "
+                "reliability and predicted recoverability remain strong."
+            ),
+            safe_string(
+                score.get(
+                    "recommended_channel",
+                    "email",
+                )
+            ),
+            "model_guided_recovery",
+        )
+        add_candidate(
+            "payment_link_follow_up",
+            (
+                0.30 * recovery_probability
+                + 0.20 * customer_intent
+                + 0.20 * contactability
+                + 0.20 * (1.0 - recovery_friction)
+                + 0.10 * customer_reliability
+            ),
+            (
+                "A direct payment link provides a lower-friction "
+                "continuation path for a failed recurring payment."
+            ),
+            "whatsapp",
+            "adaptive_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.30 * (1.0 - recovery_probability)
+                + 0.25 * recovery_friction
+                + 0.20 * (1.0 - customer_reliability)
+                + 0.15 * (1.0 - remaining_capacity)
+                + 0.10 * value_factor
+            ),
+            (
+                "Human review protects against repeated automated "
+                "attempts when recovery confidence deteriorates."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    # --------------------------------------------------------
+    # B2B RECEIVABLE
+    # --------------------------------------------------------
+    elif scenario == "b2b_receivable":
+        add_candidate(
+            "send_invoice_reminder",
+            (
+                0.40 * recovery_probability
+                + 0.20 * customer_reliability
+                + 0.20 * contactability
+                + 0.10 * (1.0 - recovery_friction)
+                + 0.10 * value_factor
+            ),
+            (
+                "Invoice reminder is favored when recoverability, "
+                "relationship strength and reachable contact "
+                "channels support automated collection."
+            ),
+            safe_string(
+                score.get(
+                    "recommended_channel",
+                    "email",
+                )
+            ),
+            "value_aware_recovery",
+        )
+        add_candidate(
+            "payment_link_follow_up",
+            (
+                0.25 * recovery_probability
+                + 0.25 * contactability
+                + 0.20 * customer_intent
+                + 0.20 * (1.0 - recovery_friction)
+                + 0.10 * value_factor
+            ),
+            (
+                "Payment-link follow-up creates a direct "
+                "settlement path for an overdue receivable."
+            ),
+            "email",
+            "adaptive_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.30 * (1.0 - recovery_probability)
+                + 0.25 * recovery_friction
+                + 0.20 * (1.0 - customer_reliability)
+                + 0.15 * value_factor
+                + 0.10 * (1.0 - remaining_capacity)
+            ),
+            (
+                "Higher-value or increasingly difficult "
+                "receivables receive stronger human-review consideration."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    # --------------------------------------------------------
+    # MANDATE FAILURE
+    # --------------------------------------------------------
+    elif scenario == "mandate_failure":
+        add_candidate(
+            "retry_mandate",
+            (
+                0.45 * recovery_probability
+                + 0.20 * customer_reliability
+                + 0.15 * contactability
+                + 0.10 * (1.0 - recovery_friction)
+                + 0.10 * customer_intent
+            ),
+            (
+                "Mandate retry is favored when mandate-specific "
+                "recovery remains strong and another automated "
+                "attempt is justified."
+            ),
+            safe_string(
+                score.get(
+                    "recommended_channel",
+                    "whatsapp",
+                )
+            ),
+            "mandate_recovery",
+        )
+        add_candidate(
+            "payment_link_follow_up",
+            (
+                0.30 * recovery_probability
+                + 0.20 * customer_intent
+                + 0.20 * contactability
+                + 0.20 * (1.0 - recovery_friction)
+                + 0.10 * customer_reliability
+            ),
+            (
+                "Payment-link follow-up provides a fallback "
+                "when mandate retry becomes less attractive."
+            ),
+            "whatsapp",
+            "adaptive_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.30 * (1.0 - recovery_probability)
+                + 0.25 * recovery_friction
+                + 0.20 * (1.0 - customer_reliability)
+                + 0.15 * (1.0 - remaining_capacity)
+                + 0.10 * value_factor
+            ),
+            (
+                "Human review becomes preferable when mandate "
+                "retries accumulate or recoverability declines."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    # --------------------------------------------------------
+    # FALLBACK
+    # --------------------------------------------------------
+    else:
+        add_candidate(
+            "follow_up_promise_to_pay",
+            (
+                0.35 * customer_intent
+                + 0.30 * recovery_probability
+                + 0.20 * contactability
+                + 0.15 * (1.0 - recovery_friction)
+            ),
+            (
+                "Promise-to-pay follow-up preserves positive "
+                "intent while keeping the recovery loop bounded."
+            ),
+            "whatsapp",
+            "promise_to_pay_recovery",
+        )
+        add_candidate(
+            "human_review",
+            (
+                0.40 * (1.0 - recovery_probability)
+                + 0.25 * recovery_friction
+                + 0.20 * (1.0 - customer_reliability)
+                + 0.15 * (1.0 - remaining_capacity)
+            ),
+            (
+                "Human review is used when automated recovery "
+                "becomes less attractive."
+            ),
+            "none",
+            "controlled_escalation",
+        )
+    candidates.sort(
+        key=lambda item: (
+            safe_float(
+                item.get(
+                    "suitability",
+                    0.0,
+                )
+            ),
+            item.get(
+                "name",
+                "",
+            ),
+        ),
+        reverse=True,
+    )
+    for index, candidate in enumerate(candidates):
+        candidate["status"] = (
+            "selected"
+            if index == 0
+            else "alternative"
+        )
+    selected = (
+        candidates[0]
+        if candidates
+        else {}
+    )
+    return {
+        "selected_action": safe_string(
+            selected.get(
+                "name",
+            )
+        ),
+        "channel": safe_string(
+            selected.get(
+                "channel",
+            )
+        ),
+        "strategy": safe_string(
+            selected.get(
+                "strategy",
+            )
+        ),
+        "candidates": candidates,
+        "reason": safe_string(
+            selected.get(
+                "reason",
+            )
+        ),
+    }
+
 def build_agent_decision_layer(
     transaction_id: str,
 ):
