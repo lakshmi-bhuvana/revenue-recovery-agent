@@ -12,8 +12,12 @@ from pydantic import BaseModel, Field
 
 from src.agent.recovery_agent import RecoveryAgent
 from src.ml.recovery_scorer import RecoveryScorer
-
-
+from src.llm.llm_service import (
+    explain_decision,
+    generate_recovery_message,
+    interpret_customer_response,
+    get_llm_status,
+)
 # ============================================================
 # PATHS
 # ============================================================
@@ -3374,6 +3378,133 @@ async def recovery_agent_audit_api(transaction_id: str):
     }
 
 
+@app.get("/recovery-agent/llm/explain/{transaction_id}")
+async def recovery_agent_llm_explain_api(
+    transaction_id: str,
+):
+    """
+    Generate an LLM explanation for an already-recorded
+    deterministic Recovery Agent decision.
+    The LLM cannot choose, authorize, execute, or override
+    the recovery action, policy, stopping rules, or escalation.
+    """
+    txid = safe_string(
+        transaction_id
+    ).strip()
+    if not txid:
+        raise HTTPException(
+            status_code=400,
+            detail="transaction_id is required.",
+        )
+    event = PROCESSED_RECOVERY_EVENTS.get(
+        txid
+    )
+    if not isinstance(
+        event,
+        dict,
+    ):
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                "No persisted Recovery Agent execution "
+                "found for this transaction."
+            ),
+        )
+    (
+        diagnosis,
+        score,
+        action,
+        execution,
+        stopping,
+        escalation,
+    ) = _agent_result_parts(
+        event
+    )
+    scenario = safe_string(
+        event.get(
+            "scenario",
+            action.get(
+                "scenario",
+                "payment_failure",
+            ),
+        )
+    )
+    context = {
+        "scenario": scenario,
+        "recovery_probability": safe_float(
+            score.get(
+                "recovery_probability",
+                0.0,
+            )
+        ),
+        "priority": safe_string(
+            score.get(
+                "priority",
+                "LOW",
+            ),
+            "LOW",
+        ),
+        "customer_reliability": safe_float(
+            score.get(
+                "customer_reliability",
+                0.0,
+            )
+        ),
+        "contactability": safe_float(
+            score.get(
+                "contactability",
+                0.0,
+            )
+        ),
+        "recovery_friction": safe_float(
+            score.get(
+                "recovery_friction",
+                0.0,
+            )
+        ),
+        "selected_action": safe_string(
+            action.get(
+                "recovery_action",
+                "",
+            )
+        ),
+        "channel": safe_string(
+            action.get(
+                "channel",
+                score.get(
+                    "recommended_channel",
+                    "",
+                ),
+            )
+        ),
+        "strategy": safe_string(
+            action.get(
+                "strategy",
+                "",
+            )
+        ),
+    }
+    explanation = explain_decision(
+        context
+    )
+    llm_status = get_llm_status()
+    return {
+        "success": True,
+        "transaction_id": txid,
+        "explanation": explanation,
+        "llm": llm_status,
+        "decision": {
+            "action": context[
+                "selected_action"
+            ],
+            "channel": context[
+                "channel"
+            ],
+            "strategy": context[
+                "strategy"
+            ],
+        },
+    }
 @app.get("/recovery-agent/health")
 async def recovery_agent_health_api():
     """Small readiness endpoint for demos and deployment checks."""
