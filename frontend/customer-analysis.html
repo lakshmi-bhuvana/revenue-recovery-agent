@@ -1,1193 +1,1233 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Customer Analysis - Revenue Recovery</title>
-
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
-
-    <style>
-
-        .customer-page-note {
-            margin-top: 5px;
-            color: #64748b;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 18px;
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .customer-hero {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .customer-label {
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .customer-id {
-            margin-top: 6px;
-            font-size: 24px;
-            font-weight: 800;
-            color: #1e293b;
-        }
-
-        .customer-description {
-            margin-top: 6px;
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        .customer-metrics {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .metric-card {
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 18px;
-        }
-
-        .metric-label {
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        .metric-value {
-            margin-top: 8px;
-            color: #1e293b;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .metric-card.recovered .metric-value {
-            color: #15803d;
-        }
-
-        .metric-card.unrecovered .metric-value {
-            color: #dc2626;
-        }
-
-        .customer-analysis-note {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1d4ed8;
-            border-radius: 10px;
-            padding: 12px 14px;
-            margin-bottom: 20px;
-            font-size: 11px;
-            line-height: 1.6;
-        }
-
-        .transaction-id-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .transaction-id-link:hover {
-            text-decoration: underline;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 999px;
-            padding: 4px 8px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-        }
-
-        .status-badge.recovered {
-            background: #ecfdf5;
-            color: #15803d;
-        }
-
-        .status-badge.unrecovered {
-            background: #fef2f2;
-            color: #b91c1c;
-        }
-
-        .priority-badge {
-            display: inline-flex;
-            align-items: center;
-            border-radius: 999px;
-            padding: 4px 8px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-        }
-
-        .priority-badge.high {
-            background: #fef2f2;
-            color: #b91c1c;
-        }
-
-        .priority-badge.medium {
-            background: #fff7ed;
-            color: #c2410c;
-        }
-
-        .priority-badge.low {
-            background: #f1f5f9;
-            color: #475569;
-        }
-
-        .loading-state,
-        .error-state,
-        .empty-state {
-            padding: 40px 20px;
-            text-align: center;
-            color: #64748b;
-        }
-
-        .error-state {
-            color: #b91c1c;
-        }
-
-        .error-state strong,
-        .empty-state strong {
-            display: block;
-            margin-bottom: 6px;
-            color: #1e293b;
-            font-size: 15px;
-        }
-
-        .error-state strong {
-            color: #b91c1c;
-        }
-
-        .refresh-customer {
-            border: 1px solid #dbe3ef;
-            background: #ffffff;
-            color: #1e293b;
-            border-radius: 9px;
-            padding: 9px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .refresh-customer:hover {
-            background: #f8fafc;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .data-table {
-            min-width: 1100px;
-        }
-
-        @media (max-width: 900px) {
-
-            .customer-metrics {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-        }
-
-        @media (max-width: 600px) {
-
-            .customer-metrics {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-<div
-    class="app"
-    id="app"
->
-
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-    <aside class="sidebar">
-
-        <div class="brand">
-
-            <div class="brand-mark">
-                R
-            </div>
-
-            <div class="brand-copy">
-
-                <strong>
-                    Recovery AI
-                </strong>
-
-                <span>
-                    Revenue Operations
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <button
-            class="sidebar-toggle"
-            id="sidebar-toggle"
-            type="button"
-            aria-label="Collapse sidebar"
-            title="Collapse sidebar"
-        >
-
-            <span class="toggle-icon">
-                ‹
-            </span>
-
-        </button>
-
-
-        <nav class="sidebar-nav">
-
-            <a
-                class="nav-item"
-                href="/"
-            >
-                <span class="nav-icon">
-                    ▦
-                </span>
-
-                <span class="nav-text">
-                    Dashboard
-                </span>
-            </a>
-
-
-            <a
-                class="nav-item"
-                href="/recovery-cases.html"
-            >
-                <span class="nav-icon">
-                    ◉
-                </span>
-
-                <span class="nav-text">
-                    Recovery Cases
-                </span>
-            </a>
-
-
-            <a
-                class="nav-item active"
-                href="/customers.html"
-            >
-                <span class="nav-icon">
-                    ●
-                </span>
-
-                <span class="nav-text">
-                    Customers
-                </span>
-            </a>
-
-
-            <a
-                class="nav-item"
-                href="/analytics.html"
-            >
-                <span class="nav-icon">
-                    ◌
-                </span>
-
-                <span class="nav-text">
-                    Analytics
-                </span>
-            </a>
-
-
-            <a
-                class="nav-item"
-                href="/recovery-agent.html"
-            >
-                <span class="nav-icon">
-                    ✦
-                </span>
-
-                <span class="nav-text">
-                    Recovery Agent
-                </span>
-            </a>
-
-
-            <a
-                class="nav-item"
-                href="/human-intervention.html"
-            >
-                <span class="nav-icon">
-                    !
-                </span>
-
-                <span class="nav-text">
-                    Human Intervention
-                </span>
-            </a>
-
-        </nav>
-
-
-        <div class="sidebar-bottom">
-
-            <div class="system-status">
-
-                <span class="status-dot"></span>
-
-                <div class="status-text">
-
-                    <strong>
-                        System Online
-                    </strong>
-
-                    <small>
-                        AI Agent Active
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
-
-    <main class="main-content">
-
-
-        <header class="page-header">
-
-            <div class="page-title">
-
-                <h1>
-                    Customer Analysis
-                </h1>
-
-                <p>
-                    Customer-level context for human recovery review
-                </p>
-
-            </div>
-
-
-            <div class="header-actions">
-
-                <button
-                    class="refresh-btn"
-                    id="refresh-button"
-                    type="button"
-                >
-                    ↻ Refresh
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <a
-            href="/human-intervention.html"
-            class="back-link"
-        >
-            ← Back to Human Intervention
-        </a>
-
-
-        <!-- =================================================
-             CUSTOMER HEADER
-        ================================================== -->
-
-        <section class="customer-hero">
-
-            <div class="customer-label">
-                Customer
-            </div>
-
-            <div
-                class="customer-id"
-                id="customer-id"
-            >
-                Loading...
-            </div>
-
-            <div class="customer-description">
-                Reviewing this customer's transaction history
-                and recovery performance.
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             CUSTOMER METRICS
-        ================================================== -->
-
-        <section class="customer-metrics">
-
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    Transactions
-                </div>
-
-                <div
-                    class="metric-value"
-                    id="transaction-count"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="metric-card">
-
-                <div class="metric-label">
-                    Total Value
-                </div>
-
-                <div
-                    class="metric-value"
-                    id="total-value"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="metric-card recovered">
-
-                <div class="metric-label">
-                    Recovered Cases
-                </div>
-
-                <div
-                    class="metric-value"
-                    id="recovered-cases"
-                >
-                    —
-                </div>
-
-            </div>
-
-
-            <div class="metric-card unrecovered">
-
-                <div class="metric-label">
-                    Unrecovered Cases
-                </div>
-
-                <div
-                    class="metric-value"
-                    id="unrecovered-cases"
-                >
-                    —
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <div class="customer-analysis-note">
-
-            <strong>
-                Human analysis context:
-            </strong>
-
-            This view traces the escalated transaction back to the
-            specific customer so the reviewer can inspect prior
-            transactions, recovery outcomes, payment methods,
-            recovery probability, strategy, and other available
-            customer-level evidence.
-
-        </div>
-
-
-        <!-- =================================================
-             TRANSACTION HISTORY
-        ================================================== -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Customer Transaction History
-                    </h3>
-
-                    <p>
-                        Transactions associated with this customer
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="table-wrapper">
-
-                <table class="data-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                Transaction
-                            </th>
-
-                            <th>
-                                Amount
-                            </th>
-
-                            <th>
-                                Payment Method
-                            </th>
-
-                            <th>
-                                Scenario
-                            </th>
-
-                            <th>
-                                Recovery Probability
-                            </th>
-
-                            <th>
-                                Priority
-                            </th>
-
-                            <th>
-                                Strategy
-                            </th>
-
-                            <th>
-                                Recovery Attempts
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Money Recovered
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="transaction-table">
-
-                        <tr>
-
-                            <td
-                                colspan="10"
-                                class="loading-state"
-                            >
-                                Loading customer data...
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             RECOVERY TOTAL
-        ================================================== -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Recovery Outcome
-                    </h3>
-
-                    <p>
-                        Total money recovered from this customer
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="metric-value"
-                id="money-recovered"
-            >
-                —
-            </div>
-
-        </section>
-
-
-    </main>
-
-</div>
-
-
-<script src="/js/app.js"></script>
-
-
-<script>
-
-(function () {
-
-
-    function escapeHTML(value) {
-
-        return String(
-            value ?? ""
-        )
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-
-    }
-
-
-    function formatINR(value) {
-
-        const number =
-            Number(
-                value || 0
-            );
-
-        return (
-            "₹" +
-            number.toLocaleString(
-                "en-IN",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            )
-        );
-
-    }
-
-
-    function formatPercent(value) {
-
-        const number =
-            Number(
-                value || 0
-            );
-
-        return (
-            (number * 100).toFixed(1) +
-            "%"
-        );
-
-    }
-
-
-    function getCustomerId() {
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        return (
-            params.get(
-                "customer_id"
-            ) || ""
-        ).trim();
-
-    }
-
-
-    function priorityBadge(priority) {
-
-        const normalized =
-            String(
-                priority || "LOW"
-            ).toUpperCase();
-
-
-        const cssClass =
-            normalized === "HIGH"
-                ? "high"
-                : (
-                    normalized === "MEDIUM"
-                        ? "medium"
-                        : "low"
-                );
-
-
-        return `
-            <span class="priority-badge ${cssClass}">
-                ${escapeHTML(normalized)}
-            </span>
-        `;
-
-    }
-
-
-    function statusBadge(recovered) {
-
-        if (recovered) {
-
-            return `
-                <span class="status-badge recovered">
-                    RECOVERED
-                </span>
-            `;
-
-        }
-
-        return `
-            <span class="status-badge unrecovered">
-                UNRECOVERED
-            </span>
-        `;
-
-    }
-
-
-    async function loadCustomer() {
-
-        const customerId =
-            getCustomerId();
-
-
-        const customerIdElement =
-            document.getElementById(
-                "customer-id"
-            );
-
-
-        const table =
-            document.getElementById(
-                "transaction-table"
-            );
-
-
-        if (!customerId) {
-
-            customerIdElement.textContent =
-                "Customer not specified";
-
-            table.innerHTML = `
-                <tr>
-
-                    <td
-                        colspan="10"
-                        class="error-state"
-                    >
-
-                        <strong>
-                            Customer ID is missing
-                        </strong>
-
-                        Open this page from a customer link
-                        on the Human Intervention page.
-
-                    </td>
-
-                </tr>
-            `;
-
-            return;
-
-        }
-
-
-        customerIdElement.textContent =
-            customerId;
-
-
-        table.innerHTML = `
-            <tr>
-
-                <td
-                    colspan="10"
-                    class="loading-state"
-                >
-                    Loading customer data...
-                </td>
-
-            </tr>
-        `;
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/customers/" +
-                    encodeURIComponent(
-                        customerId
-                    ),
-                    {
-                        cache: "no-store"
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (!response.ok || !data.success) {
-
-                throw new Error(
-                    data.detail ||
-                    data.error ||
-                    "Unable to load customer."
-                );
-
-            }
-
-
-            const customer =
-                data.customer || {};
-
-
-            const transactions =
-                Array.isArray(
-                    customer.transactions
-                )
-                    ? customer.transactions
-                    : [];
-
-
-            document.getElementById(
-                "transaction-count"
-            ).textContent =
-                Number(
-                    customer.transaction_count || 0
-                ).toLocaleString(
-                    "en-IN"
-                );
-
-
-            document.getElementById(
-                "total-value"
-            ).textContent =
-                formatINR(
-                    customer.total_value
-                );
-
-
-            document.getElementById(
-                "recovered-cases"
-            ).textContent =
-                Number(
-                    customer.recovered_cases || 0
-                ).toLocaleString(
-                    "en-IN"
-                );
-
-
-            document.getElementById(
-                "unrecovered-cases"
-            ).textContent =
-                Number(
-                    customer.unrecovered_cases || 0
-                ).toLocaleString(
-                    "en-IN"
-                );
-
-
-            document.getElementById(
-                "money-recovered"
-            ).textContent =
-                formatINR(
-                    customer.money_recovered
-                );
-
-
-            if (!transactions.length) {
-
-                table.innerHTML = `
-                    <tr>
-
-                        <td
-                            colspan="10"
-                            class="empty-state"
-                        >
-
-                            <strong>
-                                No transaction history found
-                            </strong>
-
-                            There are no transactions associated
-                            with this customer.
-
-                        </td>
-
-                    </tr>
-                `;
-
-                return;
-
-            }
-
-
-            table.innerHTML =
-                "";
-
-
-            transactions.forEach(
-                function (transaction) {
-
-
-                    const transactionId =
-                        String(
-                            transaction.transaction_id ||
-                            ""
-                        );
-
-
-                    const recovered =
-                        Boolean(
-                            transaction.recovered
-                        );
-
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    row.innerHTML = `
-
-                        <td>
-
-                            <a
-                                class="transaction-id-link"
-                                href="/transaction-analysis.html?transaction_id=${encodeURIComponent(transactionId)}"
-                                title="Open transaction analysis"
-                            >
-                                ${escapeHTML(
-                                    transactionId || "—"
-                                )}
-                            </a>
-
-                        </td>
-
-
-                        <td>
-                            ${formatINR(
-                                transaction.transaction_amount
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${escapeHTML(
-                                transaction.payment_method ||
-                                "—"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${escapeHTML(
-                                transaction.scenario ||
-                                "—"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${formatPercent(
-                                transaction.recovery_probability
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${priorityBadge(
-                                transaction.priority
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${escapeHTML(
-                                transaction.strategy ||
-                                "—"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${escapeHTML(
-                                transaction.recovery_attempts ??
-                                0
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${statusBadge(
-                                recovered
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${formatINR(
-                                transaction.money_recovered
-                            )}
-                        </td>
-
-                    `;
-
-
-                    table.appendChild(
-                        row
-                    );
-
-                }
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Customer analysis error:",
-                error
-            );
-
-
-            table.innerHTML = `
-                <tr>
-
-                    <td
-                        colspan="10"
-                        class="error-state"
-                    >
-
-                        <strong>
-                            Unable to load customer analysis
-                        </strong>
-
-                        ${escapeHTML(
-                            error.message ||
-                            "Please try again."
-                        )}
-
-                    </td>
-
-                </tr>
-            `;
-
-        }
-
-    }
-
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
-
-
-            loadCustomer();
-
-
-            const refresh =
-                document.getElementById(
-                    "refresh-button"
-                );
-
-
-            if (refresh) {
-
-                refresh.addEventListener(
-                    "click",
-                    loadCustomer
-                );
-
-            }
-
-        }
-    );
-
-
-})();
-
-</script>
-
-
-</body>
-
+<!doctype html> 
+<html lang="en"> 
+ 
+<head> 
+ 
+    <meta charset="UTF-8"> 
+ 
+    <meta 
+        name="viewport" 
+        content="width=device-width, initial-scale=1.0" 
+    > 
+ 
+    <title>Customer Analysis - Revenue Recovery</title> 
+ 
+    <link 
+        rel="stylesheet" 
+        href="/css/style.css" 
+    > 
+ 
+    <style> 
+ 
+        .customer-page-note { 
+            margin-top: 5px; 
+            color: #64748b; 
+            font-size: 12px; 
+            line-height: 1.6; 
+        } 
+ 
+        .back-link { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            margin-bottom: 18px; 
+            color: #2563eb; 
+            text-decoration: none; 
+            font-size: 12px; 
+            font-weight: 700; 
+        } 
+ 
+        .back-link:hover { 
+            text-decoration: underline; 
+        } 
+ 
+        .customer-hero { 
+            background: #ffffff; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+        } 
+ 
+        .customer-label { 
+            color: #64748b; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: .04em; 
+        } 
+ 
+        .customer-id { 
+            margin-top: 6px; 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: #1e293b; 
+        } 
+ 
+        .customer-description { 
+            margin-top: 6px; 
+            color: #64748b; 
+            font-size: 12px; 
+        } 
+ 
+        .customer-metrics { 
+            display: grid; 
+            grid-template-columns: repeat(4, minmax(0, 1fr)); 
+            gap: 16px; 
+            margin-bottom: 20px; 
+        } 
+ 
+        .metric-card { 
+            background: #ffffff; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 12px; 
+            padding: 18px; 
+        } 
+ 
+        .metric-label { 
+            color: #64748b; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: .04em; 
+        } 
+ 
+        .metric-value { 
+            margin-top: 8px; 
+            color: #1e293b; 
+            font-size: 24px; 
+            font-weight: 800; 
+        } 
+ 
+        .metric-card.recovered .metric-value { 
+            color: #15803d; 
+        } 
+ 
+        .metric-card.unrecovered .metric-value { 
+            color: #dc2626; 
+        } 
+ 
+        .customer-analysis-note { 
+            background: #eff6ff; 
+            border: 1px solid #bfdbfe; 
+            color: #1d4ed8; 
+            border-radius: 10px; 
+            padding: 12px 14px; 
+            margin-bottom: 20px; 
+            font-size: 11px; 
+            line-height: 1.6; 
+        } 
+ 
+        .transaction-id-link { 
+            color: #2563eb; 
+            text-decoration: none; 
+            font-weight: 700; 
+        } 
+ 
+        .transaction-id-link:hover { 
+            text-decoration: underline; 
+        } 
+ 
+        .status-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            border-radius: 999px; 
+            padding: 4px 8px; 
+            font-size: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: .03em; 
+        } 
+ 
+        .status-badge.recovered { 
+            background: #ecfdf5; 
+            color: #15803d; 
+        } 
+ 
+        .status-badge.unrecovered { 
+            background: #fef2f2; 
+            color: #b91c1c; 
+        } 
+ 
+        .priority-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            border-radius: 999px; 
+            padding: 4px 8px; 
+            font-size: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: .03em; 
+        } 
+ 
+        .priority-badge.high { 
+            background: #fef2f2; 
+            color: #b91c1c; 
+        } 
+ 
+        .priority-badge.medium { 
+            background: #fff7ed; 
+            color: #c2410c; 
+        } 
+ 
+        .priority-badge.low { 
+            background: #f1f5f9; 
+            color: #475569; 
+        } 
+ 
+        .loading-state, 
+        .error-state, 
+        .empty-state { 
+            padding: 40px 20px; 
+            text-align: center; 
+            color: #64748b; 
+        } 
+ 
+        .error-state { 
+            color: #b91c1c; 
+        } 
+ 
+        .error-state strong, 
+        .empty-state strong { 
+            display: block; 
+            margin-bottom: 6px; 
+            color: #1e293b; 
+            font-size: 15px; 
+        } 
+ 
+        .error-state strong { 
+            color: #b91c1c; 
+        } 
+ 
+        .refresh-customer { 
+            border: 1px solid #dbe3ef; 
+            background: #ffffff; 
+            color: #1e293b; 
+            border-radius: 9px; 
+            padding: 9px 12px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            cursor: pointer; 
+        } 
+ 
+        .refresh-customer:hover { 
+            background: #f8fafc; 
+        } 
+ 
+        .table-wrapper { 
+            overflow-x: auto; 
+        } 
+ 
+        .data-table { 
+            min-width: 1100px; 
+        } 
+ 
+        @media (max-width: 900px) { 
+ 
+            .customer-metrics { 
+                grid-template-columns: repeat(2, minmax(0, 1fr)); 
+            } 
+ 
+        } 
+ 
+        @media (max-width: 600px) { 
+ 
+            .customer-metrics { 
+                grid-template-columns: 1fr; 
+            } 
+ 
+        } 
+ 
+    </style> 
+ 
+</head> 
+ 
+ 
+<body> 
+ 
+<div 
+    class="app" 
+    id="app" 
+> 
+ 
+    <!-- ===================================================== 
+         SIDEBAR 
+    ====================================================== --> 
+ 
+    <aside class="sidebar"> 
+ 
+        <div class="brand"> 
+ 
+            <div class="brand-mark"> 
+                R 
+            </div> 
+ 
+            <div class="brand-copy"> 
+ 
+                <strong> 
+                    Recovery AI 
+                </strong> 
+ 
+                <span> 
+                    Revenue Operations 
+                </span> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+ 
+        <button 
+            class="sidebar-toggle" 
+            id="sidebar-toggle" 
+            type="button" 
+            aria-label="Collapse sidebar" 
+            title="Collapse sidebar" 
+        > 
+ 
+            <span class="toggle-icon"> 
+                ‹ 
+            </span> 
+ 
+        </button> 
+ 
+ 
+        <nav class="sidebar-nav"> 
+ 
+            <a 
+                class="nav-item" 
+                href="/" 
+            > 
+                <span class="nav-icon"> 
+                    ▦ 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Dashboard 
+                </span> 
+            </a> 
+ 
+ 
+            <a 
+                class="nav-item" 
+                href="/recovery-cases.html" 
+            > 
+                <span class="nav-icon"> 
+                    ◉ 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Recovery Cases 
+                </span> 
+            </a> 
+ 
+ 
+            <a 
+                class="nav-item active" 
+                href="/customers.html" 
+            > 
+                <span class="nav-icon"> 
+                    ● 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Customers 
+                </span> 
+            </a> 
+ 
+ 
+            <a 
+                class="nav-item" 
+                href="/analytics.html" 
+            > 
+                <span class="nav-icon"> 
+                    ◌ 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Analytics 
+                </span> 
+            </a> 
+ 
+ 
+            <a 
+                class="nav-item" 
+                href="/recovery-agent.html" 
+            > 
+                <span class="nav-icon"> 
+                    ✦ 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Recovery Agent 
+                </span> 
+            </a> 
+ 
+ 
+            <a 
+                class="nav-item" 
+                href="/human-intervention.html" 
+            > 
+                <span class="nav-icon"> 
+                    ! 
+                </span> 
+ 
+                <span class="nav-text"> 
+                    Human Intervention 
+                </span> 
+            </a> 
+ 
+        </nav> 
+ 
+ 
+        <div class="sidebar-bottom"> 
+ 
+            <div class="system-status"> 
+ 
+                <span class="status-dot"></span> 
+ 
+                <div class="status-text"> 
+ 
+                    <strong> 
+                        System Online 
+                    </strong> 
+ 
+                    <small> 
+                        AI Agent Active 
+                    </small> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+        </div> 
+ 
+    </aside> 
+ 
+ 
+    <!-- ===================================================== 
+         MAIN CONTENT 
+    ====================================================== --> 
+ 
+    <main class="main-content"> 
+ 
+ 
+        <header class="page-header"> 
+ 
+            <div class="page-title"> 
+ 
+                <h1> 
+                    Customer Analysis 
+                </h1> 
+ 
+                <p> 
+                    Customer-level context for human recovery review 
+                </p> 
+ 
+            </div> 
+ 
+ 
+            <div class="header-actions"> 
+ 
+                <button 
+                    class="refresh-btn" 
+                    id="refresh-button" 
+                    type="button" 
+                > 
+                    ↻ Refresh 
+                </button> 
+ 
+            </div> 
+ 
+        </header> 
+ 
+ 
+        <a 
+            href="/customers.html" 
+            class="back-link" 
+            id="back-link" 
+        > 
+            ← Back to Customers 
+        </a> 
+ 
+ 
+        <!-- ================================================= 
+             CUSTOMER HEADER 
+        ================================================== --> 
+ 
+        <section class="customer-hero"> 
+ 
+            <div class="customer-label"> 
+                Customer 
+            </div> 
+ 
+            <div 
+                class="customer-id" 
+                id="customer-id" 
+            > 
+                Loading... 
+            </div> 
+ 
+            <div class="customer-description"> 
+                Reviewing this customer's transaction history 
+                and recovery performance. 
+            </div> 
+ 
+        </section> 
+ 
+ 
+        <!-- ================================================= 
+             CUSTOMER METRICS 
+        ================================================== --> 
+ 
+        <section class="customer-metrics"> 
+ 
+            <div class="metric-card"> 
+ 
+                <div class="metric-label"> 
+                    Transactions 
+                </div> 
+ 
+                <div 
+                    class="metric-value" 
+                    id="transaction-count" 
+                > 
+                    — 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="metric-card"> 
+ 
+                <div class="metric-label"> 
+                    Total Value 
+                </div> 
+ 
+                <div 
+                    class="metric-value" 
+                    id="total-value" 
+                > 
+                    — 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="metric-card recovered"> 
+ 
+                <div class="metric-label"> 
+                    Recovered Cases 
+                </div> 
+ 
+                <div 
+                    class="metric-value" 
+                    id="recovered-cases" 
+                > 
+                    — 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="metric-card unrecovered"> 
+ 
+                <div class="metric-label"> 
+                    Unrecovered Cases 
+                </div> 
+ 
+                <div 
+                    class="metric-value" 
+                    id="unrecovered-cases" 
+                > 
+                    — 
+                </div> 
+ 
+            </div> 
+ 
+        </section> 
+ 
+ 
+        <div class="customer-analysis-note"> 
+ 
+            <strong> 
+                Human analysis context: 
+            </strong> 
+ 
+            This view traces the escalated transaction back to the 
+            specific customer so the reviewer can inspect prior 
+            transactions, recovery outcomes, payment methods, 
+            recovery probability, strategy, and other available 
+            customer-level evidence. 
+ 
+        </div> 
+ 
+ 
+        <!-- ================================================= 
+             TRANSACTION HISTORY 
+        ================================================== --> 
+ 
+        <section class="panel"> 
+ 
+            <div class="panel-header"> 
+ 
+                <div> 
+ 
+                    <h3> 
+                        Customer Transaction History 
+                    </h3> 
+ 
+                    <p> 
+                        Transactions associated with this customer 
+                    </p> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div class="table-wrapper"> 
+ 
+                <table class="data-table"> 
+ 
+                    <thead> 
+ 
+                        <tr> 
+ 
+                            <th> 
+                                Transaction 
+                            </th> 
+ 
+                            <th> 
+                                Amount 
+                            </th> 
+ 
+                            <th> 
+                                Payment Method 
+                            </th> 
+ 
+                            <th> 
+                                Scenario 
+                            </th> 
+ 
+                            <th> 
+                                Recovery Probability 
+                            </th> 
+ 
+                            <th> 
+                                Priority 
+                            </th> 
+ 
+                            <th> 
+                                Strategy 
+                            </th> 
+ 
+                            <th> 
+                                Recovery Attempts 
+                            </th> 
+ 
+                            <th> 
+                                Status 
+                            </th> 
+ 
+                            <th> 
+                                Money Recovered 
+                            </th> 
+ 
+                        </tr> 
+ 
+                    </thead> 
+ 
+ 
+                    <tbody id="transaction-table"> 
+ 
+                        <tr> 
+ 
+                            <td 
+                                colspan="10" 
+                                class="loading-state" 
+                            > 
+                                Loading customer data... 
+                            </td> 
+ 
+                        </tr> 
+ 
+                    </tbody> 
+ 
+                </table> 
+ 
+            </div> 
+ 
+        </section> 
+ 
+ 
+        <!-- ================================================= 
+             RECOVERY TOTAL 
+        ================================================== --> 
+ 
+        <section class="panel"> 
+ 
+            <div class="panel-header"> 
+ 
+                <div> 
+ 
+                    <h3> 
+                        Recovery Outcome 
+                    </h3> 
+ 
+                    <p> 
+                        Total money recovered from this customer 
+                    </p> 
+ 
+                </div> 
+ 
+            </div> 
+ 
+ 
+            <div 
+                class="metric-value" 
+                id="money-recovered" 
+            > 
+                — 
+            </div> 
+ 
+        </section> 
+ 
+ 
+    </main> 
+ 
+</div> 
+ 
+ 
+<script src="/js/app.js"></script> 
+ 
+ 
+<script> 
+ 
+(function () { 
+ 
+ 
+    function escapeHTML(value) { 
+ 
+        return String( 
+            value ?? "" 
+        ) 
+            .replaceAll("&", "&amp;") 
+            .replaceAll("<", "&lt;") 
+            .replaceAll(">", "&gt;") 
+            .replaceAll('"', "&quot;") 
+            .replaceAll("'", "&#039;"); 
+ 
+    } 
+ 
+ 
+    function formatINR(value) { 
+ 
+        const number = 
+            Number( 
+                value || 0 
+            ); 
+ 
+        return ( 
+            "₹" + 
+            number.toLocaleString( 
+                "en-IN", 
+                { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2 
+                } 
+            ) 
+        ); 
+ 
+    } 
+ 
+ 
+    function formatPercent(value) { 
+ 
+        const number = 
+            Number( 
+                value || 0 
+            ); 
+ 
+        return ( 
+            (number * 100).toFixed(1) + 
+            "%" 
+        ); 
+ 
+    } 
+ 
+ 
+    function getCustomerId() { 
+ 
+        const params = 
+            new URLSearchParams( 
+                window.location.search 
+            ); 
+ 
+        return ( 
+            params.get( 
+                "customer_id" 
+            ) || "" 
+        ).trim(); 
+ 
+    } 
+ 
+ 
+    function setupBackLink() { 
+ 
+        const backLink = 
+            document.getElementById( 
+                "back-link" 
+            ); 
+ 
+        if (!backLink) { 
+            return; 
+        } 
+ 
+        const referrer = 
+            document.referrer || ""; 
+ 
+        if ( 
+            referrer.includes( 
+                "/human-intervention.html" 
+            ) 
+        ) { 
+            backLink.href = 
+                "/human-intervention.html"; 
+ 
+            backLink.textContent = 
+                "← Back to Human Intervention"; 
+ 
+            return; 
+        } 
+ 
+        backLink.href = 
+            "/customers.html"; 
+ 
+        backLink.textContent = 
+            "← Back to Customers"; 
+    } 
+ 
+ 
+    function priorityBadge(priority) { 
+ 
+        const normalized = 
+            String( 
+                priority || "LOW" 
+            ).toUpperCase(); 
+ 
+ 
+        const cssClass = 
+            normalized === "HIGH" 
+                ? "high" 
+                : ( 
+                    normalized === "MEDIUM" 
+                        ? "medium" 
+                        : "low" 
+                ); 
+ 
+ 
+        return ` 
+            <span class="priority-badge ${cssClass}"> 
+                ${escapeHTML(normalized)} 
+            </span> 
+        `; 
+ 
+    } 
+ 
+ 
+    function statusBadge(recovered) { 
+ 
+        if (recovered) { 
+ 
+            return ` 
+                <span class="status-badge recovered"> 
+                    RECOVERED 
+                </span> 
+            `; 
+ 
+        } 
+ 
+        return ` 
+            <span class="status-badge unrecovered"> 
+                UNRECOVERED 
+            </span> 
+        `; 
+ 
+    } 
+ 
+ 
+    async function loadCustomer() { 
+ 
+        const customerId = 
+            getCustomerId(); 
+ 
+ 
+        const customerIdElement = 
+            document.getElementById( 
+                "customer-id" 
+            ); 
+ 
+ 
+        const table = 
+            document.getElementById( 
+                "transaction-table" 
+            ); 
+ 
+ 
+        if (!customerId) { 
+ 
+            customerIdElement.textContent = 
+                "Customer not specified"; 
+ 
+            table.innerHTML = ` 
+                <tr> 
+ 
+                    <td 
+                        colspan="10" 
+                        class="error-state" 
+                    > 
+ 
+                        <strong> 
+                            Customer ID is missing 
+                        </strong> 
+ 
+                        Open this page from a customer link 
+                        on the Human Intervention page. 
+ 
+                    </td> 
+ 
+                </tr> 
+            `; 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        customerIdElement.textContent = 
+            customerId; 
+ 
+ 
+        table.innerHTML = ` 
+            <tr> 
+ 
+                <td 
+                    colspan="10" 
+                    class="loading-state" 
+                > 
+                    Loading customer data... 
+                </td> 
+ 
+            </tr> 
+        `; 
+ 
+ 
+        try { 
+ 
+            const response = 
+                await fetch( 
+                    "/customers/" + 
+                    encodeURIComponent( 
+                        customerId 
+                    ), 
+                    { 
+                        cache: "no-store" 
+                    } 
+                ); 
+ 
+ 
+            const data = 
+                await response.json(); 
+ 
+ 
+            if (!response.ok || !data.success) { 
+ 
+                throw new Error( 
+                    data.detail || 
+                    data.error || 
+                    "Unable to load customer." 
+                ); 
+ 
+            } 
+ 
+ 
+            const customer = 
+                data.customer || {}; 
+ 
+ 
+            const transactions = 
+                Array.isArray( 
+                    customer.transactions 
+                ) 
+                    ? customer.transactions 
+                    : []; 
+ 
+ 
+            document.getElementById( 
+                "transaction-count" 
+            ).textContent = 
+                Number( 
+                    customer.transaction_count || 0 
+                ).toLocaleString( 
+                    "en-IN" 
+                ); 
+ 
+ 
+            document.getElementById( 
+                "total-value" 
+            ).textContent = 
+                formatINR( 
+                    customer.total_value 
+                ); 
+ 
+ 
+            document.getElementById( 
+                "recovered-cases" 
+            ).textContent = 
+                Number( 
+                    customer.recovered_cases || 0 
+                ).toLocaleString( 
+                    "en-IN" 
+                ); 
+ 
+ 
+            document.getElementById( 
+                "unrecovered-cases" 
+            ).textContent = 
+                Number( 
+                    customer.unrecovered_cases || 0 
+                ).toLocaleString( 
+                    "en-IN" 
+                ); 
+ 
+ 
+            document.getElementById( 
+                "money-recovered" 
+            ).textContent = 
+                formatINR( 
+                    customer.money_recovered 
+                ); 
+ 
+ 
+            if (!transactions.length) { 
+ 
+                table.innerHTML = ` 
+                    <tr> 
+ 
+                        <td 
+                            colspan="10" 
+                            class="empty-state" 
+                        > 
+ 
+                            <strong> 
+                                No transaction history found 
+                            </strong> 
+ 
+                            There are no transactions associated 
+                            with this customer. 
+ 
+                        </td> 
+ 
+                    </tr> 
+                `; 
+ 
+                return; 
+ 
+            } 
+ 
+ 
+            table.innerHTML = 
+                ""; 
+ 
+ 
+            transactions.forEach( 
+                function (transaction) { 
+ 
+ 
+                    const transactionId = 
+                        String( 
+                            transaction.transaction_id || 
+                            "" 
+                        ); 
+ 
+ 
+                    const recovered = 
+                        Boolean( 
+                            transaction.recovered 
+                        ); 
+ 
+ 
+                    const row = 
+                        document.createElement( 
+                            "tr" 
+                        ); 
+ 
+ 
+                    row.innerHTML = ` 
+ 
+                        <td> 
+ 
+                            <a 
+                                class="transaction-id-link" 
+                                href="/transaction-analysis.html?transaction_id=${encodeURIComponent(transactionId)}" 
+                                title="Open transaction analysis" 
+                            > 
+                                ${escapeHTML( 
+                                    transactionId || "—" 
+                                )} 
+                            </a> 
+ 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${formatINR( 
+                                transaction.transaction_amount 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${escapeHTML( 
+                                transaction.payment_method || 
+                                "—" 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${escapeHTML( 
+                                transaction.scenario || 
+                                "—" 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${formatPercent( 
+                                transaction.recovery_probability 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${priorityBadge( 
+                                transaction.priority 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${escapeHTML( 
+                                transaction.strategy || 
+                                "—" 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${escapeHTML( 
+                                transaction.recovery_attempts ?? 
+                                0 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${statusBadge( 
+                                recovered 
+                            )} 
+                        </td> 
+ 
+ 
+                        <td> 
+                            ${formatINR( 
+                                transaction.money_recovered 
+                            )} 
+                        </td> 
+ 
+                    `; 
+ 
+ 
+                    table.appendChild( 
+                        row 
+                    ); 
+ 
+                } 
+            ); 
+ 
+ 
+        } catch (error) { 
+ 
+            console.error( 
+                "Customer analysis error:", 
+                error 
+            ); 
+ 
+ 
+            table.innerHTML = ` 
+                <tr> 
+ 
+                    <td 
+                        colspan="10" 
+                        class="error-state" 
+                    > 
+ 
+                        <strong> 
+                            Unable to load customer analysis 
+                        </strong> 
+ 
+                        ${escapeHTML( 
+                            error.message || 
+                            "Please try again." 
+                        )} 
+ 
+                    </td> 
+ 
+                </tr> 
+            `; 
+ 
+        } 
+ 
+    } 
+ 
+ 
+    document.addEventListener( 
+        "DOMContentLoaded", 
+        function () { 
+ 
+ 
+            setupBackLink(); 
+ 
+ 
+            loadCustomer(); 
+ 
+ 
+            const refresh = 
+                document.getElementById( 
+                    "refresh-button" 
+                ); 
+ 
+ 
+            if (refresh) { 
+ 
+                refresh.addEventListener( 
+                    "click", 
+                    loadCustomer 
+                ); 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+})(); 
+ 
+</script> 
+ 
+ 
+</body> 
+ 
 </html>

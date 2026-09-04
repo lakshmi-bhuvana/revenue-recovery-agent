@@ -1706,16 +1706,22 @@
                         </span>
                     `;
 
-                    const modelRows = [
-                        [
-                            "Logistic Regression",
-                            models.logistic_regression || {}
-                        ],
-                        [
-                            "Random Forest",
-                            models.random_forest || {}
-                        ]
-                    ];
+                   const modelRows = [
+    [
+        "Logistic Regression",
+        (
+            models.logistic_regression &&
+            models.logistic_regression.held_out_test
+        ) || {}
+    ],
+    [
+        "Random Forest",
+        (
+            models.random_forest &&
+            models.random_forest.held_out_test
+        ) || {}
+    ]
+];
 
                     document.getElementById(
                         "ml-model-table"
