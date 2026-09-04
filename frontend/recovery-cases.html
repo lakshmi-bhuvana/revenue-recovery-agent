@@ -1,9 +1,939 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Recovery Cases - Recovery AI</title><link rel="stylesheet" href="/css/style.css"></head><body><div class="app" id="app"><aside class="sidebar"><div class="brand"><div class="brand-mark">R</div><div class="brand-copy"><strong>Recovery AI</strong><span>Revenue Operations</span></div></div><button class="sidebar-toggle" id="sidebar-toggle"><span class="toggle-icon">‹</span></button><nav class="sidebar-nav"><a class="nav-item" href="/"><span class="nav-icon">▦</span><span class="nav-text">Dashboard</span></a><a class="nav-item active" href="/recovery-cases.html"><span class="nav-icon">◉</span><span class="nav-text">Recovery Cases</span></a><a class="nav-item" href="/customers.html"><span class="nav-icon">●</span><span class="nav-text">Customers</span></a><a class="nav-item" href="/analytics.html"><span class="nav-icon">◌</span><span class="nav-text">Analytics</span></a><a class="nav-item" href="/recovery-agent.html"><span class="nav-icon">✦</span><span class="nav-text">Recovery Agent</span></a></nav><div class="sidebar-bottom"><div class="system-status"><span class="status-dot"></span><div class="status-text"><strong>System Online</strong><small>AI Agent Active</small></div></div></div></aside><main class="main-content"><header class="page-header"><div class="page-title"><h1>Recovery Cases</h1><p>Filter, select and process active recovery cases</p></div><div class="header-actions"><span class="live-status"><span class="live-dot"></span>Live</span></div></header><section class="panel"><div class="panel-header"><div><h3>Active Recovery Queue</h3><p>Process cases individually or select a priority segment for batch recovery.</p></div></div><div style="padding:18px 20px"><div class="cases-toolbar"><div id="count-label" class="muted">Loading cases…</div><div class="cases-actions"><button class="batch-btn" id="select-all">Select All</button><button class="batch-btn" id="clear-all">Clear Selection</button><button class="primary-btn" id="run-selected">Run Selected</button></div></div><div class="filter-row"><input id="search" placeholder="Search transaction or customer…"><select id="priority"><option value="">All priorities</option><option value="HIGH">HIGH priority</option><option value="MEDIUM">MEDIUM priority</option><option value="LOW">LOW priority</option></select><select id="strategy"><option value="">All strategies</option><option value="aggressive_recovery">Aggressive Recovery</option><option value="assisted_recovery">Assisted Recovery</option><option value="standard_recovery">Standard Recovery</option><option value="low_cost_recovery">Low Cost Recovery</option></select></div><div class="table-wrapper"><table class="data-table"><thead><tr><th class="select-cell"><input id="master-checkbox" type="checkbox" title="Select visible cases"></th><th>Transaction</th><th>Amount</th><th>Probability</th><th>Priority</th><th>Strategy</th><th>Expected Recovery</th><th>Action</th></tr></thead><tbody id="cases-body"><tr><td colspan="8" class="loading">Loading recovery cases…</td></tr></tbody></table></div><div class="result-box" id="result-box"></div></div></section></main></div><script>
-const esc=v=>{const d=document.createElement('div');d.textContent=v==null?'':String(v);return d.innerHTML};const money=v=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(v||0));const pct=v=>(Number(v||0)*100).toFixed(1)+'%';let cases=[],selected=new Set();
-function sidebar(){const app=document.getElementById('app'),b=document.getElementById('sidebar-toggle');if(!app||!b)return;if(localStorage.getItem('sidebarCollapsed')==='true')app.classList.add('sidebar-collapsed');const sync=()=>b.querySelector('.toggle-icon').textContent=app.classList.contains('sidebar-collapsed')?'›':'‹';b.onclick=()=>{app.classList.toggle('sidebar-collapsed');localStorage.setItem('sidebarCollapsed',app.classList.contains('sidebar-collapsed')?'true':'false');sync()};sync()}
-function fmt(v){return String(v||'').replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase())}
-function render(){const body=document.getElementById('cases-body');document.getElementById('count-label').textContent=`${cases.length.toLocaleString('en-IN')} active cases · ${selected.size.toLocaleString('en-IN')} selected`;body.innerHTML=cases.length?cases.map(c=>{const p=(c.priority||'LOW').toUpperCase();const tx=String(c.transaction_id||'');return `<tr><td class="select-cell"><input type="checkbox" data-id="${esc(tx)}" ${selected.has(tx)?'checked':''}></td><td><a class="case-link" href="/recovery-case.html?transaction_id=${encodeURIComponent(tx)}"><strong>${esc(tx)}</strong></a><div class="muted">${esc(c.customer_id||'')}</div></td><td class="amount">${money(c.transaction_amount)}</td><td class="probability">${pct(c.recovery_probability)}</td><td><span class="badge badge-${esc(p.toLowerCase())}">${esc(p)}</span></td><td>${esc(fmt(c.strategy))}</td><td class="amount">${money(c.expected_recovery_value)}</td><td><a class="view-btn" href="/recovery-case.html?transaction_id=${encodeURIComponent(tx)}">View Case</a></td></tr>`}).join(''):'<tr><td colspan="8" class="loading">No active cases found.</td></tr>';document.querySelectorAll('#cases-body input[type=checkbox]').forEach(cb=>cb.onchange=()=>{const id=cb.dataset.id;cb.checked?selected.add(id):selected.delete(id);render()});const master=document.getElementById('master-checkbox');if(master){master.checked=cases.length>0&&cases.every(c=>selected.has(c.transaction_id));master.indeterminate=selected.size>0&&!master.checked}}
-async function load(){const search=document.getElementById('search').value.trim(),priority=document.getElementById('priority').value,strategy=document.getElementById('strategy').value;const q=new URLSearchParams({limit:'500'});if(search)q.set('search',search);if(priority)q.set('priority',priority);if(strategy)q.set('strategy',strategy);try{const r=await fetch('/recovery-cases?'+q,{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.detail||`Recovery Cases API ${r.status}`);cases=Array.isArray(d.cases)?d.cases:[];selected=new Set([...selected].filter(id=>cases.some(c=>c.transaction_id===id)));render()}catch(e){document.getElementById('cases-body').innerHTML=`<tr><td colspan="8" class="loading">${esc(e.message)}</td></tr>`}}
-async function runSelected(){if(!selected.size)return alert('Select at least one case.');const b=document.getElementById('run-selected'),box=document.getElementById('result-box');b.disabled=true;b.textContent='Running…';try{const r=await fetch('/recovery/run-batch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({transaction_ids:[...selected]})});const d=await r.json();if(!r.ok)throw new Error(d.detail||'Batch recovery failed');box.style.display='block';box.textContent=`Batch recovery completed.\nRequested: ${d.requested??selected.size}\nProcessed: ${d.processed??'—'}\nSucceeded: ${d.succeeded??'—'}\nFailed: ${d.failed??'—'}`;selected.clear();await load()}catch(e){box.style.display='block';box.textContent='Batch recovery error: '+e.message}finally{b.disabled=false;b.textContent='Run Selected'}}
-document.addEventListener('DOMContentLoaded',()=>{sidebar();document.getElementById('select-all').onclick=()=>{cases.forEach(c=>selected.add(c.transaction_id));render()};document.getElementById('clear-all').onclick=()=>{selected.clear();render()};document.getElementById('master-checkbox').onchange=e=>{if(e.target.checked)cases.forEach(c=>selected.add(c.transaction_id));else cases.forEach(c=>selected.delete(c.transaction_id));render()};document.getElementById('run-selected').onclick=runSelected;['search','priority','strategy'].forEach(id=>document.getElementById(id).addEventListener(id==='search'?'input':'change',load));load();setInterval(load,30000)});
-</script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Recovery Cases - Recovery AI</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+</head>
+
+<body>
+
+    <div class="app" id="app">
+
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-mark">R</div>
+
+                <div class="brand-copy">
+                    <strong>Recovery AI</strong>
+                    <span>Revenue Operations</span>
+                </div>
+            </div>
+
+            <button
+                class="sidebar-toggle"
+                id="sidebar-toggle"
+                type="button"
+            >
+                <span class="toggle-icon">‹</span>
+            </button>
+
+            <nav class="sidebar-nav">
+
+                <a
+                    class="nav-item"
+                    href="/"
+                >
+                    <span class="nav-icon">▦</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a
+                    class="nav-item active"
+                    href="/recovery-cases.html"
+                >
+                    <span class="nav-icon">◉</span>
+                    <span class="nav-text">Recovery Cases</span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/customers.html"
+                >
+                    <span class="nav-icon">●</span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/analytics.html"
+                >
+                    <span class="nav-icon">◌</span>
+                    <span class="nav-text">Analytics</span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/recovery-agent.html"
+                >
+                    <span class="nav-icon">✦</span>
+                    <span class="nav-text">Recovery Agent</span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/human-intervention.html"
+                >
+                    <span class="nav-icon">!</span>
+                    <span class="nav-text">Human Intervention</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <div class="system-status">
+
+                    <span class="status-dot"></span>
+
+                    <div class="status-text">
+                        <strong>System Online</strong>
+                        <small>AI Agent Active</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="page-header">
+
+                <div class="page-title">
+                    <h1>Recovery Cases</h1>
+                    <p>
+                        Filter, select and process active recovery cases
+                    </p>
+                </div>
+
+                <div class="header-actions">
+                    <span class="live-status">
+                        <span class="live-dot"></span>
+                        Live
+                    </span>
+                </div>
+
+            </header>
+
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <h3>Active Recovery Queue</h3>
+
+                        <p>
+                            Process cases individually or select a priority
+                            segment for batch recovery.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div style="padding: 18px 20px;">
+
+                    <div class="cases-toolbar">
+
+                        <div
+                            id="count-label"
+                            class="muted"
+                        >
+                            Loading cases…
+                        </div>
+
+                        <div class="cases-actions">
+
+                            <button
+                                class="batch-btn"
+                                id="select-all"
+                                type="button"
+                            >
+                                Select All
+                            </button>
+
+                            <button
+                                class="batch-btn"
+                                id="clear-all"
+                                type="button"
+                            >
+                                Clear Selection
+                            </button>
+
+                            <button
+                                class="primary-btn"
+                                id="run-selected"
+                                type="button"
+                            >
+                                Run Selected
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="filter-row">
+
+                        <input
+                            id="search"
+                            type="text"
+                            placeholder="Search transaction or customer…"
+                        >
+
+                        <select id="priority">
+
+                            <option value="">
+                                All priorities
+                            </option>
+
+                            <option value="HIGH">
+                                HIGH priority
+                            </option>
+
+                            <option value="MEDIUM">
+                                MEDIUM priority
+                            </option>
+
+                            <option value="LOW">
+                                LOW priority
+                            </option>
+
+                        </select>
+
+                        <select id="strategy">
+
+                            <option value="">
+                                All strategies
+                            </option>
+
+                            <option value="aggressive_recovery">
+                                Aggressive Recovery
+                            </option>
+
+                            <option value="assisted_recovery">
+                                Assisted Recovery
+                            </option>
+
+                            <option value="standard_recovery">
+                                Standard Recovery
+                            </option>
+
+                            <option value="low_cost_recovery">
+                                Low Cost Recovery
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="table-wrapper">
+
+                        <table class="data-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th class="select-cell">
+                                        <input
+                                            id="master-checkbox"
+                                            type="checkbox"
+                                            title="Select visible cases"
+                                        >
+                                    </th>
+
+                                    <th>
+                                        Transaction
+                                    </th>
+
+                                    <th>
+                                        Amount
+                                    </th>
+
+                                    <th>
+                                        Probability
+                                    </th>
+
+                                    <th>
+                                        Priority
+                                    </th>
+
+                                    <th>
+                                        Strategy
+                                    </th>
+
+                                    <th>
+                                        Expected Recovery
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="cases-body">
+
+                                <tr>
+                                    <td
+                                        colspan="8"
+                                        class="loading"
+                                    >
+                                        Loading recovery cases…
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div
+                        class="result-box"
+                        id="result-box"
+                    ></div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        const esc = (value) => {
+            const div = document.createElement("div");
+
+            div.textContent =
+                value == null
+                    ? ""
+                    : String(value);
+
+            return div.innerHTML;
+        };
+
+        const money = (value) =>
+            new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 2
+            }).format(
+                Number(value || 0)
+            );
+
+        const pct = (value) =>
+            `${(
+                Number(value || 0) * 100
+            ).toFixed(1)}%`;
+
+        let cases = [];
+        let selected = new Set();
+
+        function sidebar() {
+            const app =
+                document.getElementById("app");
+
+            const button =
+                document.getElementById("sidebar-toggle");
+
+            if (!app || !button) {
+                return;
+            }
+
+            if (
+                localStorage.getItem(
+                    "sidebarCollapsed"
+                ) === "true"
+            ) {
+                app.classList.add(
+                    "sidebar-collapsed"
+                );
+            }
+
+            const syncToggleIcon = () => {
+                const icon =
+                    button.querySelector(
+                        ".toggle-icon"
+                    );
+
+                if (!icon) {
+                    return;
+                }
+
+                icon.textContent =
+                    app.classList.contains(
+                        "sidebar-collapsed"
+                    )
+                        ? "›"
+                        : "‹";
+            };
+
+            button.onclick = () => {
+                app.classList.toggle(
+                    "sidebar-collapsed"
+                );
+
+                localStorage.setItem(
+                    "sidebarCollapsed",
+                    app.classList.contains(
+                        "sidebar-collapsed"
+                    )
+                        ? "true"
+                        : "false"
+                );
+
+                syncToggleIcon();
+            };
+
+            syncToggleIcon();
+        }
+
+        function formatLabel(value) {
+            return String(value || "")
+                .replaceAll("_", " ")
+                .replace(
+                    /\b\w/g,
+                    (match) =>
+                        match.toUpperCase()
+                );
+        }
+
+        function render() {
+            const body =
+                document.getElementById(
+                    "cases-body"
+                );
+
+            const countLabel =
+                document.getElementById(
+                    "count-label"
+                );
+
+            if (!body || !countLabel) {
+                return;
+            }
+
+            countLabel.textContent =
+                `${cases.length.toLocaleString(
+                    "en-IN"
+                )} active cases · ` +
+                `${selected.size.toLocaleString(
+                    "en-IN"
+                )} selected`;
+
+            if (!cases.length) {
+                body.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="loading"
+                        >
+                            No active cases found.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            body.innerHTML = cases
+                .map((caseItem) => {
+
+                    const priority =
+                        String(
+                            caseItem.priority || "LOW"
+                        ).toUpperCase();
+
+                    const transactionId =
+                        String(
+                            caseItem.transaction_id || ""
+                        );
+
+                    const customerId =
+                        String(
+                            caseItem.customer_id || ""
+                        );
+
+                    const selectedState =
+                        selected.has(
+                            transactionId
+                        )
+                            ? "checked"
+                            : "";
+
+                    return `
+                        <tr>
+
+                            <td class="select-cell">
+
+                                <input
+                                    type="checkbox"
+                                    data-id="${esc(
+                                        transactionId
+                                    )}"
+                                    ${selectedState}
+                                >
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    class="case-link"
+                                    href="/recovery-case.html?transaction_id=${encodeURIComponent(
+                                        transactionId
+                                    )}"
+                                >
+                                    <strong>
+                                        ${esc(
+                                            transactionId
+                                        )}
+                                    </strong>
+                                </a>
+
+                                <div class="muted">
+                                    ${esc(customerId)}
+                                </div>
+
+                            </td>
+
+                            <td class="amount">
+                                ${money(
+                                    caseItem.transaction_amount
+                                )}
+                            </td>
+
+                            <td class="probability">
+                                ${pct(
+                                    caseItem.recovery_probability
+                                )}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="badge badge-${esc(
+                                        priority.toLowerCase()
+                                    )}"
+                                >
+                                    ${esc(priority)}
+                                </span>
+
+                            </td>
+
+                            <td>
+                                ${esc(
+                                    formatLabel(
+                                        caseItem.strategy
+                                    )
+                                )}
+                            </td>
+
+                            <td class="amount">
+                                ${money(
+                                    caseItem.expected_recovery_value
+                                )}
+                            </td>
+
+                            <td>
+
+                                <a
+                                    class="view-btn"
+                                    href="/recovery-case.html?transaction_id=${encodeURIComponent(
+                                        transactionId
+                                    )}"
+                                >
+                                    View Case
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    `;
+                })
+                .join("");
+
+            document
+                .querySelectorAll(
+                    "#cases-body input[type='checkbox']"
+                )
+                .forEach((checkbox) => {
+
+                    checkbox.onchange = () => {
+
+                        const id =
+                            checkbox.dataset.id;
+
+                        if (checkbox.checked) {
+                            selected.add(id);
+                        } else {
+                            selected.delete(id);
+                        }
+
+                        render();
+                    };
+                });
+
+            const master =
+                document.getElementById(
+                    "master-checkbox"
+                );
+
+            if (master) {
+
+                master.checked =
+                    cases.length > 0 &&
+                    cases.every((caseItem) =>
+                        selected.has(
+                            caseItem.transaction_id
+                        )
+                    );
+
+                master.indeterminate =
+                    selected.size > 0 &&
+                    !master.checked;
+            }
+        }
+
+        async function load() {
+            const searchInput =
+                document.getElementById("search");
+
+            const priorityInput =
+                document.getElementById("priority");
+
+            const strategyInput =
+                document.getElementById("strategy");
+
+            const body =
+                document.getElementById(
+                    "cases-body"
+                );
+
+            if (
+                !searchInput ||
+                !priorityInput ||
+                !strategyInput ||
+                !body
+            ) {
+                return;
+            }
+
+            const search =
+                searchInput.value.trim();
+
+            const priority =
+                priorityInput.value;
+
+            const strategy =
+                strategyInput.value;
+
+            const query =
+                new URLSearchParams({
+                    limit: "500"
+                });
+
+            if (search) {
+                query.set(
+                    "search",
+                    search
+                );
+            }
+
+            if (priority) {
+                query.set(
+                    "priority",
+                    priority
+                );
+            }
+
+            if (strategy) {
+                query.set(
+                    "strategy",
+                    strategy
+                );
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/recovery-cases?${query.toString()}`,
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.detail ||
+                        `Recovery Cases API ${response.status}`
+                    );
+                }
+
+                cases =
+                    Array.isArray(data.cases)
+                        ? data.cases
+                        : [];
+
+                selected =
+                    new Set(
+                        [...selected].filter(
+                            (id) =>
+                                cases.some(
+                                    (caseItem) =>
+                                        caseItem.transaction_id === id
+                                )
+                        )
+                    );
+
+                render();
+
+            } catch (error) {
+
+                body.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="loading"
+                        >
+                            ${esc(error.message)}
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        async function runSelected() {
+
+            if (!selected.size) {
+                alert(
+                    "Select at least one case."
+                );
+
+                return;
+            }
+
+            const button =
+                document.getElementById(
+                    "run-selected"
+                );
+
+            const resultBox =
+                document.getElementById(
+                    "result-box"
+                );
+
+            if (!button || !resultBox) {
+                return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Running…";
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/recovery/run-batch",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+                            body: JSON.stringify({
+                                transaction_ids:
+                                    [...selected]
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.detail ||
+                        "Batch recovery failed"
+                    );
+                }
+
+                resultBox.style.display =
+                    "block";
+
+                resultBox.textContent =
+                    `Batch recovery completed.\n` +
+                    `Requested: ${
+                        data.requested ??
+                        selected.size
+                    }\n` +
+                    `Processed: ${
+                        data.processed ?? "—"
+                    }\n` +
+                    `Succeeded: ${
+                        data.succeeded ?? "—"
+                    }\n` +
+                    `Failed: ${
+                        data.failed ?? "—"
+                    }`;
+
+                selected.clear();
+
+                await load();
+
+            } catch (error) {
+
+                resultBox.style.display =
+                    "block";
+
+                resultBox.textContent =
+                    "Batch recovery error: " +
+                    error.message;
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent =
+                    "Run Selected";
+            }
+        }
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                sidebar();
+
+                const selectAllButton =
+                    document.getElementById(
+                        "select-all"
+                    );
+
+                const clearAllButton =
+                    document.getElementById(
+                        "clear-all"
+                    );
+
+                const masterCheckbox =
+                    document.getElementById(
+                        "master-checkbox"
+                    );
+
+                const runSelectedButton =
+                    document.getElementById(
+                        "run-selected"
+                    );
+
+                if (selectAllButton) {
+                    selectAllButton.onclick =
+                        () => {
+
+                            cases.forEach(
+                                (caseItem) => {
+                                    selected.add(
+                                        caseItem.transaction_id
+                                    );
+                                }
+                            );
+
+                            render();
+                        };
+                }
+
+                if (clearAllButton) {
+                    clearAllButton.onclick =
+                        () => {
+
+                            selected.clear();
+                            render();
+                        };
+                }
+
+                if (masterCheckbox) {
+                    masterCheckbox.onchange =
+                        (event) => {
+
+                            if (
+                                event.target.checked
+                            ) {
+
+                                cases.forEach(
+                                    (caseItem) => {
+                                        selected.add(
+                                            caseItem.transaction_id
+                                        );
+                                    }
+                                );
+
+                            } else {
+
+                                cases.forEach(
+                                    (caseItem) => {
+                                        selected.delete(
+                                            caseItem.transaction_id
+                                        );
+                                    }
+                                );
+                            }
+
+                            render();
+                        };
+                }
+
+                if (runSelectedButton) {
+                    runSelectedButton.onclick =
+                        runSelected;
+                }
+
+                ["search", "priority", "strategy"]
+                    .forEach((id) => {
+
+                        const element =
+                            document.getElementById(
+                                id
+                            );
+
+                        if (!element) {
+                            return;
+                        }
+
+                        element.addEventListener(
+                            id === "search"
+                                ? "input"
+                                : "change",
+                            load
+                        );
+                    });
+
+                load();
+
+                setInterval(
+                    load,
+                    30000
+                );
+            }
+        );
+    </script>
+
+</body>
+
+</html>

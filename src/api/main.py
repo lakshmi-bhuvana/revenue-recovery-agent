@@ -397,6 +397,7 @@ def load_persisted_recovery_events() -> None:
 
 
 def format_inr(value: float) -> str:
+    """Format a value with Indian digit grouping and a UTF-8-safe rupee symbol."""
     value = safe_float(value)
 
     integer_part, decimal_part = (
@@ -404,7 +405,7 @@ def format_inr(value: float) -> str:
     )
 
     if len(integer_part) <= 3:
-        return f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹{integer_part}.{decimal_part}"
+        return f"\u20b9{integer_part}.{decimal_part}"
 
     last_three = integer_part[-3:]
     remaining = integer_part[:-3]
@@ -412,23 +413,13 @@ def format_inr(value: float) -> str:
     groups = []
 
     while len(remaining) > 2:
-        groups.insert(
-            0,
-            remaining[-2:],
-        )
-
+        groups.insert(0, remaining[-2:])
         remaining = remaining[:-2]
 
     if remaining:
-        groups.insert(
-            0,
-            remaining,
-        )
+        groups.insert(0, remaining)
 
-    return (
-        f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹{','.join(groups)},"
-        f"{last_three}.{decimal_part}"
-    )
+    return f"\u20b9{','.join(groups)},{last_three}.{decimal_part}"
 
 
 # ============================================================
@@ -2001,7 +1992,7 @@ def run_recovery_agent(
 
 
 # ============================================================
-# PROCESSED EVENT ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ DATAFRAME ROW
+# PROCESSED EVENT
 # ============================================================
 
 def processed_event_to_row(
@@ -2337,24 +2328,21 @@ def get_last_conversation_text(
 
 def last_user_question(
     conversation: list[AIMessage],
+    exclude_question: str | None = None,
 ) -> str:
+    """Return the most recent user question, optionally excluding the current question."""
+    excluded = (exclude_question or "").lower().strip()
 
-    for message in reversed(
-        conversation
-    ):
+    for message in reversed(conversation):
+        if message.role.lower().strip() != "user":
+            continue
 
-        if (
-            message.role
-            .lower()
-            .strip()
-            == "user"
-        ):
+        content = message.content.lower().strip()
 
-            return (
-                message.content
-                .lower()
-                .strip()
-            )
+        if excluded and content == excluded:
+            continue
+
+        return content
 
     return ""
 
@@ -2378,7 +2366,8 @@ def get_ai_answer(
 
     previous_user = (
         last_user_question(
-            conversation
+            conversation,
+            exclude_question=question,
         )
     )
 
@@ -2398,16 +2387,16 @@ def get_ai_answer(
     }:
 
         return (
-            "Hi! I'm your Recovery AI. ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â°ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¹Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¹\n\n"
+            "Hi! I'm your Recovery AI.\n\n"
             "I can help you understand revenue risk, "
             "payment failures, recovery performance, "
             "prioritization, strategies, and agent decisions.\n\n"
             "Try asking:\n"
-            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Why is revenue at risk?\n"
-            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Why do transactions fail?\n"
-            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ What should I prioritize first?\n"
-            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Which strategy performs best?\n"
-            "ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Explain the reasoning behind the decision."
+            "- Why is revenue at risk?\n"
+            "- Why do transactions fail?\n"
+            "- What should I prioritize first?\n"
+            "- Which strategy performs best?\n"
+            "- Explain the reasoning behind the decision.\n"
         )
 
     recovery_keywords = {
@@ -2524,8 +2513,6 @@ def get_ai_answer(
         "explain further",
         "more about it",
         "more about this",
-        "why",
-        "how",
         "what about it",
         "what about this",
         "which one",
@@ -2541,15 +2528,10 @@ def get_ai_answer(
         bool(conversation)
         and (
             q in followup_words
-            or q.startswith(
-                "explain "
-            )
-            or q.startswith(
-                "tell me "
-            )
-            or q.startswith(
-                "why "
-            )
+            or q.startswith("explain ")
+            or q.startswith("tell me more")
+            or q.startswith("more about")
+            or q.startswith("what about")
         )
     )
 
@@ -2573,8 +2555,10 @@ def get_ai_answer(
         or "opportunity" in previous_user
     ):
 
+        active = get_unrecovered_data(at_risk)
+
         top = (
-            at_risk
+            active
             .sort_values(
                 [
                     "expected_recovery_value",
@@ -2596,17 +2580,17 @@ def get_ai_answer(
         return (
             f"The reasoning behind prioritizing transaction "
             f"{row['transaction_id']} is based on expected recovery value.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
+            f"- Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
+            f"- Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
+            f"- Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Customer intent: "
+            f"- Customer intent: "
             f"{row['customer_intent'] * 100:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Customer success rate: "
+            f"- Customer success rate: "
             f"{row['customer_success_rate'] * 100:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Priority score: "
+            f"- Priority score: "
             f"{row['priority_score'] * 100:.2f}%\n\n"
             "The system combines recovery probability, transaction "
             "value, customer intent, and customer success rate."
@@ -2671,10 +2655,10 @@ def get_ai_answer(
         return (
             f"The weakest recovery category is "
             f"'{worst_name}'.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(worst['cases']):,}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Transaction value: "
+            f"- Cases: {int(worst['cases']):,}\n"
+            f"- Transaction value: "
             f"{format_inr(worst['amount'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
+            f"- Recovery rate: "
             f"{worst['recovery_rate']:.2f}%\n\n"
             "This suggests that the failure type is creating "
             "additional recovery friction."
@@ -2737,10 +2721,10 @@ def get_ai_answer(
             f"The reasoning for the strongest strategy, "
             f"'{best_name}', is its observed recovery performance "
             "in the current dataset.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
+            f"- Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(best['cases']):,}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Money recovered: "
+            f"- Cases: {int(best['cases']):,}\n"
+            f"- Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -2752,11 +2736,11 @@ def get_ai_answer(
         return (
             "The revenue risk is driven by failed transactions "
             "that are still marked as recoverable opportunities.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Revenue at risk: "
+            f"- Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
+            f"- Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Unrecovered cases: "
+            f"- Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -2766,9 +2750,11 @@ def get_ai_answer(
         or "high priority cases" in q
     ):
 
+        active = get_unrecovered_data(at_risk)
+
         high = (
-            at_risk[
-                at_risk[
+            active[
+                active[
                     "priority"
                 ] == "HIGH"
             ]
@@ -2801,18 +2787,18 @@ def get_ai_answer(
 
         return (
             f"There are "
-            f"{int((at_risk['priority'] == 'HIGH').sum()):,} "
-            "HIGH-priority cases.\n\n"
+            f"{int((active['priority'] == 'HIGH').sum()):,} "
+            "HIGH-priority active recovery cases.\n\n"
             f"The top opportunity is transaction "
             f"{top['transaction_id']}.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
+            f"- Amount at risk: "
             f"{format_inr(top['transaction_amount'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
+            f"- Recovery probability: "
             f"{top['recovery_probability'] * 100:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
+            f"- Expected recovery: "
             f"{format_inr(top['expected_recovery_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Strategy: {top['strategy']}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Channel: {top['recommended_channel']}\n\n"
+            f"- Strategy: {top['strategy']}\n"
+            f"- Channel: {top['recommended_channel']}\n\n"
             f"Among the top five opportunities, "
             f"{format_inr(total_high_value)} is at risk and "
             f"{format_inr(expected_high_value)} is expected to be recovered."
@@ -2827,8 +2813,10 @@ def get_ai_answer(
         or "which cases" in q
     ):
 
+        active = get_unrecovered_data(at_risk)
+
         top = (
-            at_risk
+            active
             .sort_values(
                 [
                     "expected_recovery_value",
@@ -2851,15 +2839,15 @@ def get_ai_answer(
             "I would prioritize cases using expected recovery value "
             "rather than transaction amount alone.\n\n"
             f"Top opportunity: {row['transaction_id']}\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Amount at risk: "
+            f"- Amount at risk: "
             f"{format_inr(row['transaction_amount'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery probability: "
+            f"- Recovery probability: "
             f"{row['recovery_probability'] * 100:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
+            f"- Expected recovery: "
             f"{format_inr(row['expected_recovery_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Priority: {row['priority']}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Strategy: {row['strategy']}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Channel: {row['recommended_channel']}"
+            f"- Priority: {row['priority']}\n"
+            f"- Strategy: {row['strategy']}\n"
+            f"- Channel: {row['recommended_channel']}"
         )
 
     if (
@@ -2999,10 +2987,10 @@ def get_ai_answer(
         return (
             f"The strongest-performing strategy in the current "
             f"data is '{best_name}'.\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
+            f"- Recovery rate: "
             f"{best['recovery_rate']:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Cases: {int(best['cases']):,}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Money recovered: "
+            f"- Cases: {int(best['cases']):,}\n"
+            f"- Money recovered: "
             f"{format_inr(best['money_recovered'])}"
         )
 
@@ -3018,8 +3006,10 @@ def get_ai_answer(
         or "failure reason" in q
     ):
 
+        active = get_unrecovered_data(at_risk)
+
         failure_stats = (
-            at_risk
+            active
             .groupby(
                 "failure_reason"
             )
@@ -3060,7 +3050,7 @@ def get_ai_answer(
         ):
 
             lines.append(
-                f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ {failure_name}: "
+                f"- {failure_name}: "
                 f"{int(row['cases']):,} cases, "
                 f"{format_inr(row['amount'])} at risk"
             )
@@ -3083,7 +3073,7 @@ def get_ai_answer(
             f"{summary['recovery_rate']:.2f}%.\n\n"
             f"We have recovered "
             f"{summary['recovered_cases']:,} of "
-            f"{summary['at_risk_cases']:,} cases.\n\n"
+            f"{len(at_risk):,} total recovery cases.\n\n"
             f"{summary['unrecovered_cases']:,} cases still require "
             "recovery action.\n\n"
             f"Expected recovery is "
@@ -3097,17 +3087,17 @@ def get_ai_answer(
 
         return (
             "Here's the current recovery picture:\n\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Revenue at risk: "
+            f"- Revenue at risk: "
             f"{format_inr(summary['total_transaction_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Expected recovery: "
+            f"- Expected recovery: "
             f"{format_inr(summary['expected_recovery_value'])}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery rate: "
+            f"- Recovery rate: "
             f"{summary['recovery_rate']:.2f}%\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovery cases: "
+            f"- Active recovery cases: "
             f"{summary['at_risk_cases']:,}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Recovered cases: "
+            f"- Recovered cases: "
             f"{summary['recovered_cases']:,}\n"
-            f"ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Unrecovered cases: "
+            f"- Unrecovered cases: "
             f"{summary['unrecovered_cases']:,}"
         )
 
@@ -3296,7 +3286,240 @@ async def recovery_agent_summary_api():
         "source": "persisted_recovery_agent_executions",
         **build_agent_recovery_summary(),
     }
+# ============================================================
+# HUMAN INTERVENTION / ESCALATIONS
+# ============================================================
 
+@app.get("/recovery-agent/escalations")
+async def recovery_agent_escalations_api():
+    """
+    Return all persisted Recovery Agent executions that require
+    human intervention.
+
+    This endpoint is intentionally separate from the active
+    recovery queue. It reads persisted agent execution history
+    and returns only cases where the final escalation decision
+    requires HUMAN_REVIEW.
+    """
+    escalations = []
+
+    for transaction_id, event in PROCESSED_RECOVERY_EVENTS.items():
+
+        if not isinstance(event, dict):
+            continue
+
+        result = event.get("_agent_result")
+
+        if not isinstance(result, dict):
+            continue
+
+        diagnosis, score, action, execution, stopping, escalation = (
+            _agent_result_parts(event)
+        )
+
+        should_escalate = bool(
+            escalation.get(
+                "escalate",
+                False,
+            )
+        )
+
+        if not should_escalate:
+            continue
+
+        audit = result.get("audit")
+
+        if not isinstance(audit, dict):
+            audit = {}
+
+        escalations.append(
+            {
+                "transaction_id": safe_string(
+                    transaction_id
+                ),
+
+                "customer_id": safe_string(
+                    event.get(
+                        "customer_id"
+                    )
+                ),
+
+                "transaction_amount": round(
+                    safe_float(
+                        event.get(
+                            "transaction_amount"
+                        )
+                    ),
+                    2,
+                ),
+
+                "scenario": safe_string(
+                    result.get(
+                        "scenario",
+                        event.get(
+                            "scenario"
+                        ),
+                    )
+                ),
+
+                "diagnosis": safe_string(
+                    diagnosis.get(
+                        "diagnosis"
+                    )
+                ),
+
+                "recovery_probability": round(
+                    safe_float(
+                        score.get(
+                            "recovery_probability"
+                        )
+                    ),
+                    4,
+                ),
+
+                "priority": safe_string(
+                    score.get(
+                        "priority",
+                        audit.get(
+                            "priority",
+                            "LOW",
+                        ),
+                    ),
+                    "LOW",
+                ).upper(),
+
+                "priority_score": round(
+                    safe_float(
+                        score.get(
+                            "priority_score"
+                        )
+                    ),
+                    4,
+                ),
+
+                "strategy": safe_string(
+                    action.get(
+                        "strategy"
+                    )
+                ),
+
+                "recovery_action": safe_string(
+                    action.get(
+                        "recovery_action"
+                    )
+                ),
+
+                "recommended_channel": safe_string(
+                    action.get(
+                        "channel",
+                        score.get(
+                            "recommended_channel",
+                            "",
+                        ),
+                    )
+                ),
+
+                "attempt_count": safe_int(
+                    execution.get(
+                        "attempt_count",
+                        event.get(
+                            "recovery_attempts",
+                            0,
+                        ),
+                    )
+                ),
+
+                "max_recovery_attempts": (
+                    MAX_RECOVERY_ATTEMPTS
+                ),
+
+                "recovered": bool(
+                    execution.get(
+                        "recovered",
+                        False,
+                    )
+                ),
+
+                "money_recovered": round(
+                    safe_float(
+                        execution.get(
+                            "money_recovered",
+                            0.0,
+                        )
+                    ),
+                    2,
+                ),
+
+                "stopping_reason": safe_string(
+                    stopping.get(
+                        "reason"
+                    )
+                ),
+
+                "escalation_level": safe_string(
+                    escalation.get(
+                        "escalation_level",
+                        "HUMAN_REVIEW",
+                    ),
+                    "HUMAN_REVIEW",
+                ),
+
+                "escalation_reason": safe_string(
+                    escalation.get(
+                        "reason"
+                    )
+                ),
+
+                "recommended_team": safe_string(
+                    escalation.get(
+                        "recommended_team"
+                    ),
+                    "payments_recovery",
+                ),
+
+                "timestamp": safe_string(
+                    audit.get(
+                        "timestamp"
+                    )
+                ),
+            }
+        )
+
+    escalations.sort(
+        key=lambda item: (
+            0
+            if item["priority"] == "HIGH"
+            else 1,
+            item.get("timestamp", ""),
+        )
+    )
+
+    high_count = sum(
+        1
+        for item in escalations
+        if item["priority"] == "HIGH"
+    )
+
+    medium_count = sum(
+        1
+        for item in escalations
+        if item["priority"] == "MEDIUM"
+    )
+
+    low_count = sum(
+        1
+        for item in escalations
+        if item["priority"] == "LOW"
+    )
+
+    return {
+        "success": True,
+        "total": len(escalations),
+        "high_priority": high_count,
+        "medium_priority": medium_count,
+        "low_priority": low_count,
+        "cases": escalations,
+    }
 
 @app.get("/recovery-agent/audit/{transaction_id}")
 async def recovery_agent_audit_api(transaction_id: str):
@@ -3716,7 +3939,11 @@ async def customers_page():
     return FileResponse(
         FRONTEND_DIR / "customers.html"
     )
-
+@app.get("/customer-analysis.html")
+async def customer_analysis_page():
+    return FileResponse(
+        FRONTEND_DIR / "customer-analysis.html"
+    )
 
 @app.get("/analytics.html")
 async def analytics_page():
@@ -3724,7 +3951,16 @@ async def analytics_page():
     return FileResponse(
         FRONTEND_DIR / "analytics.html"
     )
-
+@app.get("/human-intervention.html")
+async def human_intervention_page():
+    return FileResponse(
+        FRONTEND_DIR / "human-intervention.html"
+    )
+@app.get("/transaction-analysis.html")
+async def transaction_analysis_page():
+    return FileResponse(
+        FRONTEND_DIR / "transaction-analysis.html"
+    )
 
 # ============================================================
 # HEALTH
@@ -4292,8 +4528,16 @@ async def run_recovery():
                 )
             ),
             recovered=0,
-            money_recovered=0.0,
-        )
+                    money_recovered=0.0,
+        force_recovery_failure=bool(
+            normalize_bool(
+                top.get(
+                    "force_recovery_failure",
+                    0,
+                )
+            )
+        ),
+    )
 
         # Reuse the authoritative recovery-event endpoint logic.
         result = await process_recovery_event(event)
@@ -4488,6 +4732,7 @@ async def overall_metrics():
 async def metrics():
 
     at_risk = get_at_risk_data()
+    active = get_unrecovered_data(at_risk)
 
     summary = dashboard_summary(
         at_risk
@@ -4495,7 +4740,7 @@ async def metrics():
 
     high_priority = int(
         (
-            at_risk[
+            active[
                 "priority"
             ]
             == "HIGH"
@@ -4515,9 +4760,10 @@ async def metrics():
 async def priority_metrics():
 
     at_risk = get_at_risk_data()
+    active = get_unrecovered_data(at_risk)
 
     counts = (
-        at_risk[
+        active[
             "priority"
         ]
         .value_counts()
@@ -4554,6 +4800,7 @@ async def priority_metrics():
 async def strategy_metrics():
 
     at_risk = get_at_risk_data()
+    active = get_unrecovered_data(at_risk)
 
     strategies = [
         "aggressive_recovery",
@@ -4563,7 +4810,7 @@ async def strategy_metrics():
     ]
 
     counts = (
-        at_risk[
+        active[
             "strategy"
         ]
         .value_counts()
@@ -7385,19 +7632,19 @@ async def run_recovery_batch(
                     reassessment.get(
                         "action"
                     )
-                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
+                    or "continue_recovery"
                 ),
                 "customer_response_type": (
                     customer_response.get(
                         "response_type"
                     )
-                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
+                    or "continue_recovery"
                 ),
                 "customer_response": (
                     customer_response.get(
                         "response"
                     )
-                    or "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â"
+                    or "continue_recovery"
                 ),
                 "result": result,
             })

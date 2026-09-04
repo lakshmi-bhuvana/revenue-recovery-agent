@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Human Intervention - Revenue Recovery</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+    <style>
+
+        .page-note {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .escalation-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .escalation-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .escalation-card .label {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .escalation-card .value {
+            margin-top: 8px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .escalation-card.total .value {
+            color: #b91c1c;
+        }
+
+        .escalation-card.high .value {
+            color: #dc2626;
+        }
+
+        .escalation-card.medium .value {
+            color: #d97706;
+        }
+
+        .escalation-card.low .value {
+            color: #64748b;
+        }
+
+        .escalation-note {
+            margin-top: 20px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #9a3412;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .escalation-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .escalation-badge.high {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .escalation-badge.medium {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .escalation-badge.low {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .human-review-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 8px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .escalation-reason {
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        .attempt-text {
+            font-weight: 700;
+        }
+
+        .attempt-text.danger {
+            color: #b91c1c;
+        }
+
+        .attempt-text.warning {
+            color: #b45309;
+        }
+
+        .transaction-link,
+        .customer-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .transaction-link:hover,
+        .customer-link:hover {
+            text-decoration: underline;
+        }
+
+        .customer-link {
+            font-weight: 600;
+        }
+
+        .empty-escalations {
+            padding: 36px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .empty-escalations strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .refresh-escalations {
+            border: 1px solid #dbe3ef;
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 9px;
+            padding: 9px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .refresh-escalations:hover {
+            background: #f8fafc;
+        }
+
+        .customer-analysis-note {
+            margin-top: 12px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+
+            .escalation-metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .escalation-metrics {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div
+    class="app"
+    id="app"
+>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                R
+            </div>
+
+            <div class="brand-copy">
+
+                <strong>
+                    Recovery AI
+                </strong>
+
+                <span>
+                    Revenue Operations
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            type="button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+
+            <span class="toggle-icon">
+                ‹
+            </span>
+
+        </button>
+
+
+        <nav class="sidebar-nav">
+
+            <a
+                class="nav-item"
+                href="/"
+            >
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/recovery-cases.html"
+            >
+                <span class="nav-icon">
+                    ◉
+                </span>
+
+                <span class="nav-text">
+                    Recovery Cases
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/customers.html"
+            >
+                <span class="nav-icon">
+                    ●
+                </span>
+
+                <span class="nav-text">
+                    Customers
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/analytics.html"
+            >
+                <span class="nav-icon">
+                    ◌
+                </span>
+
+                <span class="nav-text">
+                    Analytics
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/recovery-agent.html"
+            >
+                <span class="nav-icon">
+                    ✦
+                </span>
+
+                <span class="nav-text">
+                    Recovery Agent
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item active"
+                href="/human-intervention.html"
+            >
+                <span class="nav-icon">
+                    !
+                </span>
+
+                <span class="nav-text">
+                    Human Intervention
+                </span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <small>
+                        AI Agent Active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <header class="page-header">
+
+            <div class="page-title">
+
+                <h1>
+                    Human Intervention
+                </h1>
+
+                <p>
+                    Recovery cases that crossed the automated
+                    recovery boundary and require human review
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <span class="live-status">
+
+                    <span class="live-dot"></span>
+
+                    <span id="live-text">
+                        Live
+                    </span>
+
+                </span>
+
+
+                <button
+                    class="refresh-btn"
+                    id="refresh-button"
+                    type="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+        ================================================== -->
+
+        <section class="escalation-metrics">
+
+            <div class="escalation-card total">
+
+                <div class="label">
+                    Total Escalated
+                </div>
+
+                <div
+                    class="value"
+                    id="total-escalated"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="escalation-card high">
+
+                <div class="label">
+                    High Priority
+                </div>
+
+                <div
+                    class="value"
+                    id="high-escalated"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="escalation-card medium">
+
+                <div class="label">
+                    Medium Priority
+                </div>
+
+                <div
+                    class="value"
+                    id="medium-escalated"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="escalation-card low">
+
+                <div class="label">
+                    Low Priority
+                </div>
+
+                <div
+                    class="value"
+                    id="low-escalated"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EXPLANATION
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Why cases appear here
+                    </h3>
+
+                    <p class="page-note">
+                        These cases are no longer being handled
+                        automatically. The Recovery Agent has stopped
+                        the automated workflow and created a human-review
+                        escalation.
+                    </p>
+
+                    <p class="customer-analysis-note">
+                        For human analysis, each escalated transaction
+                        can be traced back to its specific customer.
+                        Open the customer ID to review that customer's
+                        transaction history and recovery context.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="escalation-note">
+
+                <strong>
+                    Human review boundary:
+                </strong>
+
+                A HIGH-priority failed recovery can escalate after
+                the first automated attempt. MEDIUM and LOW priority
+                cases can continue through the bounded recovery window
+                and escalate when the maximum automated attempts are
+                reached.
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ESCALATION TABLE
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Cases Requiring Human Intervention
+                    </h3>
+
+                    <p>
+                        Persisted Recovery Agent escalations
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="refresh-escalations"
+                    id="refresh-escalations"
+                    type="button"
+                >
+                    Refresh Cases
+                </button>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Transaction
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Scenario
+                            </th>
+
+                            <th>
+                                Amount
+                            </th>
+
+                            <th>
+                                Attempts
+                            </th>
+
+                            <th>
+                                Stopping Reason
+                            </th>
+
+                            <th>
+                                Escalation Reason
+                            </th>
+
+                            <th>
+                                Team
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="escalation-table">
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="loading"
+                            >
+                                Loading escalated cases...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+<script src="/js/app.js"></script>
+
+
+<script>
+
+(function () {
+
+
+    function escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    function formatINR(value) {
+
+        const number =
+            Number(
+                value || 0
+            );
+
+        return (
+            "₹" +
+            number.toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )
+        );
+
+    }
+
+
+    function priorityBadge(priority) {
+
+        const normalized =
+            String(
+                priority || "LOW"
+            )
+                .toUpperCase();
+
+
+        const cssClass =
+            normalized === "HIGH"
+                ? "high"
+                : (
+                    normalized === "MEDIUM"
+                        ? "medium"
+                        : "low"
+                );
+
+
+        return `
+            <span class="escalation-badge ${cssClass}">
+                ${escapeHTML(normalized)}
+            </span>
+        `;
+
+    }
+
+
+    function makeRecoveryCaseLink(transactionId) {
+
+        const safeId =
+            String(
+                transactionId || ""
+            );
+
+
+        if (!safeId) {
+
+            return "—";
+
+        }
+
+
+        return `
+            <a
+                class="transaction-link"
+                href="/transaction-analysis.html?transaction_id=${encodeURIComponent(safeId)}"
+                title="Open recovery case"
+            >
+                ${escapeHTML(safeId)}
+            </a>
+        `;
+
+    }
+
+
+    function makeCustomerLink(customerId) {
+
+        const safeId =
+            String(
+                customerId || ""
+            );
+
+
+        if (!safeId) {
+
+            return "—";
+
+        }
+
+
+        return `
+            <a
+                class="customer-link"
+                href="/customer-analysis.html?customer_id=${encodeURIComponent(safeId)}"
+                title="Open customer analysis"
+            >
+                ${escapeHTML(safeId)}
+            </a>
+        `;
+
+    }
+
+
+    async function loadEscalations() {
+
+        const table =
+            document.getElementById(
+                "escalation-table"
+            );
+
+
+        if (!table) {
+
+            return;
+
+        }
+
+
+        table.innerHTML = `
+            <tr>
+
+                <td
+                    colspan="10"
+                    class="loading"
+                >
+                    Loading escalated cases...
+                </td>
+
+            </tr>
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/recovery-agent/escalations",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.detail ||
+                    data.error ||
+                    "Unable to load escalations."
+                );
+
+            }
+
+
+            document.getElementById(
+                "total-escalated"
+            ).textContent =
+                Number(
+                    data.total || 0
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+
+            document.getElementById(
+                "high-escalated"
+            ).textContent =
+                Number(
+                    data.high_priority || 0
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+
+            document.getElementById(
+                "medium-escalated"
+            ).textContent =
+                Number(
+                    data.medium_priority || 0
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+
+            document.getElementById(
+                "low-escalated"
+            ).textContent =
+                Number(
+                    data.low_priority || 0
+                ).toLocaleString(
+                    "en-IN"
+                );
+
+
+            const cases =
+                Array.isArray(
+                    data.cases
+                )
+                    ? data.cases
+                    : [];
+
+
+            if (!cases.length) {
+
+                table.innerHTML = `
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty-escalations"
+                        >
+
+                            <strong>
+                                No human intervention required
+                            </strong>
+
+                            All persisted recovery executions
+                            are currently within the automated
+                            recovery boundary.
+
+                        </td>
+
+                    </tr>
+                `;
+
+                return;
+
+            }
+
+
+            table.innerHTML = "";
+
+
+            cases.forEach(
+                function (item) {
+
+
+                    const priority =
+                        String(
+                            item.priority ||
+                            "LOW"
+                        ).toUpperCase();
+
+
+                    const attempts =
+                        Number(
+                            item.attempt_count ||
+                            0
+                        );
+
+
+                    const maxAttempts =
+                        Number(
+                            item.max_recovery_attempts ||
+                            3
+                        );
+
+
+                    const attemptClass =
+                        priority === "HIGH"
+                            ? "danger"
+                            : "warning";
+
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${makeRecoveryCaseLink(
+                                item.transaction_id
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${makeCustomerLink(
+                                item.customer_id
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${priorityBadge(
+                                priority
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${escapeHTML(
+                                item.scenario ||
+                                "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            ${formatINR(
+                                item.transaction_amount
+                            )}
+                        </td>
+
+
+                        <td>
+                            <span
+                                class="attempt-text ${attemptClass}"
+                            >
+                                ${attempts} / ${maxAttempts}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            ${escapeHTML(
+                                item.stopping_reason ||
+                                "—"
+                            )}
+                        </td>
+
+
+                        <td>
+                            <span class="escalation-reason">
+                                ${escapeHTML(
+                                    item.escalation_reason ||
+                                    "Human review required."
+                                )}
+                            </span>
+                        </td>
+
+
+                        <td>
+                            ${escapeHTML(
+                                item.recommended_team ||
+                                "payments_recovery"
+                            )}
+                        </td>
+
+
+                        <td>
+                            <span class="human-review-badge">
+                                HUMAN REVIEW
+                            </span>
+                        </td>
+
+                    `;
+
+
+                    table.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Escalation load error:",
+                error
+            );
+
+
+            table.innerHTML = `
+                <tr>
+
+                    <td
+                        colspan="10"
+                        class="empty-escalations"
+                    >
+
+                        <strong>
+                            Unable to load escalation data
+                        </strong>
+
+                        ${escapeHTML(
+                            error.message ||
+                            "Please try again."
+                        )}
+
+                    </td>
+
+                </tr>
+            `;
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            loadEscalations();
+
+
+            const refresh =
+                document.getElementById(
+                    "refresh-button"
+                );
+
+
+            if (refresh) {
+
+                refresh.addEventListener(
+                    "click",
+                    loadEscalations
+                );
+
+            }
+
+
+            const refreshCases =
+                document.getElementById(
+                    "refresh-escalations"
+                );
+
+
+            if (refreshCases) {
+
+                refreshCases.addEventListener(
+                    "click",
+                    loadEscalations
+                );
+
+            }
+
+        }
+    );
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

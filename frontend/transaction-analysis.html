@@ -1,0 +1,2404 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Transaction Analysis - Revenue Recovery</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+    <style>
+
+        .page-note {
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 18px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .metric-value {
+            margin-top: 8px;
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .metric-value.high {
+            color: #dc2626;
+        }
+
+        .metric-value.medium {
+            color: #d97706;
+        }
+
+        .metric-value.low {
+            color: #64748b;
+        }
+
+        .transaction-hero {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .transaction-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .transaction-label {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .transaction-id {
+            margin-top: 6px;
+            color: #1e293b;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .customer-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .customer-link:hover {
+            text-decoration: underline;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .contact-button {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 14px;
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .contact-button:hover {
+            background: #1d4ed8;
+        }
+
+        .contact-button:disabled {
+            opacity: .55;
+            cursor: not-allowed;
+        }
+
+        .priority-badge,
+        .status-badge,
+        .escalation-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .priority-badge.high {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .priority-badge.medium {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .priority-badge.low {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .status-badge.recovered {
+            background: #ecfdf5;
+            color: #15803d;
+        }
+
+        .status-badge.unrecovered {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .escalation-badge.human {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-row:last-child {
+            border-bottom: 0;
+        }
+
+        .detail-key {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .llm-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            min-height: 90px;
+            color: #334155;
+            font-size: 12px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .llm-meta {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 0 0 20px 26px;
+        }
+
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: 7px;
+            top: 7px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: "";
+            position: absolute;
+            left: 11px;
+            top: 16px;
+            bottom: 0;
+            width: 1px;
+            background: #dbeafe;
+        }
+
+        .timeline-stage {
+            color: #1e293b;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .timeline-description {
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .contact-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, .45);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contact-modal.open {
+            display: flex;
+        }
+
+        .contact-dialog {
+            width: min(560px, 100%);
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, .22);
+            padding: 20px;
+        }
+
+        .contact-dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .contact-dialog-header h3 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            color: #1e293b;
+        }
+
+        .contact-dialog-header p {
+            margin: 0;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .close-button {
+            border: 0;
+            background: transparent;
+            color: #64748b;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .channel-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .channel-option {
+            border: 1px solid #dbe3ef;
+            background: #ffffff;
+            color: #334155;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .channel-option.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .message-box {
+            width: 100%;
+            min-height: 150px;
+            box-sizing: border-box;
+            resize: vertical;
+            border: 1px solid #dbe3ef;
+            border-radius: 9px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #1e293b;
+        }
+
+        .contact-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .secondary-button,
+        .primary-button {
+            border-radius: 8px;
+            padding: 9px 13px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .secondary-button {
+            border: 1px solid #dbe3ef;
+            background: #ffffff;
+            color: #334155;
+        }
+
+        .primary-button {
+            border: 0;
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .contact-result {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            color: #166534;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .contact-result.show {
+            display: block;
+        }
+
+        .error-state,
+        .loading-state,
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .error-state {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 900px) {
+
+            .analysis-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .transaction-title-row {
+                flex-direction: column;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div
+    class="app"
+    id="app"
+>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                R
+            </div>
+
+            <div class="brand-copy">
+
+                <strong>
+                    Recovery AI
+                </strong>
+
+                <span>
+                    Revenue Operations
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="sidebar-toggle"
+            id="sidebar-toggle"
+            type="button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+
+            <span class="toggle-icon">
+                ‹
+            </span>
+
+        </button>
+
+
+        <nav class="sidebar-nav">
+
+            <a
+                class="nav-item"
+                href="/"
+            >
+                <span class="nav-icon">
+                    ▦
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/recovery-cases.html"
+            >
+                <span class="nav-icon">
+                    ◉
+                </span>
+
+                <span class="nav-text">
+                    Recovery Cases
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/customers.html"
+            >
+                <span class="nav-icon">
+                    ●
+                </span>
+
+                <span class="nav-text">
+                    Customers
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/analytics.html"
+            >
+                <span class="nav-icon">
+                    ◌
+                </span>
+
+                <span class="nav-text">
+                    Analytics
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item active"
+                href="/recovery-agent.html"
+            >
+                <span class="nav-icon">
+                    ✦
+                </span>
+
+                <span class="nav-text">
+                    Recovery Agent
+                </span>
+            </a>
+
+
+            <a
+                class="nav-item"
+                href="/human-intervention.html"
+            >
+                <span class="nav-icon">
+                    !
+                </span>
+
+                <span class="nav-text">
+                    Human Intervention
+                </span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <small>
+                        AI Agent Active
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <header class="page-header">
+
+            <div class="page-title">
+
+                <h1>
+                    Transaction Analysis
+                </h1>
+
+                <p>
+                    Human review of the Recovery Agent decision and customer recovery context
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <button
+                    class="refresh-btn"
+                    id="refresh-button"
+                    type="button"
+                >
+                    ↻ Refresh
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <a
+            href="/human-intervention.html"
+            class="back-link"
+        >
+            ← Back to Human Intervention
+        </a>
+
+
+        <!-- =================================================
+             TRANSACTION HERO
+        ================================================== -->
+
+        <section class="transaction-hero">
+
+            <div class="transaction-title-row">
+
+                <div>
+
+                    <div class="transaction-label">
+                        Transaction
+                    </div>
+
+                    <div
+                        class="transaction-id"
+                        id="transaction-id"
+                    >
+                        Loading...
+                    </div>
+
+                    <a
+                        class="customer-link"
+                        id="customer-link"
+                        href="#"
+                    >
+                        Customer: —
+                    </a>
+
+                </div>
+
+
+                <div class="hero-actions">
+
+                    <span id="priority-container">
+                        —
+                    </span>
+
+                    <span id="status-container">
+                        —
+                    </span>
+
+                    <button
+                        class="contact-button"
+                        id="contact-customer"
+                        type="button"
+                        disabled
+                    >
+                        Contact Customer
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             METRICS
+        ================================================== -->
+
+        <section class="analysis-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Transaction Amount
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="transaction-amount"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Recovery Probability
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="recovery-probability"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Expected Recovery
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="expected-recovery"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Recovery Attempts
+                </div>
+
+                <div
+                    class="metric-value"
+                    id="recovery-attempts"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TRANSACTION DETAILS
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Transaction Context
+                    </h3>
+
+                    <p>
+                        Evidence used by the recovery workflow
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+                <div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Customer</span>
+                        <span
+                            class="detail-value"
+                            id="detail-customer"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Payment Method</span>
+                        <span
+                            class="detail-value"
+                            id="detail-payment-method"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Failure Reason</span>
+                        <span
+                            class="detail-value"
+                            id="detail-failure-reason"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Scenario</span>
+                        <span
+                            class="detail-value"
+                            id="detail-scenario"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Payment Status</span>
+                        <span
+                            class="detail-value"
+                            id="detail-payment-status"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Strategy</span>
+                        <span
+                            class="detail-value"
+                            id="detail-strategy"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Recovery Action</span>
+                        <span
+                            class="detail-value"
+                            id="detail-action"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Recommended Channel</span>
+                        <span
+                            class="detail-value"
+                            id="detail-channel"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Stopping Reason</span>
+                        <span
+                            class="detail-value"
+                            id="detail-stopping"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-key">Escalation Reason</span>
+                        <span
+                            class="detail-value"
+                            id="detail-escalation"
+                        >
+                            —
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AGENT / LLM ANALYSIS
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        AI Recovery Analysis
+                    </h3>
+
+                    <p>
+                        LLM explanation grounded in the recorded Recovery Agent decision
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="llm-box"
+                id="llm-explanation"
+            >
+                Loading AI analysis...
+            </div>
+
+            <div
+                class="llm-meta"
+                id="llm-meta"
+            >
+                —
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             AGENT TIMELINE
+        ================================================== -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Recovery Decision Timeline
+                    </h3>
+
+                    <p>
+                        Detect → Diagnose → Predict → Decide → Act → Measure → Stop / Escalate
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="timeline"
+                id="analysis-timeline"
+            >
+
+                <div class="loading-state">
+                    Loading timeline...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CONTACT MODAL
+        ================================================== -->
+
+        <div
+            class="contact-modal"
+            id="contact-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-title"
+        >
+
+            <div class="contact-dialog">
+
+                <div class="contact-dialog-header">
+
+                    <div>
+
+                        <h3 id="contact-title">
+                            Contact Customer
+                        </h3>
+
+                        <p id="contact-subtitle">
+                            Generate a customer-facing recovery message.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="close-button"
+                        id="close-contact"
+                        type="button"
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <div class="channel-options">
+
+                    <button
+                        class="channel-option active"
+                        type="button"
+                        data-channel="recommended"
+                    >
+                        Recommended
+                    </button>
+
+                    <button
+                        class="channel-option"
+                        type="button"
+                        data-channel="whatsapp"
+                    >
+                        WhatsApp
+                    </button>
+
+                    <button
+                        class="channel-option"
+                        type="button"
+                        data-channel="email"
+                    >
+                        Email
+                    </button>
+
+                    <button
+                        class="channel-option"
+                        type="button"
+                        data-channel="phone"
+                    >
+                        Phone
+                    </button>
+
+                </div>
+
+
+                <textarea
+                    class="message-box"
+                    id="customer-message"
+                    placeholder="Customer message will appear here..."
+                ></textarea>
+
+
+                <div
+                    class="contact-result"
+                    id="contact-result"
+                >
+                    Contact attempt recorded as a simulated recovery communication.
+                </div>
+
+
+                <div class="contact-footer">
+
+                    <button
+                        class="secondary-button"
+                        id="cancel-contact"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        class="primary-button"
+                        id="generate-message"
+                        type="button"
+                    >
+                        Generate Message
+                    </button>
+
+
+                    <button
+                        class="primary-button"
+                        id="send-contact"
+                        type="button"
+                    >
+                        Contact Customer
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+<script src="/js/app.js"></script>
+
+
+<script>
+
+(function () {
+
+
+    let currentCase = null;
+
+    let selectedChannel = "recommended";
+
+
+    function escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    function formatINR(value) {
+
+        const number =
+            Number(
+                value || 0
+            );
+
+        return (
+            "₹" +
+            number.toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            )
+        );
+
+    }
+
+
+    function formatPercent(value) {
+
+        const number =
+            Number(
+                value || 0
+            );
+
+        return (
+            (number * 100).toFixed(1) +
+            "%"
+        );
+
+    }
+
+
+    function formatLabel(value) {
+
+        return String(
+            value || "—"
+        )
+            .replaceAll("_", " ");
+
+    }
+
+
+    function getTransactionId() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        return (
+            params.get(
+                "transaction_id"
+            ) || ""
+        ).trim();
+
+    }
+
+
+    function priorityBadge(priority) {
+
+        const normalized =
+            String(
+                priority || "LOW"
+            ).toUpperCase();
+
+
+        const cssClass =
+            normalized === "HIGH"
+                ? "high"
+                : (
+                    normalized === "MEDIUM"
+                        ? "medium"
+                        : "low"
+                );
+
+
+        return `
+            <span class="priority-badge ${cssClass}">
+                ${escapeHTML(normalized)}
+            </span>
+        `;
+
+    }
+
+
+    function statusBadge(recovered) {
+
+        if (recovered) {
+
+            return `
+                <span class="status-badge recovered">
+                    RECOVERED
+                </span>
+            `;
+
+        }
+
+        return `
+            <span class="status-badge unrecovered">
+                UNRECOVERED
+            </span>
+        `;
+
+    }
+
+
+    function escalationBadge(escalated) {
+
+        if (!escalated) {
+
+            return "";
+
+        }
+
+        return `
+            <span class="escalation-badge human">
+                HUMAN REVIEW
+            </span>
+        `;
+
+    }
+
+
+    function buildTimeline(caseData) {
+
+        const timeline =
+            document.getElementById(
+                "analysis-timeline"
+            );
+
+
+        const execution =
+            caseData.execution &&
+            typeof caseData.execution === "object"
+                ? caseData.execution
+                : {};
+
+
+        const stopping =
+            caseData.stopping &&
+            typeof caseData.stopping === "object"
+                ? caseData.stopping
+                : {};
+
+
+        const escalation =
+            caseData.escalation &&
+            typeof caseData.escalation === "object"
+                ? caseData.escalation
+                : {};
+
+
+        const recovered =
+            Boolean(
+                caseData.recovered
+            );
+
+
+        const escalated =
+            Boolean(
+                escalation.escalate
+            );
+
+
+        const entries = [
+
+            {
+                stage: "DETECT",
+                description:
+                    "Transaction identified as a recovery-risk event."
+            },
+
+            {
+                stage: "DIAGNOSE",
+                description:
+                    `Likely cause: ${
+                        formatLabel(
+                            caseData.failure_reason ||
+                            caseData.scenario
+                        )
+                    }.`
+            },
+
+            {
+                stage: "PREDICT",
+                description:
+                    `Recovery probability ${
+                        formatPercent(
+                            caseData.recovery_probability
+                        )
+                    } with expected recovery ${
+                        formatINR(
+                            caseData.expected_recovery_value
+                        )
+                    }.`
+            },
+
+            {
+                stage: "DECIDE",
+                description:
+                    caseData.recovery_action
+                        ? `Selected action: ${
+                            formatLabel(
+                                caseData.recovery_action
+                            )
+                        }. Strategy: ${
+                            formatLabel(
+                                caseData.strategy
+                            )
+                        }.`
+                        : `Strategy selected: ${
+                            formatLabel(
+                                caseData.strategy
+                            )
+                        }.`
+            },
+
+            {
+                stage: "ACT",
+                description:
+                    execution.action
+                        ? `Execution action: ${
+                            formatLabel(
+                                execution.action
+                            )
+                        }. Status: ${
+                            formatLabel(
+                                execution.status
+                            )
+                        }.`
+                        : "No persisted execution action was recorded."
+            },
+
+            {
+                stage: "MEASURE",
+                description:
+                    recovered
+                        ? `Recovery succeeded and ${
+                            formatINR(
+                                caseData.money_recovered
+                            )
+                        } was recovered.`
+                        : "No money was recovered from the recorded outcome."
+            },
+
+            {
+                stage:
+                    escalated
+                        ? "ESCALATE"
+                        : "STOP",
+
+                description:
+                    escalated
+                        ? `Human review required: ${
+                            formatLabel(
+                                escalation.reason ||
+                                "recovery escalation required"
+                            )
+                        }.`
+                        : `Workflow stopping state: ${
+                            formatLabel(
+                                stopping.reason ||
+                                "RECOVERY_WORKFLOW_COMPLETE"
+                            )
+                        }.`
+            }
+
+        ];
+
+
+        timeline.innerHTML =
+            entries
+                .map(
+                    function (entry) {
+
+                        return `
+                            <div class="timeline-item">
+
+                                <div class="timeline-stage">
+                                    ${escapeHTML(
+                                        entry.stage
+                                    )}
+                                </div>
+
+                                <div class="timeline-description">
+                                    ${escapeHTML(
+                                        entry.description
+                                    )}
+                                </div>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+
+    }
+
+
+    async function loadCase() {
+
+        const transactionId =
+            getTransactionId();
+
+
+        if (!transactionId) {
+
+            showError(
+                "Transaction ID is missing."
+            );
+
+            return;
+
+        }
+
+
+        document.getElementById(
+            "transaction-id"
+        ).textContent =
+            transactionId;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/recovery-case/" +
+                    encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success ||
+                !data.case
+            ) {
+
+                throw new Error(
+                    data.detail ||
+                    "Unable to load transaction."
+                );
+
+            }
+
+
+            currentCase =
+                data.case;
+
+
+            renderCase(
+                data.case
+            );
+
+
+            await loadLLMExplanation(
+                transactionId,
+                data.case
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Transaction analysis error:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Unable to load transaction analysis."
+            );
+
+        }
+
+    }
+
+
+    function renderCase(caseData) {
+
+        const transactionId =
+            caseData.transaction_id ||
+            "";
+
+
+        const customerId =
+            caseData.customer_id ||
+            "";
+
+
+        const priority =
+            String(
+                caseData.priority ||
+                "LOW"
+            ).toUpperCase();
+
+
+        const escalated =
+            Boolean(
+                caseData.escalation &&
+                caseData.escalation.escalate
+            );
+
+
+        document.getElementById(
+            "transaction-id"
+        ).textContent =
+            transactionId ||
+            "—";
+
+
+        const customerLink =
+            document.getElementById(
+                "customer-link"
+            );
+
+
+        if (customerId) {
+
+            customerLink.href =
+                "/customer-analysis.html?customer_id=" +
+                encodeURIComponent(
+                    customerId
+                );
+
+            customerLink.textContent =
+                "Customer: " +
+                customerId;
+
+        } else {
+
+            customerLink.removeAttribute(
+                "href"
+            );
+
+            customerLink.textContent =
+                "Customer: —";
+
+        }
+
+
+        document.getElementById(
+            "priority-container"
+        ).innerHTML =
+            priorityBadge(
+                priority
+            );
+
+
+        document.getElementById(
+            "status-container"
+        ).innerHTML =
+            `
+                ${statusBadge(
+                    Boolean(
+                        caseData.recovered
+                    )
+                )}
+                ${escalationBadge(
+                    escalated
+                )}
+            `;
+
+
+        document.getElementById(
+            "transaction-amount"
+        ).textContent =
+            formatINR(
+                caseData.transaction_amount
+            );
+
+
+        document.getElementById(
+            "recovery-probability"
+        ).textContent =
+            formatPercent(
+                caseData.recovery_probability
+            );
+
+
+        document.getElementById(
+            "expected-recovery"
+        ).textContent =
+            formatINR(
+                caseData.expected_recovery_value
+            );
+
+
+        document.getElementById(
+            "recovery-attempts"
+        ).textContent =
+            (
+                Number(
+                    caseData.recovery_attempts ||
+                    0
+                ) +
+                " / " +
+                Number(
+                    caseData.max_recovery_attempts ||
+                    3
+                )
+            );
+
+
+        document.getElementById(
+            "detail-customer"
+        ).textContent =
+            customerId ||
+            "—";
+
+
+        document.getElementById(
+            "detail-payment-method"
+        ).textContent =
+            caseData.payment_method ||
+            "—";
+
+
+        document.getElementById(
+            "detail-failure-reason"
+        ).textContent =
+            caseData.failure_reason ||
+            "—";
+
+
+        document.getElementById(
+            "detail-scenario"
+        ).textContent =
+            formatLabel(
+                caseData.scenario
+            );
+
+
+        document.getElementById(
+            "detail-payment-status"
+        ).textContent =
+            caseData.payment_status ||
+            "—";
+
+
+        document.getElementById(
+            "detail-strategy"
+        ).textContent =
+            formatLabel(
+                caseData.strategy
+            );
+
+
+        document.getElementById(
+            "detail-action"
+        ).textContent =
+            formatLabel(
+                caseData.recovery_action
+            );
+
+
+        document.getElementById(
+            "detail-channel"
+        ).textContent =
+            formatLabel(
+                caseData.recommended_channel
+            );
+
+
+        document.getElementById(
+            "detail-stopping"
+        ).textContent =
+            formatLabel(
+                caseData.stopping &&
+                caseData.stopping.reason
+                    ? caseData.stopping.reason
+                    : "—"
+            );
+
+
+        document.getElementById(
+            "detail-escalation"
+        ).textContent =
+            formatLabel(
+                caseData.escalation &&
+                (
+                    caseData.escalation.reason ||
+                    caseData.escalation.escalation_reason
+                )
+                    ? (
+                        caseData.escalation.reason ||
+                        caseData.escalation.escalation_reason
+                    )
+                    : "—"
+            );
+
+
+        const contactButton =
+            document.getElementById(
+                "contact-customer"
+            );
+
+
+        contactButton.disabled =
+            !customerId;
+
+
+        buildTimeline(
+            caseData
+        );
+
+    }
+
+
+    async function loadLLMExplanation(
+        transactionId,
+        caseData
+    ) {
+
+        const box =
+            document.getElementById(
+                "llm-explanation"
+            );
+
+
+        const meta =
+            document.getElementById(
+                "llm-meta"
+            );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/recovery-agent/llm/explain/" +
+                    encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.detail ||
+                    "LLM explanation unavailable."
+                );
+
+            }
+
+
+            box.textContent =
+                data.explanation ||
+                "No explanation returned.";
+
+
+            const llm =
+                data.llm ||
+                {};
+
+
+            meta.textContent =
+                llm.source
+                    ? "Source: " +
+                      llm.source
+                    : "AI analysis generated from recorded recovery-agent context.";
+
+        } catch (error) {
+
+            console.warn(
+                "LLM explanation unavailable:",
+                error
+            );
+
+
+            box.textContent =
+                buildFallbackExplanation(
+                    caseData
+                );
+
+
+            meta.textContent =
+                "Deterministic fallback explanation used because no persisted LLM execution was available.";
+
+        }
+
+    }
+
+
+    function buildFallbackExplanation(caseData) {
+
+        const parts = [];
+
+
+        parts.push(
+            `The transaction is ${
+                formatLabel(
+                    caseData.priority
+                )
+            } priority with a recovery probability of ${
+                formatPercent(
+                    caseData.recovery_probability
+                )
+            }.`
+        );
+
+
+        if (caseData.failure_reason) {
+
+            parts.push(
+                `The recorded failure reason is ${
+                    formatLabel(
+                        caseData.failure_reason
+                    )
+                }.`
+            );
+
+        }
+
+
+        if (caseData.strategy) {
+
+            parts.push(
+                `The current recovery strategy is ${
+                    formatLabel(
+                        caseData.strategy
+                    )
+                }.`
+            );
+
+        }
+
+
+        if (
+            caseData.escalation &&
+            caseData.escalation.escalate
+        ) {
+
+            parts.push(
+                "The automated recovery boundary was crossed, so human review is required."
+            );
+
+        } else if (caseData.stopping) {
+
+            parts.push(
+                `The workflow stopping state is ${
+                    formatLabel(
+                        caseData.stopping.reason
+                    )
+                }.`
+            );
+
+        }
+
+
+        return parts.join(" ");
+
+    }
+
+
+    async function openContactModal() {
+
+        if (!currentCase) {
+
+            return;
+
+        }
+
+
+        const modal =
+            document.getElementById(
+                "contact-modal"
+            );
+
+
+        const result =
+            document.getElementById(
+                "contact-result"
+            );
+
+
+        result.classList.remove(
+            "show"
+        );
+
+
+        document.getElementById(
+            "customer-message"
+        ).value =
+            "";
+
+
+        modal.classList.add(
+            "open"
+        );
+
+
+        await generateCustomerMessage();
+
+    }
+
+
+    function closeContactModal() {
+
+        document.getElementById(
+            "contact-modal"
+        ).classList.remove(
+            "open"
+        );
+
+    }
+
+
+    async function generateCustomerMessage() {
+
+        if (!currentCase) {
+
+            return;
+
+        }
+
+
+        const transactionId =
+            currentCase.transaction_id;
+
+
+        const messageBox =
+            document.getElementById(
+                "customer-message"
+            );
+
+
+        messageBox.value =
+            "Generating customer message...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/recovery-agent/llm/message/" +
+                    encodeURIComponent(
+                        transactionId
+                    ),
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.detail ||
+                    "Message generation unavailable."
+                );
+
+            }
+
+
+            messageBox.value =
+                data.message ||
+                buildFallbackCustomerMessage();
+
+        } catch (error) {
+
+            console.warn(
+                "LLM customer message unavailable:",
+                error
+            );
+
+
+            messageBox.value =
+                buildFallbackCustomerMessage();
+
+        }
+
+    }
+
+
+    function buildFallbackCustomerMessage() {
+
+        const amount =
+            formatINR(
+                currentCase.transaction_amount
+            );
+
+
+        const action =
+            formatLabel(
+                currentCase.recovery_action ||
+                "recovery assistance"
+            );
+
+
+        return (
+            "Hello, we are following up regarding your " +
+            amount +
+            " payment. " +
+            "We would like to help resolve the payment issue " +
+            "through " +
+            action +
+            ". " +
+            "Please let us know if you would like assistance."
+        );
+
+    }
+
+
+    function setSelectedChannel(
+        channel
+    ) {
+
+        selectedChannel =
+            channel;
+
+
+        document
+            .querySelectorAll(
+                ".channel-option"
+            )
+            .forEach(
+                function (button) {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.channel === channel
+                    );
+
+                }
+            );
+
+    }
+
+
+    function contactCustomer() {
+
+        const result =
+            document.getElementById(
+                "contact-result"
+            );
+
+
+        const message =
+            document.getElementById(
+                "customer-message"
+            ).value.trim();
+
+
+        if (!currentCase) {
+
+            return;
+
+        }
+
+
+        if (!message) {
+
+            result.textContent =
+                "Please generate or enter a customer message first.";
+
+            result.classList.add(
+                "show"
+            );
+
+            return;
+
+        }
+
+
+        const channel =
+            selectedChannel === "recommended"
+                ? (
+                    currentCase.recommended_channel ||
+                    "recommended channel"
+                )
+                : selectedChannel;
+
+
+        /*
+         * DEMO-SAFE CONTACT ACTION
+         *
+         * No real message is sent here because the current
+         * dataset only exposes channel-availability flags,
+         * not actual customer email/phone destinations.
+         */
+
+        result.textContent =
+            `Contact attempt recorded for ${
+                currentCase.customer_id
+            } via ${
+                formatLabel(channel)
+            }. ` +
+            "This demo uses simulated customer communication; no external message was sent.";
+
+        result.classList.add(
+            "show"
+        );
+
+    }
+
+
+    function showError(message) {
+
+        document.getElementById(
+            "transaction-id"
+        ).textContent =
+            "Unable to load";
+
+
+        document.getElementById(
+            "llm-explanation"
+        ).textContent =
+            message;
+
+
+        document.getElementById(
+            "llm-meta"
+        ).textContent =
+            "";
+
+
+        document.getElementById(
+            "analysis-timeline"
+        ).innerHTML =
+            `
+                <div class="error-state">
+                    ${escapeHTML(
+                        message
+                    )}
+                </div>
+            `;
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            loadCase();
+
+
+            const refresh =
+                document.getElementById(
+                    "refresh-button"
+                );
+
+
+            if (refresh) {
+
+                refresh.addEventListener(
+                    "click",
+                    loadCase
+                );
+
+            }
+
+
+            const contact =
+                document.getElementById(
+                    "contact-customer"
+                );
+
+
+            if (contact) {
+
+                contact.addEventListener(
+                    "click",
+                    openContactModal
+                );
+
+            }
+
+
+            const close =
+                document.getElementById(
+                    "close-contact"
+                );
+
+
+            if (close) {
+
+                close.addEventListener(
+                    "click",
+                    closeContactModal
+                );
+
+            }
+
+
+            const cancel =
+                document.getElementById(
+                    "cancel-contact"
+                );
+
+
+            if (cancel) {
+
+                cancel.addEventListener(
+                    "click",
+                    closeContactModal
+                );
+
+            }
+
+
+            const generate =
+                document.getElementById(
+                    "generate-message"
+                );
+
+
+            if (generate) {
+
+                generate.addEventListener(
+                    "click",
+                    generateCustomerMessage
+                );
+
+            }
+
+
+            const send =
+                document.getElementById(
+                    "send-contact"
+                );
+
+
+            if (send) {
+
+                send.addEventListener(
+                    "click",
+                    contactCustomer
+                );
+
+            }
+
+
+            document
+                .querySelectorAll(
+                    ".channel-option"
+                )
+                .forEach(
+                    function (button) {
+
+                        button.addEventListener(
+                            "click",
+                            function () {
+
+                                setSelectedChannel(
+                                    button.dataset.channel
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            const modal =
+                document.getElementById(
+                    "contact-modal"
+                );
+
+
+            if (modal) {
+
+                modal.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (
+                            event.target === modal
+                        ) {
+
+                            closeContactModal();
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

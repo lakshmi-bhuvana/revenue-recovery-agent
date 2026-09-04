@@ -1,259 +1,734 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Recovery Agent</title>
-<link rel="stylesheet" href="/css/style.css">
-<style>
-.agent-page .agent-intro{margin-bottom:20px}
-.agent-live{display:inline-flex;align-items:center;gap:7px;color:#16a05d;font-weight:700;font-size:12px}
-.agent-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:18px}
-.agent-stat{background:#fff;border:1px solid var(--border);border-radius:11px;padding:14px}
-.agent-stat .label{font-size:10px;text-transform:uppercase;letter-spacing:.35px;color:#7183a0;font-weight:700}
-.agent-stat .value{margin-top:8px;font-size:19px;font-weight:800;color:#172033}
-.agent-stat .desc{margin-top:4px;color:#8aa0bb;font-size:10px}
-.agent-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.agent-batch-note{margin-top:8px;color:#8294ac;font-size:11px}
-.agent-batch-status{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:9px;background:#f8fafc;color:#566d89;font-size:11px;white-space:pre-wrap;display:none}
-.scenario-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:14px}
-.scenario-card{border:1px solid var(--border);border-radius:10px;padding:14px}
-.scenario-card strong{display:block;font-size:12px}
-.scenario-meta{display:flex;justify-content:space-between;gap:10px;margin-top:8px;color:#7183a0;font-size:10px}
-.scenario-money{margin-top:10px;font-size:17px;font-weight:800}
-.workflow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;padding:14px}
-.workflow-step{border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;background:#fff}
-.workflow-step .n{font-size:10px;color:#8aa0bb}.workflow-step strong{display:block;margin-top:5px;font-size:11px}.workflow-step span{display:block;margin-top:4px;color:#8aa0bb;font-size:9px}
-.batch-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
-.batch-box{border:1px solid var(--border);border-radius:9px;padding:12px;background:#fff}
-.batch-box small{display:block;color:#8294ac;font-size:10px}.batch-box strong{display:block;margin-top:5px;font-size:17px}
-.audit-panel{margin-top:18px}
-.audit-empty{padding:18px;color:#8294ac;font-size:11px}
-.audit-pre{margin:0;padding:14px;background:#0b1730;color:#dce8f7;border-radius:10px;overflow:auto;font-size:11px;line-height:1.5;max-height:420px}
-@media(max-width:1200px){.agent-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.scenario-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workflow{grid-template-columns:repeat(4,minmax(0,1fr))}.batch-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.agent-grid,.scenario-grid,.workflow,.batch-summary{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recovery Agent</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .agent-page .agent-intro {
+            margin-bottom: 20px;
+        }
+
+        .agent-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #16a05d;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .agent-stat {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 14px;
+        }
+
+        .agent-stat .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+            color: #7183a0;
+            font-weight: 700;
+        }
+
+        .agent-stat .value {
+            margin-top: 8px;
+            font-size: 19px;
+            font-weight: 800;
+            color: #172033;
+        }
+
+        .agent-stat .desc {
+            margin-top: 4px;
+            color: #8aa0bb;
+            font-size: 10px;
+        }
+
+        .agent-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .agent-batch-note {
+            margin-top: 8px;
+            color: #8294ac;
+            font-size: 11px;
+        }
+
+        .agent-batch-status {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: #f8fafc;
+            color: #566d89;
+            font-size: 11px;
+            white-space: pre-wrap;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .scenario-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .scenario-card strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .scenario-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 8px;
+            color: #7183a0;
+            font-size: 10px;
+        }
+
+        .scenario-money {
+            margin-top: 10px;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .workflow-step {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 13px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .workflow-step .n {
+            font-size: 10px;
+            color: #8aa0bb;
+        }
+
+        .workflow-step strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 11px;
+        }
+
+        .workflow-step span {
+            display: block;
+            margin-top: 4px;
+            color: #8aa0bb;
+            font-size: 9px;
+        }
+
+        .batch-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .batch-box {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 12px;
+            background: #fff;
+        }
+
+        .batch-box small {
+            display: block;
+            color: #8294ac;
+            font-size: 10px;
+        }
+
+        .batch-box strong {
+            display: block;
+            margin-top: 5px;
+            font-size: 17px;
+        }
+
+        .audit-panel {
+            margin-top: 18px;
+        }
+
+        .audit-empty {
+            padding: 18px;
+            color: #8294ac;
+            font-size: 11px;
+        }
+
+        .audit-pre {
+            margin: 0;
+            padding: 14px;
+            background: #0b1730;
+            color: #dce8f7;
+            border-radius: 10px;
+            overflow: auto;
+            font-size: 11px;
+            line-height: 1.5;
+            max-height: 420px;
+        }
+
+        .execution-controls {
+            padding: 16px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .execution-search {
+            min-width: 260px;
+            height: 38px;
+            padding: 0 11px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: #334155;
+        }
+
+        .execution-filter {
+            min-width: 160px;
+            height: 38px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            color: #334155;
+        }
+
+        @media (max-width: 1200px) {
+            .agent-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .scenario-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .workflow {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .batch-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .agent-grid,
+            .scenario-grid,
+            .workflow,
+            .batch-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .execution-search,
+            .execution-filter {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="app" id="app">
-<aside class="sidebar">
-  <div class="brand"><div class="brand-mark">R</div><div class="brand-copy"><strong>Recovery AI</strong><span>Revenue Operations</span></div></div>
-  <button class="sidebar-toggle" id="sidebar-toggle" type="button"><span class="toggle-icon">‹</span></button>
-  <nav class="sidebar-nav">
-    <a class="nav-item" href="/"><span class="nav-icon">▦</span><span class="nav-text">Dashboard</span></a>
-    <a class="nav-item" href="/recovery-cases.html"><span class="nav-icon">◉</span><span class="nav-text">Recovery Cases</span></a>
-    <a class="nav-item" href="/customers.html"><span class="nav-icon">●</span><span class="nav-text">Customers</span></a>
-    <a class="nav-item" href="/analytics.html"><span class="nav-icon">◌</span><span class="nav-text">Analytics</span></a>
-    <a class="nav-item active" href="/recovery-agent.html"><span class="nav-icon">✦</span><span class="nav-text">Recovery Agent</span></a>
-  </nav>
-  <div class="sidebar-bottom"><div class="system-status"><span class="status-dot"></span><div class="status-text"><strong>System Online</strong><small>AI Agent Active</small></div></div></div>
-</aside>
-<main class="main-content agent-page">
-<header class="page-header">
-  <div class="page-title"><h1>Recovery Agent</h1><p>Measured execution, recovery outcomes, stopping rules and audit visibility</p></div>
-  <div class="header-actions"><span class="agent-live"><span class="live-dot"></span><span id="agent-live">Agent Online</span></span><button class="refresh-btn" id="agent-refresh">↻ Refresh</button></div>
-</header>
+    <div class="app" id="app">
 
-<section class="agent-grid">
-  <div class="agent-stat"><div class="label">Agent Executions</div><div id="agent-executions" class="value">—</div><div class="desc">Persisted agent runs</div></div>
-  <div class="agent-stat"><div class="label">Recovered</div><div id="agent-recovered" class="value">—</div><div class="desc">Successful executions</div></div>
-  <div class="agent-stat"><div class="label">Agent Recovery Rate</div><div id="agent-rate" class="value">—</div><div class="desc">Recovered executions</div></div>
-  <div class="agent-stat"><div class="label">Money Recovered</div><div id="agent-money" class="value">—</div><div class="desc">Measured recovered revenue</div></div>
-  <div class="agent-stat"><div class="label">Avg Attempts</div><div id="agent-attempts" class="value">—</div><div class="desc">Per persisted execution</div></div>
-  <div class="agent-stat"><div class="label">Escalations</div><div id="agent-escalations" class="value">—</div><div class="desc">Sent to merchant ops</div></div>
-</section>
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
 
-<section class="panel">
-  <div class="panel-header"><div><h3>Run a Measured Demo Batch</h3><p>Use the existing bounded recovery endpoint to process a small batch of active cases, then measure the resulting agent executions and recovered revenue.</p></div></div>
-  <div style="padding:16px 20px">
-    <div class="agent-actions">
-      <label class="muted" for="batch-size">Batch size</label>
-      <select id="batch-size" class="filter-row select" style="min-width:110px;height:38px;border:1px solid var(--border);border-radius:8px;padding:0 10px;background:#fff;color:#334155">
-        <option value="5">5</option><option value="10" selected>10</option><option value="20">20</option><option value="25">25</option>
-      </select>
-      <button id="run-demo-batch" class="primary-btn" type="button">Run Agent Batch</button>
-    </div>
-    <div class="agent-batch-note">This uses the existing simulated recovery execution flow. It changes persisted recovery state for the selected active cases so the result is a real agent batch, not a fabricated dashboard number.</div>
-    <div id="batch-status" class="agent-batch-status"></div>
-    <div id="batch-summary" class="batch-summary" style="display:none">
-      <div class="batch-box"><small>Requested</small><strong id="batch-requested">—</strong></div>
-      <div class="batch-box"><small>Processed</small><strong id="batch-processed">—</strong></div>
-      <div class="batch-box"><small>New Recovered</small><strong id="batch-new-recovered">—</strong></div>
-      <div class="batch-box"><small>New Money Recovered</small><strong id="batch-new-money">—</strong></div>
-    </div>
-  </div>
-</section>
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">R</div>
 
-<section class="panel">
-  <div class="panel-header"><div><h3>Scenario Performance</h3><p>Measured agent outcomes from persisted executions</p></div></div>
-  <div id="scenario-grid" class="scenario-grid"><div class="audit-empty">Loading scenario performance…</div></div>
-</section>
-
-<section class="panel" style="margin-top:18px">
-  <div class="panel-header"><div><h3>Agent Workflow</h3><p>Bounded recovery flow exposed by the agent audit API</p></div></div>
-  <div class="workflow">
-    <div class="workflow-step"><div class="n">1</div><strong>DETECT</strong><span>Revenue-risk event</span></div>
-    <div class="workflow-step"><div class="n">2</div><strong>DIAGNOSE</strong><span>Cause + evidence</span></div>
-    <div class="workflow-step"><div class="n">3</div><strong>PREDICT</strong><span>ML recovery score</span></div>
-    <div class="workflow-step"><div class="n">4</div><strong>DECIDE</strong><span>Policy + action</span></div>
-    <div class="workflow-step"><div class="n">5</div><strong>ACT</strong><span>Bounded execution</span></div>
-    <div class="workflow-step"><div class="n">6</div><strong>MEASURE</strong><span>Money recovered</span></div>
-    <div class="workflow-step"><div class="n">7</div><strong>STOP</strong><span>Stop / escalate</span></div>
-  </div>
-</section>
-
-
-    <!-- =====================================================
-         AGENT EXECUTION HISTORY
-    ====================================================== -->
-
-<section
-        class="panel"
-        id="execution-history"
-        style="margin-top:18px;"
-    >
-        <div class="panel-header">
-            <div>
-                <h3>
-                    Agent Executions
-                </h3>
-                <p>
-                    Search and inspect the complete persisted
-                    Recovery Agent execution history
-                </p>
+                <div class="brand-copy">
+                    <strong>Recovery AI</strong>
+                    <span>Revenue Operations</span>
+                </div>
             </div>
-        </div>
-        <!-- FILTERS -->
-        <div
-            class="execution-controls"
-            style="
-                padding:16px 18px;
-                display:flex;
-                flex-wrap:wrap;
-                gap:10px;
-                align-items:center;
-            "
-        >
-            <input
-                id="agent-execution-search"
-                class="execution-search"
-                type="search"
-                placeholder="Search transaction or customer..."
+
+            <button
+                class="sidebar-toggle"
+                id="sidebar-toggle"
+                type="button"
+                aria-label="Toggle sidebar"
             >
-            <select
-                id="agent-scenario-filter"
-                class="execution-filter"
-            >
-                <option value="">
-                    All scenarios
-                </option>
-                <option value="payment_failure">
-                    Payment Failure
-                </option>
-                <option value="checkout_abandonment">
-                    Checkout Abandonment
-                </option>
-                <option value="failed_subscription">
-                    Failed Subscription
-                </option>
-                <option value="b2b_receivable">
-                    B2B Receivable
-                </option>
-                <option value="mandate_failure">
-                    Mandate Failure
-                </option>
-                <option value="promise_to_pay">
-                    Promise to Pay
-                </option>
-            </select>
-            <select
-                id="agent-result-filter"
-                class="execution-filter"
-            >
-                <option value="">
-                    All results
-                </option>
-                <option value="recovered">
-                    Recovered
-                </option>
-                <option value="not_recovered">
-                    Not Recovered
-                </option>
-            </select>
-        </div>
-        <!-- COUNT -->
-        <div
-            id="execution-count"
-            style="
-                padding:0 18px 12px;
-                color:#7183a0;
-                font-size:11px;
-            "
-        >
-            Showing 0 of 0 executions
-        </div>
-        <!-- TABLE -->
-        <div
-            class="table-wrapper"
-            style="margin:0 18px 18px;"
-        >
-            <table
-                class="data-table"
-            >
-                <thead>
-                    <tr>
-                        <th>
-                            Transaction
-                        </th>
-                        <th>
-                            Customer
-                        </th>
-                        <th>
-                            Scenario
-                        </th>
-                        <th>
-                            Diagnosis
-                        </th>
-                        <th>
-                            Action
-                        </th>
-                        <th>
-                            Channel
-                        </th>
-                        <th>
-                            Result
-                        </th>
-                        <th>
-                            Money Recovered
-                        </th>
-                        <th>
-                            Attempts
-                        </th>
-                        <th>
-                            Stop Reason
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="recent-body">
-                    <tr>
-                        <td
-                            colspan="10"
-                            class="loading"
+                <span class="toggle-icon">‹</span>
+            </button>
+
+            <nav class="sidebar-nav">
+                <a class="nav-item" href="/">
+                    <span class="nav-icon">▦</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+
+                <a class="nav-item" href="/recovery-cases.html">
+                    <span class="nav-icon">◉</span>
+                    <span class="nav-text">Recovery Cases</span>
+                </a>
+
+                <a class="nav-item" href="/customers.html">
+                    <span class="nav-icon">●</span>
+                    <span class="nav-text">Customers</span>
+                </a>
+
+                <a class="nav-item" href="/analytics.html">
+                    <span class="nav-icon">◌</span>
+                    <span class="nav-text">Analytics</span>
+                </a>
+
+                <a class="nav-item active" href="/recovery-agent.html">
+                    <span class="nav-icon">✦</span>
+                    <span class="nav-text">Recovery Agent</span>
+                </a>
+
+                <a class="nav-item" href="/human-intervention.html">
+                    <span class="nav-icon">!</span>
+                    <span class="nav-text">Human Intervention</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+
+                    <div class="status-text">
+                        <strong>System Online</strong>
+                        <small>AI Agent Active</small>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <main class="main-content agent-page">
+
+            <!-- HEADER -->
+
+            <header class="page-header">
+                <div class="page-title">
+                    <h1>Recovery Agent</h1>
+
+                    <p>
+                        Measured execution, recovery outcomes,
+                        stopping rules and audit visibility
+                    </p>
+                </div>
+
+                <div class="header-actions">
+                    <span class="agent-live">
+                        <span class="live-dot"></span>
+                        <span id="agent-live">Agent Online</span>
+                    </span>
+
+                    <button
+                        class="refresh-btn"
+                        id="agent-refresh"
+                        type="button"
+                    >
+                        ↻ Refresh
+                    </button>
+                </div>
+            </header>
+
+            <!-- =================================================
+                 AGENT SUMMARY
+            ================================================== -->
+
+            <section class="agent-grid">
+                <div class="agent-stat">
+                    <div class="label">Agent Executions</div>
+                    <div id="agent-executions" class="value">—</div>
+                    <div class="desc">Persisted agent runs</div>
+                </div>
+
+                <div class="agent-stat">
+                    <div class="label">Recovered</div>
+                    <div id="agent-recovered" class="value">—</div>
+                    <div class="desc">Successful executions</div>
+                </div>
+
+                <div class="agent-stat">
+                    <div class="label">Agent Recovery Rate</div>
+                    <div id="agent-rate" class="value">—</div>
+                    <div class="desc">Recovered executions</div>
+                </div>
+
+                <div class="agent-stat">
+                    <div class="label">Money Recovered</div>
+                    <div id="agent-money" class="value">—</div>
+                    <div class="desc">Measured recovered revenue</div>
+                </div>
+
+                <div class="agent-stat">
+                    <div class="label">Avg Attempts</div>
+                    <div id="agent-attempts" class="value">—</div>
+                    <div class="desc">Per persisted execution</div>
+                </div>
+
+                <div class="agent-stat">
+                    <div class="label">Escalations</div>
+                    <div id="agent-escalations" class="value">—</div>
+                    <div class="desc">Sent to merchant ops</div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 DEMO BATCH
+            ================================================== -->
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Run a Measured Demo Batch</h3>
+
+                        <p>
+                            Use the existing bounded recovery endpoint
+                            to process a small batch of active cases,
+                            then measure the resulting agent executions
+                            and recovered revenue.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="padding: 16px 20px;">
+                    <div class="agent-actions">
+                        <label
+                            class="muted"
+                            for="batch-size"
                         >
-                            Loading agent executions...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- PAGINATION -->
-        <div
-            id="agent-pagination"
-            style="
-                padding:0 18px 20px;
-            "
-        ></div>
-    </section>
-</main></div>
-<script src="/js/recovery-agent.js"></script>
-</body></html>
+                            Batch size
+                        </label>
+
+                        <select
+                            id="batch-size"
+                            class="filter-row select"
+                            style="
+                                min-width: 110px;
+                                height: 38px;
+                                border: 1px solid var(--border);
+                                border-radius: 8px;
+                                padding: 0 10px;
+                                background: #fff;
+                                color: #334155;
+                            "
+                        >
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                        </select>
+
+                        <button
+                            id="run-demo-batch"
+                            class="primary-btn"
+                            type="button"
+                        >
+                            Run Agent Batch
+                        </button>
+                    </div>
+
+                    <div class="agent-batch-note">
+                        This uses the existing simulated recovery execution
+                        flow. It changes persisted recovery state for the
+                        selected active cases so the result is a real agent
+                        batch, not a fabricated dashboard number.
+                    </div>
+
+                    <div
+                        id="batch-status"
+                        class="agent-batch-status"
+                    ></div>
+
+                    <div
+                        id="batch-summary"
+                        class="batch-summary"
+                        style="display: none;"
+                    >
+                        <div class="batch-box">
+                            <small>Requested</small>
+                            <strong id="batch-requested">—</strong>
+                        </div>
+
+                        <div class="batch-box">
+                            <small>Processed</small>
+                            <strong id="batch-processed">—</strong>
+                        </div>
+
+                        <div class="batch-box">
+                            <small>New Recovered</small>
+                            <strong id="batch-new-recovered">—</strong>
+                        </div>
+
+                        <div class="batch-box">
+                            <small>New Money Recovered</small>
+                            <strong id="batch-new-money">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 SCENARIO PERFORMANCE
+            ================================================== -->
+
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>Scenario Performance</h3>
+
+                        <p>
+                            Measured agent outcomes from persisted executions
+                        </p>
+                    </div>
+                </div>
+
+                <div
+                    id="scenario-grid"
+                    class="scenario-grid"
+                >
+                    <div class="audit-empty">
+                        Loading scenario performance…
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 AGENT WORKFLOW
+            ================================================== -->
+
+            <section
+                class="panel"
+                style="margin-top: 18px;"
+            >
+                <div class="panel-header">
+                    <div>
+                        <h3>Agent Workflow</h3>
+
+                        <p>
+                            Bounded recovery flow exposed by the
+                            agent audit API
+                        </p>
+                    </div>
+                </div>
+
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="n">1</div>
+                        <strong>DETECT</strong>
+                        <span>Revenue-risk event</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">2</div>
+                        <strong>DIAGNOSE</strong>
+                        <span>Cause + evidence</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">3</div>
+                        <strong>PREDICT</strong>
+                        <span>ML recovery score</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">4</div>
+                        <strong>DECIDE</strong>
+                        <span>Policy + action</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">5</div>
+                        <strong>ACT</strong>
+                        <span>Bounded execution</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">6</div>
+                        <strong>MEASURE</strong>
+                        <span>Money recovered</span>
+                    </div>
+
+                    <div class="workflow-step">
+                        <div class="n">7</div>
+                        <strong>STOP</strong>
+                        <span>Stop / escalate</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 AGENT EXECUTION HISTORY
+            ================================================== -->
+
+            <section
+                class="panel"
+                id="execution-history"
+                style="margin-top: 18px;"
+            >
+                <div class="panel-header">
+                    <div>
+                        <h3>Agent Executions</h3>
+
+                        <p>
+                            Search and inspect the complete persisted
+                            Recovery Agent execution history
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FILTERS -->
+
+                <div class="execution-controls">
+                    <input
+                        id="agent-execution-search"
+                        class="execution-search"
+                        type="search"
+                        placeholder="Search transaction or customer..."
+                    >
+
+                    <select
+                        id="agent-scenario-filter"
+                        class="execution-filter"
+                    >
+                        <option value="">
+                            All scenarios
+                        </option>
+
+                        <option value="payment_failure">
+                            Payment Failure
+                        </option>
+
+                        <option value="checkout_abandonment">
+                            Checkout Abandonment
+                        </option>
+
+                        <option value="failed_subscription">
+                            Failed Subscription
+                        </option>
+
+                        <option value="b2b_receivable">
+                            B2B Receivable
+                        </option>
+
+                        <option value="mandate_failure">
+                            Mandate Failure
+                        </option>
+
+                        <option value="promise_to_pay">
+                            Promise to Pay
+                        </option>
+                    </select>
+
+                    <select
+                        id="agent-result-filter"
+                        class="execution-filter"
+                    >
+                        <option value="">
+                            All results
+                        </option>
+
+                        <option value="recovered">
+                            Recovered
+                        </option>
+
+                        <option value="not_recovered">
+                            Not Recovered
+                        </option>
+                    </select>
+                </div>
+
+                <!-- COUNT -->
+
+                <div
+                    id="execution-count"
+                    style="
+                        padding: 0 18px 12px;
+                        color: #7183a0;
+                        font-size: 11px;
+                    "
+                >
+                    Showing 0 of 0 executions
+                </div>
+
+                <!-- TABLE -->
+
+                <div
+                    class="table-wrapper"
+                    style="margin: 0 18px 18px;"
+                >
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction</th>
+                                <th>Customer</th>
+                                <th>Scenario</th>
+                                <th>Diagnosis</th>
+                                <th>Action</th>
+                                <th>Channel</th>
+                                <th>Result</th>
+                                <th>Money Recovered</th>
+                                <th>Attempts</th>
+                                <th>Stop Reason</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recent-body">
+                            <tr>
+                                <td
+                                    colspan="10"
+                                    class="loading"
+                                >
+                                    Loading agent executions...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PAGINATION -->
+
+                <div
+                    id="agent-pagination"
+                    style="padding: 0 18px 20px;"
+                ></div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/js/recovery-agent.js"></script>
+</body>
+</html>

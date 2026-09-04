@@ -2,22 +2,14 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Analytics - Recovery AI</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="/css/style.css">
 
     <style>
-
         /* =====================================================
            ANALYTICS PAGE
         ===================================================== */
@@ -89,7 +81,6 @@
             color: #2563eb;
             transform: translateY(-1px);
         }
-
 
         /* =====================================================
            KPI GRID
@@ -183,7 +174,6 @@
             font-size: 12px;
         }
 
-
         /* =====================================================
            MAIN GRID
         ===================================================== */
@@ -222,7 +212,6 @@
             color: #64748b;
             font-size: 13px;
         }
-
 
         /* =====================================================
            STRATEGY BARS
@@ -294,7 +283,6 @@
             font-size: 11px;
         }
 
-
         /* =====================================================
            INSIGHT CARD
         ===================================================== */
@@ -354,7 +342,6 @@
             font-size: 13px;
         }
 
-
         /* =====================================================
            PERFORMANCE TABLE
         ===================================================== */
@@ -406,7 +393,6 @@
             font-weight: 700;
         }
 
-
         /* =====================================================
            STATUS
         ===================================================== */
@@ -422,28 +408,21 @@
             font-size: 13px;
         }
 
-
         /* =====================================================
            RESPONSIVE
         ===================================================== */
 
         @media (max-width: 1100px) {
-
             .analytics-kpis {
-                grid-template-columns: repeat(
-                    2,
-                    minmax(0, 1fr)
-                );
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             .analytics-grid {
                 grid-template-columns: 1fr;
             }
-
         }
 
         @media (max-width: 700px) {
-
             .analytics-header {
                 flex-direction: column;
             }
@@ -460,1673 +439,1583 @@
             .analytics-kpi {
                 min-height: 130px;
             }
-
         }
-
     </style>
 
-<style id="analytics-layout-fix">
-/* ============================================================
-   ANALYTICS NATIVE LAYOUT FIX
-   The global .main-content owns sidebar positioning.
-   Analytics itself is centered INSIDE that available area.
-   ============================================================ */
-.analytics-content.analytics-shell {
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-    min-width: 0;
-}
-/* Never let Analytics create a second horizontal canvas. */
-.analytics-content.analytics-shell,
-.analytics-content.analytics-shell > * {
-    min-width: 0;
-    box-sizing: border-box;
-}
-/* The ML evaluation component must stay inside the shell. */
-#ml-evaluation-section {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-/* Evaluation grid */
-#ml-evaluation-stats.ml-evaluation-grid {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-}
-/* Metric cards */
-#ml-evaluation-section .ml-evaluation-card {
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-/* Keep the comparison table scrollable inside itself. */
-#ml-evaluation-section .table-wrapper {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-x: auto;
-}
-/* Laptop */
-@media (max-width: 1200px) {
-    .analytics-content.analytics-shell {
-        max-width: none;
-    }
-}
-/* Small screens */
-@media (max-width: 760px) {
-    .analytics-content.analytics-shell {
-        width: 100%;
-        max-width: none;
-    }
-}
-</style>
-<style id="ml-evaluation-final-style">
-#ml-evaluation-stats .ml-evaluation-card {
-    display:block !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    min-height:105px !important;
-    margin:0 !important;
-    padding:15px !important;
-    box-sizing:border-box !important;
-    position:static !important;
-    left:auto !important;
-    right:auto !important;
-    transform:none !important;
-    border:1px solid #e0e7ef !important;
-    border-radius:10px !important;
-    background:#ffffff !important;
-    overflow:hidden !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .label {
-    display:block !important;
-    margin:0 !important;
-    color:#7183a0 !important;
-    font-size:10px !important;
-    font-weight:700 !important;
-    text-transform:uppercase !important;
-    letter-spacing:.04em !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .value {
-    display:block !important;
-    margin:7px 0 0 !important;
-    color:#111827 !important;
-    font-size:21px !important;
-    font-weight:800 !important;
-    line-height:1.2 !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .desc {
-    display:block !important;
-    margin:5px 0 0 !important;
-    color:#8190a6 !important;
-    font-size:10px !important;
-    line-height:1.35 !important;
-}
-@media (max-width:1100px) {
-    #ml-evaluation-stats {
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    }
-}
-@media (max-width:650px) {
-    #ml-evaluation-stats {
-        grid-template-columns:1fr !important;
-    }
-}
-</style><style id="ml-evaluation-final-style">
-#ml-evaluation-stats .ml-evaluation-card {
-    display:block !important;
-    width:100% !important;
-    min-width:0 !important;
-    max-width:100% !important;
-    min-height:105px !important;
-    margin:0 !important;
-    padding:15px !important;
-    box-sizing:border-box !important;
-    position:static !important;
-    left:auto !important;
-    right:auto !important;
-    transform:none !important;
-    border:1px solid #e0e7ef !important;
-    border-radius:10px !important;
-    background:#ffffff !important;
-    overflow:hidden !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .label {
-    display:block !important;
-    margin:0 !important;
-    color:#7183a0 !important;
-    font-size:10px !important;
-    font-weight:700 !important;
-    text-transform:uppercase !important;
-    letter-spacing:.04em !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .value {
-    display:block !important;
-    margin:7px 0 0 !important;
-    color:#111827 !important;
-    font-size:21px !important;
-    font-weight:800 !important;
-    line-height:1.2 !important;
-}
-#ml-evaluation-stats .ml-evaluation-card .desc {
-    display:block !important;
-    margin:5px 0 0 !important;
-    color:#8190a6 !important;
-    font-size:10px !important;
-    line-height:1.35 !important;
-}
-@media (max-width:1100px) {
-    #ml-evaluation-stats {
-        grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    }
-}
-@media (max-width:650px) {
-    #ml-evaluation-stats {
-        grid-template-columns:1fr !important;
-    }
-}
-</style><style id="analytics-symbol-only-sidebar">
-/* ============================================================
-   ANALYTICS COLLAPSED SIDEBAR
-   Show icons only when sidebar is collapsed.
-   ============================================================ */
-/* Hide brand text */
-.app.sidebar-collapsed .sidebar .sidebar-brand > div:not(.brand-mark) {
-    display: none !important;
-}
-/* Center logo */
-.app.sidebar-collapsed .sidebar .sidebar-brand {
-    justify-content: center !important;
-}
-/* Hide every navigation label, keep only nav-icon */
-.app.sidebar-collapsed .sidebar .sidebar-nav .nav-item > span:not(.nav-icon) {
-    display: none !important;
-}
-/* Center navigation icons */
-.app.sidebar-collapsed .sidebar .sidebar-nav .nav-item {
-    justify-content: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-/* Keep icon visible */
-.app.sidebar-collapsed .sidebar .nav-icon {
-    display: block !important;
-    margin: 0 auto !important;
-}
-/* Hide system-status text */
-.app.sidebar-collapsed .sidebar .sidebar-bottom .status-text {
-    display: none !important;
-}
-/* Hide text if this page uses strong/span instead */
-.app.sidebar-collapsed .sidebar .sidebar-bottom strong,
-.app.sidebar-collapsed .sidebar .sidebar-bottom > span {
-    display: none !important;
-}
-/* Center the bottom status */
-.app.sidebar-collapsed .sidebar .sidebar-bottom,
-.app.sidebar-collapsed .sidebar .system-status {
-    justify-content: center !important;
-}
-/* Make sure the toggle stays visible above everything */
-#analytics-sidebar-toggle {
-    z-index: 5000 !important;
-    pointer-events: auto !important;
-}
-/* ============================================================
-   END SYMBOL-ONLY SIDEBAR
-   ============================================================ */
-</style>
-<style id="analytics-symbol-only-sidebar">
-/* ============================================================
-   ANALYTICS COLLAPSED SIDEBAR
-   Show icons only when sidebar is collapsed.
-   ============================================================ */
-/* Hide brand text */
-.app.sidebar-collapsed .sidebar .sidebar-brand > div:not(.brand-mark) {
-    display: none !important;
-}
-/* Center logo */
-.app.sidebar-collapsed .sidebar .sidebar-brand {
-    justify-content: center !important;
-}
-/* Hide every navigation label, keep only nav-icon */
-.app.sidebar-collapsed .sidebar .sidebar-nav .nav-item > span:not(.nav-icon) {
-    display: none !important;
-}
-/* Center navigation icons */
-.app.sidebar-collapsed .sidebar .sidebar-nav .nav-item {
-    justify-content: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-/* Keep icon visible */
-.app.sidebar-collapsed .sidebar .nav-icon {
-    display: block !important;
-    margin: 0 auto !important;
-}
-/* Hide system-status text */
-.app.sidebar-collapsed .sidebar .sidebar-bottom .status-text {
-    display: none !important;
-}
-/* Hide text if this page uses strong/span instead */
-.app.sidebar-collapsed .sidebar .sidebar-bottom strong,
-.app.sidebar-collapsed .sidebar .sidebar-bottom > span {
-    display: none !important;
-}
-/* Center the bottom status */
-.app.sidebar-collapsed .sidebar .sidebar-bottom,
-.app.sidebar-collapsed .sidebar .system-status {
-    justify-content: center !important;
-}
-/* Make sure the toggle stays visible above everything */
-#analytics-sidebar-toggle {
-    z-index: 5000 !important;
-    pointer-events: auto !important;
-}
-/* ============================================================
-   END SYMBOL-ONLY SIDEBAR
-   ============================================================ */
-</style>
-</head>
+    <style id="analytics-layout-fix">
+        /* ============================================================
+           ANALYTICS NATIVE LAYOUT FIX
+           ============================================================ */
 
+        .analytics-content.analytics-shell {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .analytics-content.analytics-shell,
+        .analytics-content.analytics-shell > * {
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        #ml-evaluation-section {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        #ml-evaluation-stats.ml-evaluation-grid {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        #ml-evaluation-section .ml-evaluation-card {
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        #ml-evaluation-section .table-wrapper {
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .analytics-content.analytics-shell {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .analytics-content.analytics-shell {
+                width: 100%;
+                max-width: none;
+            }
+        }
+    </style>
+
+    <style id="ml-evaluation-final-style">
+        #ml-evaluation-stats .ml-evaluation-card {
+            display: block !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            min-height: 105px !important;
+            margin: 0 !important;
+            padding: 15px !important;
+            box-sizing: border-box !important;
+            position: static !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            border: 1px solid #e0e7ef !important;
+            border-radius: 10px !important;
+            background: #ffffff !important;
+            overflow: hidden !important;
+        }
+
+        #ml-evaluation-stats .ml-evaluation-card .label {
+            display: block !important;
+            margin: 0 !important;
+            color: #7183a0 !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.04em !important;
+        }
+
+        #ml-evaluation-stats .ml-evaluation-card .value {
+            display: block !important;
+            margin: 7px 0 0 !important;
+            color: #111827 !important;
+            font-size: 21px !important;
+            font-weight: 800 !important;
+            line-height: 1.2 !important;
+        }
+
+        #ml-evaluation-stats .ml-evaluation-card .desc {
+            display: block !important;
+            margin: 5px 0 0 !important;
+            color: #8190a6 !important;
+            font-size: 10px !important;
+            line-height: 1.35 !important;
+        }
+
+        @media (max-width: 1100px) {
+            #ml-evaluation-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (max-width: 650px) {
+            #ml-evaluation-stats {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
+    <style id="analytics-symbol-only-sidebar">
+        /* ============================================================
+           ANALYTICS COLLAPSED SIDEBAR
+           ============================================================ */
+
+        .app.sidebar-collapsed .sidebar .sidebar-brand > div:not(.brand-mark) {
+            display: none !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-brand {
+            justify-content: center !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-nav .nav-item > span:not(.nav-icon) {
+            display: none !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-nav .nav-item {
+            justify-content: center !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .nav-icon {
+            display: block !important;
+            margin: 0 auto !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-bottom .status-text {
+            display: none !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-bottom strong,
+        .app.sidebar-collapsed .sidebar .sidebar-bottom > span {
+            display: none !important;
+        }
+
+        .app.sidebar-collapsed .sidebar .sidebar-bottom,
+        .app.sidebar-collapsed .sidebar .system-status {
+            justify-content: center !important;
+        }
+
+        #analytics-sidebar-toggle {
+            z-index: 5000 !important;
+            pointer-events: auto !important;
+        }
+    </style>
+</head>
 
 <body>
 
+    <div class="app-shell">
 
-<div class="app-shell">
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
 
+        <aside class="sidebar">
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
+            <!-- BRAND -->
 
-    <aside class="sidebar">
-
-
-        <!-- BRAND -->
-
-        <div class="sidebar-brand">
-
-            <div class="brand-mark">
-                R
-            </div>
-
-            <div>
-
-                <h2>
-                    Recovery AI
-                </h2>
-
-                <p>
-                    Revenue Operations
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- NAVIGATION -->
-
-                <nav class="sidebar-nav">
-            <a
-                href="/"
-                class="nav-item"
-            >
-                <span class="nav-icon">▦</span>
-                <span>Dashboard</span>
-            </a>
-            <a
-                href="/recovery-cases.html"
-                class="nav-item"
-            >
-                <span class="nav-icon">◉</span>
-                <span>Recovery Cases</span>
-            </a>
-            <a
-                href="/customers.html"
-                class="nav-item"
-            >
-                <span class="nav-icon">●</span>
-                <span>Customers</span>
-            </a>
-            <a
-                href="/analytics.html"
-                class="nav-item active"
-            >
-                <span class="nav-icon">◌</span>
-                <span>Analytics</span>
-            </a>
-            <a
-                href="/recovery-agent.html"
-                class="nav-item"
-            >
-                <span class="nav-icon">✦</span>
-                <span>Recovery Agent</span>
-            </a>
-        </nav>
-
-
-        <!-- SYSTEM STATUS -->
-
-        <div class="sidebar-footer">
-
-            <strong>
-                System Online
-            </strong>
-
-            <span>
-                AI Agent Active
-            </span>
-
-        </div>
-
-
-    <button
-    type="button"
-    class="sidebar-toggle"
-    id="analytics-sidebar-toggle"
-    aria-label="Toggle sidebar"
-    title="Collapse sidebar"
->
-    <span class="toggle-icon">‹</span>
-</button>
-</aside>
-
-
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
-
-    <main class="main-content">
-
-
-        <div class="analytics-content analytics-shell">
-
-
-            <!-- =================================================
-                 HEADER
-            ================================================== -->
-
-            <header class="analytics-header">
-
+            <div class="sidebar-brand">
+                <div class="brand-mark">
+                    R
+                </div>
 
                 <div>
-
-                    <h1>
-                        Analytics
-                    </h1>
-
-                    <p>
-                        Recovery performance, strategy distribution
-                        and revenue insights
-                    </p>
-
-                </div>
-
-
-                <div class="analytics-actions">
-
-
-                    <div class="analytics-live">
-
-                        <span class="analytics-live-dot"></span>
-
-                        <span id="analytics-live-text">
-                            Live
-                        </span>
-
-                    </div>
-
-
-                    <button
-                        class="analytics-refresh"
-                        type="button"
-                        onclick="loadAnalytics()"
-                    >
-                        ↻ Refresh
-                    </button>
-
-
-                </div>
-
-
-            </header>
-
-
-            <!-- =================================================
-                 ERROR
-            ================================================== -->
-
-            <div
-                id="analytics-error"
-                class="analytics-status"
-            >
-                Unable to load analytics data.
-            </div>
-
-
-            <!-- =================================================
-                 KPI CARDS
-            ================================================== -->
-
-            <section class="analytics-kpis">
-
-
-                <!-- TOTAL CUSTOMERS -->
-
-                <div class="analytics-kpi">
-
-                    <div class="analytics-kpi-top">
-
-                        <span class="analytics-kpi-label">
-                            Total Customers
-                        </span>
-
-                        <div class="analytics-kpi-icon">
-                            #
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="analytics-total-customers"
-                        class="analytics-kpi-value"
-                    >
-                        —
-                    </div>
-
-
-                    <div class="analytics-kpi-description">
-                        Customers in recovery system
-                    </div>
-
-                </div>
-
-
-                <!-- RECOVERED CUSTOMERS -->
-
-                <div class="analytics-kpi">
-
-                    <div class="analytics-kpi-top">
-
-                        <span class="analytics-kpi-label">
-                            Recovered Customers
-                        </span>
-
-                        <div class="analytics-kpi-icon">
-                            ✓
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="analytics-recovered-customers"
-                        class="analytics-kpi-value"
-                    >
-                        —
-                    </div>
-
-
-                    <div class="analytics-kpi-description">
-                        Successfully recovered
-                    </div>
-
-                </div>
-
-
-                <!-- RECOVERY RATE -->
-
-                <div class="analytics-kpi">
-
-                    <div class="analytics-kpi-top">
-
-                        <span class="analytics-kpi-label">
-                            Recovery Rate
-                        </span>
-
-                        <div class="analytics-kpi-icon">
-                            %
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="analytics-recovery-rate"
-                        class="analytics-kpi-value"
-                    >
-                        —
-                    </div>
-
-
-                    <div class="analytics-kpi-description">
-                        Customers successfully recovered
-                    </div>
-
-                </div>
-
-
-                <!-- MONEY RECOVERED -->
-
-                <div class="analytics-kpi">
-
-                    <div class="analytics-kpi-top">
-
-                        <span class="analytics-kpi-label">
-                            Money Recovered
-                        </span>
-
-                        <div class="analytics-kpi-icon">
-                            ₹
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        id="analytics-money-recovered"
-                        class="analytics-kpi-value"
-                    >
-                        —
-                    </div>
-
-
-                    <div class="analytics-kpi-description">
-                        Actual recovered revenue
-                    </div>
-
-                </div>
-
-
-            </section>
-
-
-            <!-- =================================================
-                 MAIN ANALYTICS
-            ================================================== -->
-
-            <section class="analytics-grid">
-
-
-                <!-- STRATEGY DISTRIBUTION -->
-
-                <div class="analytics-card">
-
-
-                    <div class="analytics-card-header">
-
-                        <h2>
-                            Recovery Strategy Distribution
-                        </h2>
-
-                        <p>
-                            Number of recovery cases handled
-                            by each strategy
-                        </p>
-
-                    </div>
-
-
-                    <div
-                        id="strategy-list"
-                        class="strategy-list"
-                    >
-
-
-                        <!-- AGGRESSIVE -->
-
-                        <div class="strategy-row">
-
-                            <div class="strategy-info">
-
-                                <span class="strategy-name">
-                                    Aggressive Recovery
-                                </span>
-
-                                <span
-                                    id="aggressive-count"
-                                    class="strategy-count"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-
-                            <div class="strategy-track">
-
-                                <div
-                                    id="aggressive-bar"
-                                    class="strategy-bar"
-                                ></div>
-
-                            </div>
-
-
-                            <div
-                                id="aggressive-percent"
-                                class="strategy-meta"
-                            >
-                                —
-                            </div>
-
-                        </div>
-
-
-                        <!-- ASSISTED -->
-
-                        <div class="strategy-row">
-
-                            <div class="strategy-info">
-
-                                <span class="strategy-name">
-                                    Assisted Recovery
-                                </span>
-
-                                <span
-                                    id="assisted-count"
-                                    class="strategy-count"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-
-                            <div class="strategy-track">
-
-                                <div
-                                    id="assisted-bar"
-                                    class="strategy-bar"
-                                ></div>
-
-                            </div>
-
-
-                            <div
-                                id="assisted-percent"
-                                class="strategy-meta"
-                            >
-                                —
-                            </div>
-
-                        </div>
-
-
-                        <!-- STANDARD -->
-
-                        <div class="strategy-row">
-
-                            <div class="strategy-info">
-
-                                <span class="strategy-name">
-                                    Standard Recovery
-                                </span>
-
-                                <span
-                                    id="standard-count"
-                                    class="strategy-count"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-
-                            <div class="strategy-track">
-
-                                <div
-                                    id="standard-bar"
-                                    class="strategy-bar"
-                                ></div>
-
-                            </div>
-
-
-                            <div
-                                id="standard-percent"
-                                class="strategy-meta"
-                            >
-                                —
-                            </div>
-
-                        </div>
-
-
-                        <!-- LOW COST -->
-
-                        <div class="strategy-row">
-
-                            <div class="strategy-info">
-
-                                <span class="strategy-name">
-                                    Low Cost Recovery
-                                </span>
-
-                                <span
-                                    id="low-cost-count"
-                                    class="strategy-count"
-                                >
-                                    —
-                                </span>
-
-                            </div>
-
-
-                            <div class="strategy-track">
-
-                                <div
-                                    id="low-cost-bar"
-                                    class="strategy-bar"
-                                ></div>
-
-                            </div>
-
-
-                            <div
-                                id="low-cost-percent"
-                                class="strategy-meta"
-                            >
-                                —
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-                <!-- =================================================
-                     INSIGHTS
-                ================================================== -->
-
-                <div class="analytics-card">
-
-
-                    <div class="analytics-card-header">
-
-                        <h2>
-                            Recovery Insights
-                        </h2>
-
-                        <p>
-                            Current performance indicators
-                        </p>
-
-                    </div>
-
-
-                    <div class="insight-content">
-
-
-                        <!-- AVERAGE RECOVERY -->
-
-                        <div class="insight-main">
-
-                            <div class="insight-main-label">
-                                Average Recovery / Customer
-                            </div>
-
-                            <div
-                                id="analytics-average-recovery"
-                                class="insight-main-value"
-                            >
-                                —
-                            </div>
-
-                            <div class="insight-main-text">
-                                Average revenue recovered for each
-                                successfully recovered customer.
-                            </div>
-
-                        </div>
-
-
-                        <!-- COVERAGE -->
-
-                        <div class="insight-row">
-
-                            <span>
-                                Recovery coverage
-                            </span>
-
-                            <strong id="analytics-coverage">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                        <!-- CASES -->
-
-                        <div class="insight-row">
-
-                            <span>
-                                Recovery cases
-                            </span>
-
-                            <strong id="analytics-cases">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                        <!-- UNRECOVERED -->
-
-                        <div class="insight-row">
-
-                            <span>
-                                Unrecovered customers
-                            </span>
-
-                            <strong id="analytics-unrecovered">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                        <!-- STRATEGY TOTAL -->
-
-                        <div class="insight-row">
-
-                            <span>
-                                Total strategy cases
-                            </span>
-
-                            <strong id="analytics-strategy-total">
-                                —
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-            </section>
-
-
-            <!-- =================================================
-                 PERFORMANCE TABLE
-            ================================================== -->
-
-            <section class="analytics-card">
-
-
-                <div class="analytics-card-header">
-
                     <h2>
-                        Strategy Performance
+                        Recovery AI
                     </h2>
 
                     <p>
-                        Detailed breakdown of recovery strategy activity
+                        Revenue Operations
                     </p>
+                </div>
+            </div>
 
+            <!-- NAVIGATION -->
+
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-item">
+                    <span class="nav-icon">▦</span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="/recovery-cases.html" class="nav-item">
+                    <span class="nav-icon">◉</span>
+                    <span>Recovery Cases</span>
+                </a>
+
+                <a href="/customers.html" class="nav-item">
+                    <span class="nav-icon">●</span>
+                    <span>Customers</span>
+                </a>
+
+                <a href="/analytics.html" class="nav-item active">
+                    <span class="nav-icon">◌</span>
+                    <span>Analytics</span>
+                </a>
+
+                <a href="/recovery-agent.html" class="nav-item">
+                    <span class="nav-icon">✦</span>
+                    <span>Recovery Agent</span>
+                </a>
+
+                <a class="nav-item" href="/human-intervention.html">
+                    <span class="nav-icon">!</span>
+                    <span class="nav-text">Human Intervention</span>
+                </a>
+            </nav>
+
+            <!-- SYSTEM STATUS -->
+
+            <div class="sidebar-footer">
+                <strong>
+                    System Online
+                </strong>
+
+                <span>
+                    AI Agent Active
+                </span>
+            </div>
+
+            <button
+                type="button"
+                class="sidebar-toggle"
+                id="analytics-sidebar-toggle"
+                aria-label="Toggle sidebar"
+                title="Collapse sidebar"
+            >
+                <span class="toggle-icon">‹</span>
+            </button>
+
+        </aside>
+
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
+
+        <main class="main-content">
+
+            <div class="analytics-content analytics-shell">
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+
+                <header class="analytics-header">
+
+                    <div>
+                        <h1>
+                            Analytics
+                        </h1>
+
+                        <p>
+                            Recovery performance, strategy distribution
+                            and revenue insights
+                        </p>
+                    </div>
+
+                    <div class="analytics-actions">
+
+                        <div class="analytics-live">
+                            <span class="analytics-live-dot"></span>
+
+                            <span id="analytics-live-text">
+                                Live
+                            </span>
+                        </div>
+
+                        <button
+                            class="analytics-refresh"
+                            type="button"
+                            onclick="loadAnalytics()"
+                        >
+                            ↻ Refresh
+                        </button>
+
+                    </div>
+
+                </header>
+
+                <!-- =================================================
+                     ERROR
+                ================================================== -->
+
+                <div
+                    id="analytics-error"
+                    class="analytics-status"
+                >
+                    Unable to load analytics data.
                 </div>
 
+                <!-- =================================================
+                     KPI CARDS
+                ================================================== -->
 
-                <div class="performance-table-wrap">
+                <section class="analytics-kpis">
 
+                    <!-- TOTAL CUSTOMERS -->
 
-                    <table class="performance-table">
+                    <div class="analytics-kpi">
 
+                        <div class="analytics-kpi-top">
 
-                        <thead>
+                            <span class="analytics-kpi-label">
+                                Total Customers
+                            </span>
 
-                            <tr>
+                            <div class="analytics-kpi-icon">
+                                #
+                            </div>
 
-                                <th>
-                                    Strategy
-                                </th>
+                        </div>
 
-                                <th>
-                                    Cases
-                                </th>
+                        <div
+                            id="analytics-total-customers"
+                            class="analytics-kpi-value"
+                        >
+                            —
+                        </div>
 
-                                <th>
-                                    Share
-                                </th>
+                        <div class="analytics-kpi-description">
+                            Customers in recovery system
+                        </div>
 
-                                <th>
-                                    Status
-                                </th>
+                    </div>
 
-                            </tr>
+                    <!-- RECOVERED CUSTOMERS -->
 
-                        </thead>
+                    <div class="analytics-kpi">
 
+                        <div class="analytics-kpi-top">
 
-                        <tbody id="performance-body">
+                            <span class="analytics-kpi-label">
+                                Recovered Customers
+                            </span>
 
-                            <tr>
+                            <div class="analytics-kpi-icon">
+                                ✓
+                            </div>
 
-                                <td colspan="4">
-                                    Loading analytics...
-                                </td>
+                        </div>
 
-                            </tr>
+                        <div
+                            id="analytics-recovered-customers"
+                            class="analytics-kpi-value"
+                        >
+                            —
+                        </div>
 
-                        </tbody>
+                        <div class="analytics-kpi-description">
+                            Successfully recovered
+                        </div>
 
+                    </div>
 
-                    </table>
+                    <!-- RECOVERY RATE -->
 
+                    <div class="analytics-kpi">
+
+                        <div class="analytics-kpi-top">
+
+                            <span class="analytics-kpi-label">
+                                Recovery Rate
+                            </span>
+
+                            <div class="analytics-kpi-icon">
+                                %
+                            </div>
+
+                        </div>
+
+                        <div
+                            id="analytics-recovery-rate"
+                            class="analytics-kpi-value"
+                        >
+                            —
+                        </div>
+
+                        <div class="analytics-kpi-description">
+                            Customers successfully recovered
+                        </div>
+
+                    </div>
+
+                    <!-- MONEY RECOVERED -->
+
+                    <div class="analytics-kpi">
+
+                        <div class="analytics-kpi-top">
+
+                            <span class="analytics-kpi-label">
+                                Money Recovered
+                            </span>
+
+                            <div class="analytics-kpi-icon">
+                                ₹
+                            </div>
+
+                        </div>
+
+                        <div
+                            id="analytics-money-recovered"
+                            class="analytics-kpi-value"
+                        >
+                            —
+                        </div>
+
+                        <div class="analytics-kpi-description">
+                            Actual recovered revenue
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================================
+                     MAIN ANALYTICS
+                ================================================== -->
+
+                <section class="analytics-grid">
+
+                    <!-- STRATEGY DISTRIBUTION -->
+
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <h2>
+                                Recovery Strategy Distribution
+                            </h2>
+
+                            <p>
+                                Number of recovery cases handled
+                                by each strategy
+                            </p>
+
+                        </div>
+
+                        <div
+                            id="strategy-list"
+                            class="strategy-list"
+                        >
+
+                            <!-- AGGRESSIVE -->
+
+                            <div class="strategy-row">
+
+                                <div class="strategy-info">
+
+                                    <span class="strategy-name">
+                                        Aggressive Recovery
+                                    </span>
+
+                                    <span
+                                        id="aggressive-count"
+                                        class="strategy-count"
+                                    >
+                                        —
+                                    </span>
+
+                                </div>
+
+                                <div class="strategy-track">
+
+                                    <div
+                                        id="aggressive-bar"
+                                        class="strategy-bar"
+                                    ></div>
+
+                                </div>
+
+                                <div
+                                    id="aggressive-percent"
+                                    class="strategy-meta"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                            <!-- ASSISTED -->
+
+                            <div class="strategy-row">
+
+                                <div class="strategy-info">
+
+                                    <span class="strategy-name">
+                                        Assisted Recovery
+                                    </span>
+
+                                    <span
+                                        id="assisted-count"
+                                        class="strategy-count"
+                                    >
+                                        —
+                                    </span>
+
+                                </div>
+
+                                <div class="strategy-track">
+
+                                    <div
+                                        id="assisted-bar"
+                                        class="strategy-bar"
+                                    ></div>
+
+                                </div>
+
+                                <div
+                                    id="assisted-percent"
+                                    class="strategy-meta"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                            <!-- STANDARD -->
+
+                            <div class="strategy-row">
+
+                                <div class="strategy-info">
+
+                                    <span class="strategy-name">
+                                        Standard Recovery
+                                    </span>
+
+                                    <span
+                                        id="standard-count"
+                                        class="strategy-count"
+                                    >
+                                        —
+                                    </span>
+
+                                </div>
+
+                                <div class="strategy-track">
+
+                                    <div
+                                        id="standard-bar"
+                                        class="strategy-bar"
+                                    ></div>
+
+                                </div>
+
+                                <div
+                                    id="standard-percent"
+                                    class="strategy-meta"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                            <!-- LOW COST -->
+
+                            <div class="strategy-row">
+
+                                <div class="strategy-info">
+
+                                    <span class="strategy-name">
+                                        Low Cost Recovery
+                                    </span>
+
+                                    <span
+                                        id="low-cost-count"
+                                        class="strategy-count"
+                                    >
+                                        —
+                                    </span>
+
+                                </div>
+
+                                <div class="strategy-track">
+
+                                    <div
+                                        id="low-cost-bar"
+                                        class="strategy-bar"
+                                    ></div>
+
+                                </div>
+
+                                <div
+                                    id="low-cost-percent"
+                                    class="strategy-meta"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- INSIGHTS -->
+
+                    <div class="analytics-card">
+
+                        <div class="analytics-card-header">
+
+                            <h2>
+                                Recovery Insights
+                            </h2>
+
+                            <p>
+                                Current performance indicators
+                            </p>
+
+                        </div>
+
+                        <div class="insight-content">
+
+                            <!-- AVERAGE RECOVERY -->
+
+                            <div class="insight-main">
+
+                                <div class="insight-main-label">
+                                    Average Recovery / Customer
+                                </div>
+
+                                <div
+                                    id="analytics-average-recovery"
+                                    class="insight-main-value"
+                                >
+                                    —
+                                </div>
+
+                                <div class="insight-main-text">
+                                    Average revenue recovered for each
+                                    successfully recovered customer.
+                                </div>
+
+                            </div>
+
+                            <!-- COVERAGE -->
+
+                            <div class="insight-row">
+
+                                <span>
+                                    Recovery coverage
+                                </span>
+
+                                <strong id="analytics-coverage">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <!-- CASES -->
+
+                            <div class="insight-row">
+
+                                <span>
+                                    Recovery cases
+                                </span>
+
+                                <strong id="analytics-cases">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <!-- UNRECOVERED -->
+
+                            <div class="insight-row">
+
+                                <span>
+                                    Unrecovered customers
+                                </span>
+
+                                <strong id="analytics-unrecovered">
+                                    —
+                                </strong>
+
+                            </div>
+
+                            <!-- STRATEGY TOTAL -->
+
+                            <div class="insight-row">
+
+                                <span>
+                                    Total strategy cases
+                                </span>
+
+                                <strong id="analytics-strategy-total">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- =================================================
+                     PERFORMANCE TABLE
+                ================================================== -->
+
+                <section class="analytics-card">
+
+                    <div class="analytics-card-header">
+
+                        <h2>
+                            Strategy Performance
+                        </h2>
+
+                        <p>
+                            Detailed breakdown of recovery strategy activity
+                        </p>
+
+                    </div>
+
+                    <div class="performance-table-wrap">
+
+                        <table class="performance-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Strategy
+                                    </th>
+
+                                    <th>
+                                        Cases
+                                    </th>
+
+                                    <th>
+                                        Share
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="performance-body">
+
+                                <tr>
+
+                                    <td colspan="4">
+                                        Loading analytics...
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- =================================================
+                 ML MODEL EVALUATION
+            ================================================== -->
+
+            <section
+                id="ml-evaluation-section"
+                style="
+                    display: block;
+                    width: 100%;
+                    max-width: 100%;
+                    margin: 20px 0 0 0;
+                    padding: 0;
+                    position: relative;
+                    left: 0;
+                    right: auto;
+                    transform: none;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                "
+            >
+
+                <div
+                    style="
+                        width: 100%;
+                        box-sizing: border-box;
+                        border: 1px solid #dfe7f1;
+                        border-radius: 14px;
+                        background: #ffffff;
+                        overflow: hidden;
+                    "
+                >
+
+                    <div
+                        style="
+                            padding: 20px 22px;
+                            border-bottom: 1px solid #e8edf3;
+                        "
+                    >
+
+                        <h3
+                            style="
+                                margin: 0;
+                                font-size: 18px;
+                                line-height: 1.3;
+                                font-weight: 800;
+                                color: #172033;
+                            "
+                        >
+                            Recovery Model Evaluation
+                        </h3>
+
+                        <p
+                            style="
+                                margin: 6px 0 0;
+                                font-size: 12px;
+                                color: #7183a0;
+                            "
+                        >
+                            Held-out test-set performance of the recovery prediction model
+                        </p>
+
+                    </div>
+
+                    <div
+                        id="ml-evaluation-loading"
+                        style="
+                            padding: 20px 22px;
+                            color: #7183a0;
+                            font-size: 12px;
+                        "
+                    >
+                        Loading model evaluation…
+                    </div>
+
+                    <div
+                        id="ml-evaluation-content"
+                        style="
+                            display: none;
+                            width: 100%;
+                            box-sizing: border-box;
+                        "
+                    >
+
+                        <!-- METRIC CARDS -->
+
+                        <div
+                            id="ml-evaluation-stats"
+                            class="ml-evaluation-grid"
+                            style="
+                                display: grid;
+                                grid-template-columns: repeat(3, minmax(0, 1fr));
+                                gap: 12px;
+                                width: 100%;
+                                box-sizing: border-box;
+                                padding: 18px;
+                            "
+                        ></div>
+
+                        <!-- DATASET META -->
+
+                        <div
+                            id="ml-evaluation-meta"
+                            style="
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 8px 20px;
+                                width: 100%;
+                                box-sizing: border-box;
+                                padding: 0 18px 18px;
+                                color: #7183a0;
+                                font-size: 11px;
+                            "
+                        ></div>
+
+                        <!-- MODEL COMPARISON -->
+
+                        <div
+                            style="
+                                margin: 0 18px 18px;
+                                border: 1px solid #e4eaf1;
+                                border-radius: 10px;
+                                overflow-x: auto;
+                                box-sizing: border-box;
+                            "
+                        >
+
+                            <table
+                                class="data-table"
+                                style="
+                                    width: 100%;
+                                    min-width: 720px;
+                                    margin: 0;
+                                "
+                            >
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1</th>
+                                        <th>ROC-AUC</th>
+                                        <th>PR-AUC</th>
+                                        <th>Brier Score</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="ml-model-table"></tbody>
+
+                            </table>
+
+                        </div>
+
+                        <!-- METHODOLOGY -->
+
+                        <div
+                            style="
+                                margin: 0 18px 18px;
+                                padding: 15px 17px;
+                                border: 1px solid #e1e8f0;
+                                border-radius: 10px;
+                                background: #f8fafc;
+                                color: #52657f;
+                                font-size: 11px;
+                                line-height: 1.7;
+                                box-sizing: border-box;
+                            "
+                        >
+
+                            <strong style="color: #27364d;">
+                                Evaluation methodology & leakage controls
+                            </strong>
+
+                            <div
+                                id="ml-leakage-controls"
+                                style="margin-top: 7px;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="ml-evaluation-error"
+                        style="
+                            display: none;
+                            padding: 18px 22px;
+                            color: #b91c1c;
+                            font-size: 12px;
+                        "
+                    ></div>
 
                 </div>
-
 
             </section>
 
+        </main>
 
-        </div>
-
-
-    
-
-<section
-    id="ml-evaluation-section"
-    style="
-        display:block;
-        width:100%;
-        max-width:100%;
-        margin:20px 0 0 0;
-        padding:0;
-        position:relative;
-        left:0;
-        right:auto;
-        transform:none;
-        box-sizing:border-box;
-        overflow:hidden;
-    "
->
-    <div
-        style="
-            width:100%;
-            box-sizing:border-box;
-            border:1px solid #dfe7f1;
-            border-radius:14px;
-            background:#ffffff;
-            overflow:hidden;
-        "
-    >
-        <div
-            style="
-                padding:20px 22px;
-                border-bottom:1px solid #e8edf3;
-            "
-        >
-            <h3
-                style="
-                    margin:0;
-                    font-size:18px;
-                    line-height:1.3;
-                    font-weight:800;
-                    color:#172033;
-                "
-            >
-                Recovery Model Evaluation
-            </h3>
-            <p
-                style="
-                    margin:6px 0 0;
-                    font-size:12px;
-                    color:#7183a0;
-                "
-            >
-                Held-out test-set performance of the recovery prediction model
-            </p>
-        </div>
-        <div
-            id="ml-evaluation-loading"
-            style="
-                padding:20px 22px;
-                color:#7183a0;
-                font-size:12px;
-            "
-        >
-            Loading model evaluation…
-        </div>
-        <div
-            id="ml-evaluation-content"
-            style="
-                display:none;
-                width:100%;
-                box-sizing:border-box;
-            "
-        >
-            <!-- METRIC CARDS -->
-            <div
-                id="ml-evaluation-stats"
-                style="
-                    display:grid;
-                    grid-template-columns:
-                        repeat(3,minmax(0,1fr));
-                    gap:12px;
-                    width:100%;
-                    box-sizing:border-box;
-                    padding:18px;
-                "
-            >
-            </div>
-            <!-- DATASET META -->
-            <div
-                id="ml-evaluation-meta"
-                style="
-                    display:flex;
-                    flex-wrap:wrap;
-                    gap:8px 20px;
-                    width:100%;
-                    box-sizing:border-box;
-                    padding:0 18px 18px;
-                    color:#7183a0;
-                    font-size:11px;
-                "
-            >
-            </div>
-            <!-- MODEL COMPARISON -->
-            <div
-                style="
-                    margin:0 18px 18px;
-                    border:1px solid #e4eaf1;
-                    border-radius:10px;
-                    overflow-x:auto;
-                    box-sizing:border-box;
-                "
-            >
-                <table
-                    class="data-table"
-                    style="
-                        width:100%;
-                        min-width:720px;
-                        margin:0;
-                    "
-                >
-                    <thead>
-                        <tr>
-                            <th>Model</th>
-                            <th>Precision</th>
-                            <th>Recall</th>
-                            <th>F1</th>
-                            <th>ROC-AUC</th>
-                            <th>PR-AUC</th>
-                            <th>Brier Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ml-model-table">
-                    </tbody>
-                </table>
-            </div>
-            <!-- METHODOLOGY -->
-            <div
-                style="
-                    margin:0 18px 18px;
-                    padding:15px 17px;
-                    border:1px solid #e1e8f0;
-                    border-radius:10px;
-                    background:#f8fafc;
-                    color:#52657f;
-                    font-size:11px;
-                    line-height:1.7;
-                    box-sizing:border-box;
-                "
-            >
-                <strong
-                    style="color:#27364d;"
-                >
-                    Evaluation methodology & leakage controls
-                </strong>
-                <div
-                    id="ml-leakage-controls"
-                    style="margin-top:7px;"
-                >
-                </div>
-            </div>
-        </div>
-        <div
-            id="ml-evaluation-error"
-            style="
-                display:none;
-                padding:18px 22px;
-                color:#b91c1c;
-                font-size:12px;
-            "
-        >
-        </div>
     </div>
-</section>
 
-</main>
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
 
+    <script src="/js/analytics.js"></script>
 
-</div>
+    <style>
+        /* ============================================================
+           MODEL EVALUATION — ISOLATED STYLES
+           ============================================================ */
 
-
-<!-- =====================================================
-     JAVASCRIPT
-====================================================== -->
-
-<script src="/js/analytics.js"></script>
-
-
-<style>
-/* ============================================================
-   MODEL EVALUATION — ISOLATED STYLES
-   These styles intentionally do not use the global
-   performance-grid / performance-card components.
-   ============================================================ */
-#ml-evaluation-section {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 20px 0 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-}
-#ml-evaluation-section .panel-header {
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-/* Six metric cards: 3 + 3 */
-#ml-evaluation-stats.ml-evaluation-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 18px !important;
-    box-sizing: border-box !important;
-    position: static !important;
-    transform: none !important;
-    left: auto !important;
-    right: auto !important;
-    overflow: visible !important;
-}
-/* Individual metric card */
-#ml-evaluation-section .ml-evaluation-card {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    height: auto !important;
-    min-height: 104px !important;
-    margin: 0 !important;
-    padding: 15px !important;
-    box-sizing: border-box !important;
-    position: static !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-    overflow: hidden !important;
-    background: #ffffff !important;
-    border: 1px solid #dfe7f1 !important;
-    border-radius: 10px !important;
-    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03) !important;
-}
-/* Card text */
-#ml-evaluation-section .ml-evaluation-card .label {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 !important;
-    color: #718096 !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: .04em !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-}
-#ml-evaluation-section .ml-evaluation-card .value {
-    display: block !important;
-    width: 100% !important;
-    margin: 7px 0 0 !important;
-    color: #111827 !important;
-    font-size: 21px !important;
-    font-weight: 800 !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-}
-#ml-evaluation-section .ml-evaluation-card .desc {
-    display: block !important;
-    width: 100% !important;
-    margin: 5px 0 0 !important;
-    color: #8190a6 !important;
-    font-size: 10px !important;
-    line-height: 1.35 !important;
-}
-/* Metadata */
-#ml-evaluation-meta {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 18px 16px !important;
-    box-sizing: border-box !important;
-    gap: 8px 20px !important;
-}
-/* Comparison table */
-#ml-evaluation-section .table-wrapper {
-    width: calc(100% - 36px) !important;
-    max-width: calc(100% - 36px) !important;
-    margin: 0 18px 18px !important;
-    box-sizing: border-box !important;
-    overflow-x: auto !important;
-}
-#ml-evaluation-section .table-wrapper table {
-    width: 100% !important;
-    min-width: 700px !important;
-    box-sizing: border-box !important;
-}
-/* Methodology */
-#ml-evaluation-section #ml-leakage-controls {
-    width: calc(100% - 36px) !important;
-    max-width: calc(100% - 36px) !important;
-    margin: 0 18px 18px !important;
-    box-sizing: border-box !important;
-}
-/* Laptop */
-@media (max-width: 1100px) {
-    #ml-evaluation-stats.ml-evaluation-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    }
-}
-/* Small screen */
-@media (max-width: 650px) {
-    #ml-evaluation-stats.ml-evaluation-grid {
-        grid-template-columns: 1fr !important;
-    }
-}
-/* ============================================================
-   END MODEL EVALUATION ISOLATION
-   ============================================================ */
-</style>
-
-<script>
-(function () {
-    const esc = (value) => {
-        const d = document.createElement("div");
-        d.textContent = value == null ? "" : String(value);
-        return d.innerHTML;
-    };
-    const pct = (value) =>
-        `${(Number(value || 0) * 100).toFixed(2)}%`;
-    const decimal = (value) =>
-        Number(value || 0).toFixed(4);
-    function statCard(label, value, description) {
-        return `
-            <div class="ml-evaluation-card">
-                <div class="label">${esc(label)}</div>
-                <div class="value">${esc(value)}</div>
-                <div class="desc">${esc(description)}</div>
-            </div>
-        `;
-    }
-    async function loadModelEvaluation() {
-        const loading =
-            document.getElementById("ml-evaluation-loading");
-        const content =
-            document.getElementById("ml-evaluation-content");
-        const errorBox =
-            document.getElementById("ml-evaluation-error");
-        try {
-            const response = await fetch(
-                "/ml/evaluation",
-                {
-                    cache: "no-store"
-                }
-            );
-            let data = {};
-            try {
-                data = await response.json();
-            } catch (_) {
-                data = {};
-            }
-            if (!response.ok) {
-                throw new Error(
-                    data.detail ||
-                    `Request failed (${response.status})`
-                );
-            }
-            const selected =
-                data.selected_model_metrics || {};
-            const dataset =
-                data.dataset || {};
-            const models =
-                data.models || {};
-            document.getElementById(
-                "ml-evaluation-stats"
-            ).innerHTML = [
-                statCard(
-                    "Precision",
-                    pct(selected.precision),
-                    "Held-out test set"
-                ),
-                statCard(
-                    "Recall",
-                    pct(selected.recall),
-                    "Held-out test set"
-                ),
-                statCard(
-                    "F1 Score",
-                    pct(selected.f1),
-                    "Precision/recall balance"
-                ),
-                statCard(
-                    "ROC-AUC",
-                    decimal(selected.roc_auc),
-                    "Ranking quality"
-                ),
-                statCard(
-                    "PR-AUC",
-                    decimal(selected.pr_auc),
-                    "Positive-class ranking"
-                ),
-                statCard(
-                    "Brier Score",
-                    decimal(selected.brier_score),
-                    "Lower is better"
-                )
-            ].join("");
-            document.getElementById(
-                "ml-evaluation-meta"
-            ).innerHTML = `
-                <span>
-                    <strong>Selected model:</strong>
-                    ${esc(data.selected_model || "—")}
-                </span>
-                <span>
-                    <strong>Training:</strong>
-                    ${Number(
-                        dataset.training_samples || 0
-                    ).toLocaleString("en-IN")}
-                </span>
-                <span>
-                    <strong>Test:</strong>
-                    ${Number(
-                        dataset.testing_samples || 0
-                    ).toLocaleString("en-IN")}
-                </span>
-                <span>
-                    <strong>Test recovery baseline:</strong>
-                    ${pct(dataset.test_positive_rate)}
-                </span>
-            `;
-            const modelRows = [
-                [
-                    "Logistic Regression",
-                    models.logistic_regression || {}
-                ],
-                [
-                    "Random Forest",
-                    models.random_forest || {}
-                ]
-            ];
-            document.getElementById(
-                "ml-model-table"
-            ).innerHTML = modelRows.map(
-                ([name, metrics]) => `
-                    <tr>
-                        <td><strong>${esc(name)}</strong></td>
-                        <td>${pct(metrics.precision)}</td>
-                        <td>${pct(metrics.recall)}</td>
-                        <td>${pct(metrics.f1)}</td>
-                        <td>${decimal(metrics.roc_auc)}</td>
-                        <td>${decimal(metrics.pr_auc)}</td>
-                        <td>${decimal(metrics.brier_score)}</td>
-                    </tr>
-                `
-            ).join("");
-            document.getElementById(
-                "ml-leakage-controls"
-            ).innerHTML = `
-                ✓ Evaluation uses a stratified 20% held-out test set.<br>
-                ✓ <code>recovered</code> is excluded from model features.<br>
-                ✓ <code>money_recovered</code> is excluded from model features.<br>
-                ✓ Transaction/customer identifiers are excluded.<br>
-                ✓ The selected model is chosen using held-out ROC-AUC.
-            `;
-            loading.style.display = "none";
-            content.style.display = "block";
-        } catch (error) {
-            console.error(
-                "ML evaluation error:",
-                error
-            );
-            loading.style.display = "none";
-            errorBox.style.display = "block";
-            errorBox.textContent =
-                `Unable to load model evaluation: ${error.message}`;
+        #ml-evaluation-section {
+            display: block !important;
+            position: relative !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin: 20px 0 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
         }
-    }
-    if (document.readyState === "loading") {
-        document.addEventListener(
-            "DOMContentLoaded",
-            loadModelEvaluation
-        );
-    } else {
-        loadModelEvaluation();
-    }
-})();
-</script>
-<script id="analytics-sidebar-collapse-script">
-(function () {
-    function init() {
-        const sidebar =
-            document.querySelector(".sidebar");
-        const main =
-            document.querySelector("main.main-content");
-        const button =
-            document.getElementById(
-                "analytics-sidebar-toggle"
-            );
-        if (!sidebar || !main || !button) {
-            console.error(
-                "Analytics sidebar elements missing."
-            );
-            return;
+
+        #ml-evaluation-section .panel-header {
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
-        let collapsed = false;
-        function setCollapsed(value) {
-            collapsed = value;
-            if (collapsed) {
-                /* SIDEBAR */
-                sidebar.style.setProperty(
-                    "width",
-                    "72px",
-                    "important"
-                );
-                sidebar.style.setProperty(
-                    "min-width",
-                    "72px",
-                    "important"
-                );
-                /* MAIN CONTENT */
-                main.style.setProperty(
-                    "margin-left",
-                    "72px",
-                    "important"
-                );
-                main.style.setProperty(
-                    "width",
-                    "calc(100% - 72px)",
-                    "important"
-                );
-                /* BRAND TEXT */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-brand > div"
-                    )
-                    .forEach(function (el) {
-                        if (
-                            !el.classList.contains(
-                                "brand-mark"
-                            )
-                        ) {
-                            el.style.display =
-                                "none";
+
+        #ml-evaluation-stats.ml-evaluation-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 12px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            padding: 18px !important;
+            box-sizing: border-box !important;
+            position: static !important;
+            transform: none !important;
+            left: auto !important;
+            right: auto !important;
+            overflow: visible !important;
+        }
+
+        #ml-evaluation-section .ml-evaluation-card {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            height: auto !important;
+            min-height: 104px !important;
+            margin: 0 !important;
+            padding: 15px !important;
+            box-sizing: border-box !important;
+            position: static !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+            overflow: hidden !important;
+            background: #ffffff !important;
+            border: 1px solid #dfe7f1 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03) !important;
+        }
+
+        #ml-evaluation-section .ml-evaluation-card .label {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 !important;
+            color: #718096 !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.04em !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
+        #ml-evaluation-section .ml-evaluation-card .value {
+            display: block !important;
+            width: 100% !important;
+            margin: 7px 0 0 !important;
+            color: #111827 !important;
+            font-size: 21px !important;
+            font-weight: 800 !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+        }
+
+        #ml-evaluation-section .ml-evaluation-card .desc {
+            display: block !important;
+            width: 100% !important;
+            margin: 5px 0 0 !important;
+            color: #8190a6 !important;
+            font-size: 10px !important;
+            line-height: 1.35 !important;
+        }
+
+        #ml-evaluation-meta {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            margin: 0 !important;
+            padding: 0 18px 16px !important;
+            box-sizing: border-box !important;
+            gap: 8px 20px !important;
+        }
+
+        #ml-evaluation-section .table-wrapper {
+            width: calc(100% - 36px) !important;
+            max-width: calc(100% - 36px) !important;
+            margin: 0 18px 18px !important;
+            box-sizing: border-box !important;
+            overflow-x: auto !important;
+        }
+
+        #ml-evaluation-section .table-wrapper table {
+            width: 100% !important;
+            min-width: 700px !important;
+            box-sizing: border-box !important;
+        }
+
+        #ml-evaluation-section #ml-leakage-controls {
+            width: calc(100% - 36px) !important;
+            max-width: calc(100% - 36px) !important;
+            margin: 0 18px 18px !important;
+            box-sizing: border-box !important;
+        }
+
+        @media (max-width: 1100px) {
+            #ml-evaluation-stats.ml-evaluation-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (max-width: 650px) {
+            #ml-evaluation-stats.ml-evaluation-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+
+    <script>
+        (function () {
+            const esc = (value) => {
+                const d = document.createElement("div");
+                d.textContent = value == null ? "" : String(value);
+                return d.innerHTML;
+            };
+
+            const pct = (value) =>
+                `${(Number(value || 0) * 100).toFixed(2)}%`;
+
+            const decimal = (value) =>
+                Number(value || 0).toFixed(4);
+
+            function statCard(label, value, description) {
+                return `
+                    <div class="ml-evaluation-card">
+                        <div class="label">${esc(label)}</div>
+                        <div class="value">${esc(value)}</div>
+                        <div class="desc">${esc(description)}</div>
+                    </div>
+                `;
+            }
+
+            async function loadModelEvaluation() {
+                const loading =
+                    document.getElementById("ml-evaluation-loading");
+
+                const content =
+                    document.getElementById("ml-evaluation-content");
+
+                const errorBox =
+                    document.getElementById("ml-evaluation-error");
+
+                try {
+                    const response = await fetch(
+                        "/ml/evaluation",
+                        {
+                            cache: "no-store"
                         }
-                    });
-                /* NAV TEXT */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-nav .nav-item"
-                    )
-                    .forEach(function (item) {
-                        item.style.justifyContent =
-                            "center";
-                        item.style.paddingLeft =
-                            "0";
-                        item.style.paddingRight =
-                            "0";
-                        item
+                    );
+
+                    let data = {};
+
+                    try {
+                        data = await response.json();
+                    } catch (_) {
+                        data = {};
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.detail ||
+                            `Request failed (${response.status})`
+                        );
+                    }
+
+                    const selected =
+                        data.selected_model_metrics || {};
+
+                    const dataset =
+                        data.dataset || {};
+
+                    const models =
+                        data.models || {};
+
+                    document.getElementById(
+                        "ml-evaluation-stats"
+                    ).innerHTML = [
+                        statCard(
+                            "Precision",
+                            pct(selected.precision),
+                            "Held-out test set"
+                        ),
+                        statCard(
+                            "Recall",
+                            pct(selected.recall),
+                            "Held-out test set"
+                        ),
+                        statCard(
+                            "F1 Score",
+                            pct(selected.f1),
+                            "Precision/recall balance"
+                        ),
+                        statCard(
+                            "ROC-AUC",
+                            decimal(selected.roc_auc),
+                            "Ranking quality"
+                        ),
+                        statCard(
+                            "PR-AUC",
+                            decimal(selected.pr_auc),
+                            "Positive-class ranking"
+                        ),
+                        statCard(
+                            "Brier Score",
+                            decimal(selected.brier_score),
+                            "Lower is better"
+                        )
+                    ].join("");
+
+                    document.getElementById(
+                        "ml-evaluation-meta"
+                    ).innerHTML = `
+                        <span>
+                            <strong>Selected model:</strong>
+                            ${esc(data.selected_model || "—")}
+                        </span>
+
+                        <span>
+                            <strong>Training:</strong>
+                            ${Number(
+                                dataset.training_samples || 0
+                            ).toLocaleString("en-IN")}
+                        </span>
+
+                        <span>
+                            <strong>Test:</strong>
+                            ${Number(
+                                dataset.testing_samples || 0
+                            ).toLocaleString("en-IN")}
+                        </span>
+
+                        <span>
+                            <strong>Test recovery baseline:</strong>
+                            ${pct(dataset.test_positive_rate)}
+                        </span>
+                    `;
+
+                    const modelRows = [
+                        [
+                            "Logistic Regression",
+                            models.logistic_regression || {}
+                        ],
+                        [
+                            "Random Forest",
+                            models.random_forest || {}
+                        ]
+                    ];
+
+                    document.getElementById(
+                        "ml-model-table"
+                    ).innerHTML = modelRows.map(
+                        ([name, metrics]) => `
+                            <tr>
+                                <td>
+                                    <strong>${esc(name)}</strong>
+                                </td>
+                                <td>${pct(metrics.precision)}</td>
+                                <td>${pct(metrics.recall)}</td>
+                                <td>${pct(metrics.f1)}</td>
+                                <td>${decimal(metrics.roc_auc)}</td>
+                                <td>${decimal(metrics.pr_auc)}</td>
+                                <td>${decimal(metrics.brier_score)}</td>
+                            </tr>
+                        `
+                    ).join("");
+
+                    document.getElementById(
+                        "ml-leakage-controls"
+                    ).innerHTML = `
+                        ✓ Evaluation uses a stratified 20% held-out test set.<br>
+                        ✓ <code>recovered</code> is excluded from model features.<br>
+                        ✓ <code>money_recovered</code> is excluded from model features.<br>
+                        ✓ Transaction/customer identifiers are excluded.<br>
+                        ✓ The selected model is chosen using held-out ROC-AUC.
+                    `;
+
+                    loading.style.display = "none";
+                    content.style.display = "block";
+
+                } catch (error) {
+                    console.error(
+                        "ML evaluation error:",
+                        error
+                    );
+
+                    loading.style.display = "none";
+                    errorBox.style.display = "block";
+
+                    errorBox.textContent =
+                        `Unable to load model evaluation: ${error.message}`;
+                }
+            }
+
+            if (document.readyState === "loading") {
+                document.addEventListener(
+                    "DOMContentLoaded",
+                    loadModelEvaluation
+                );
+            } else {
+                loadModelEvaluation();
+            }
+        })();
+    </script>
+
+    <script id="analytics-sidebar-collapse-script">
+        (function () {
+            function init() {
+                const sidebar =
+                    document.querySelector(".sidebar");
+
+                const main =
+                    document.querySelector("main.main-content");
+
+                const button =
+                    document.getElementById(
+                        "analytics-sidebar-toggle"
+                    );
+
+                if (!sidebar || !main || !button) {
+                    console.error(
+                        "Analytics sidebar elements missing."
+                    );
+                    return;
+                }
+
+                let collapsed = false;
+
+                function setCollapsed(value) {
+                    collapsed = value;
+
+                    if (collapsed) {
+                        /* SIDEBAR */
+
+                        sidebar.style.setProperty(
+                            "width",
+                            "72px",
+                            "important"
+                        );
+
+                        sidebar.style.setProperty(
+                            "min-width",
+                            "72px",
+                            "important"
+                        );
+
+                        /* MAIN CONTENT */
+
+                        main.style.setProperty(
+                            "margin-left",
+                            "72px",
+                            "important"
+                        );
+
+                        main.style.setProperty(
+                            "width",
+                            "calc(100% - 72px)",
+                            "important"
+                        );
+
+                        /* BRAND TEXT */
+
+                        sidebar
                             .querySelectorAll(
-                                "span:not(.nav-icon)"
+                                ".sidebar-brand > div"
+                            )
+                            .forEach(function (el) {
+                                if (
+                                    !el.classList.contains(
+                                        "brand-mark"
+                                    )
+                                ) {
+                                    el.style.display =
+                                        "none";
+                                }
+                            });
+
+                        /* NAV TEXT */
+
+                        sidebar
+                            .querySelectorAll(
+                                ".sidebar-nav .nav-item"
+                            )
+                            .forEach(function (item) {
+                                item.style.justifyContent =
+                                    "center";
+
+                                item.style.paddingLeft =
+                                    "0";
+
+                                item.style.paddingRight =
+                                    "0";
+
+                                item
+                                    .querySelectorAll(
+                                        "span:not(.nav-icon)"
+                                    )
+                                    .forEach(function (el) {
+                                        el.style.display =
+                                            "none";
+                                    });
+                            });
+
+                        /* STATUS TEXT */
+
+                        sidebar
+                            .querySelectorAll(
+                                ".sidebar-footer strong, .sidebar-footer span"
                             )
                             .forEach(function (el) {
                                 el.style.display =
                                     "none";
                             });
-                    });
-                /* STATUS TEXT */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-footer strong, .sidebar-footer span"
-                    )
-                    .forEach(function (el) {
-                        el.style.display =
-                            "none";
-                    });
-                /* BUTTON */
-                button.style.left = "72px";
-                const icon =
-                    button.querySelector(
-                        ".toggle-icon"
-                    );
-                if (icon) {
-                    icon.textContent = "›";
-                }
-                button.title =
-                    "Expand sidebar";
-            } else {
-                /* SIDEBAR */
-                sidebar.style.removeProperty(
-                    "width"
-                );
-                sidebar.style.removeProperty(
-                    "min-width"
-                );
-                /* MAIN */
-                main.style.removeProperty(
-                    "margin-left"
-                );
-                main.style.removeProperty(
-                    "width"
-                );
-                /* BRAND */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-brand > div"
-                    )
-                    .forEach(function (el) {
-                        el.style.removeProperty(
-                            "display"
+
+                        /* BUTTON */
+
+                        button.style.left = "72px";
+
+                        const icon =
+                            button.querySelector(
+                                ".toggle-icon"
+                            );
+
+                        if (icon) {
+                            icon.textContent = "›";
+                        }
+
+                        button.title =
+                            "Expand sidebar";
+
+                    } else {
+                        /* SIDEBAR */
+
+                        sidebar.style.removeProperty(
+                            "width"
                         );
-                    });
-                /* NAV */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-nav .nav-item"
-                    )
-                    .forEach(function (item) {
-                        item.style.removeProperty(
-                            "justify-content"
+
+                        sidebar.style.removeProperty(
+                            "min-width"
                         );
-                        item.style.removeProperty(
-                            "padding-left"
+
+                        /* MAIN */
+
+                        main.style.removeProperty(
+                            "margin-left"
                         );
-                        item.style.removeProperty(
-                            "padding-right"
+
+                        main.style.removeProperty(
+                            "width"
                         );
-                        item
+
+                        /* BRAND */
+
+                        sidebar
                             .querySelectorAll(
-                                "span:not(.nav-icon)"
+                                ".sidebar-brand > div"
                             )
                             .forEach(function (el) {
                                 el.style.removeProperty(
                                     "display"
                                 );
                             });
-                    });
-                /* STATUS */
-                sidebar
-                    .querySelectorAll(
-                        ".sidebar-footer strong, .sidebar-footer span"
-                    )
-                    .forEach(function (el) {
-                        el.style.removeProperty(
-                            "display"
-                        );
-                    });
-                /* BUTTON */
-                button.style.left = "";
-                const icon =
-                    button.querySelector(
-                        ".toggle-icon"
-                    );
-                if (icon) {
-                    icon.textContent = "‹";
+
+                        /* NAV */
+
+                        sidebar
+                            .querySelectorAll(
+                                ".sidebar-nav .nav-item"
+                            )
+                            .forEach(function (item) {
+                                item.style.removeProperty(
+                                    "justify-content"
+                                );
+
+                                item.style.removeProperty(
+                                    "padding-left"
+                                );
+
+                                item.style.removeProperty(
+                                    "padding-right"
+                                );
+
+                                item
+                                    .querySelectorAll(
+                                        "span:not(.nav-icon)"
+                                    )
+                                    .forEach(function (el) {
+                                        el.style.removeProperty(
+                                            "display"
+                                        );
+                                    });
+                            });
+
+                        /* STATUS */
+
+                        sidebar
+                            .querySelectorAll(
+                                ".sidebar-footer strong, .sidebar-footer span"
+                            )
+                            .forEach(function (el) {
+                                el.style.removeProperty(
+                                    "display"
+                                );
+                            });
+
+                        /* BUTTON */
+
+                        button.style.left = "";
+
+                        const icon =
+                            button.querySelector(
+                                ".toggle-icon"
+                            );
+
+                        if (icon) {
+                            icon.textContent = "‹";
+                        }
+
+                        button.title =
+                            "Collapse sidebar";
+                    }
                 }
-                button.title =
-                    "Collapse sidebar";
+
+                button.addEventListener(
+                    "click",
+                    function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setCollapsed(!collapsed);
+                    }
+                );
+
+                setCollapsed(false);
             }
-        }
-        button.addEventListener(
-            "click",
-            function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                setCollapsed(!collapsed);
+
+            if (
+                document.readyState === "loading"
+            ) {
+                document.addEventListener(
+                    "DOMContentLoaded",
+                    init
+                );
+            } else {
+                init();
             }
-        );
-        setCollapsed(false);
-    }
-    if (
-        document.readyState === "loading"
-    ) {
-        document.addEventListener(
-            "DOMContentLoaded",
-            init
-        );
-    } else {
-        init();
-    }
-})();
-</script>
+        })();
+    </script>
+
 </body>
 
 </html>

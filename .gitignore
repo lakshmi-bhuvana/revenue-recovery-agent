@@ -60,19 +60,44 @@ recovery_events.json
 backup/
 backups/
 
+# Backup files anywhere in the repository
+**/*_backup*.py
+**/*_backup*.csv
+**/*_backup*.json
+**/*_backup*.html
+**/*_backup*.js
+**/*_backup*.css
+
+# Files created before a change
+**/*_before_*.py
+**/*_before_*.csv
+**/*_before_*.json
+**/*_before_*.html
+**/*_before_*.js
+**/*_before_*.css
+
+# Timestamped / named backup variants
+**/*backup-before-*
+**/*backup_before_*
+
+# Generic backup extensions
+*.bak
+*.backup
+*.orig
+
 # ------------------------------------------------------------
-# Temporary installation / update packages
+# Temporary Installation / Update Packages
 # ------------------------------------------------------------
 
 *_update/
 *_package/
 *.zip
 
-# Ignore only temporary/generated PowerShell installers
+# Temporary / generated PowerShell installers
 install_*.ps1
 
 # ------------------------------------------------------------
-# Temporary investigation / test files
+# Temporary Investigation / Test Files
 # ------------------------------------------------------------
 
 *_check.json
@@ -81,7 +106,7 @@ install_*.ps1
 *.temp
 
 # ------------------------------------------------------------
-# OS files
+# Operating System Files
 # ------------------------------------------------------------
 
 Thumbs.db
@@ -98,7 +123,7 @@ Desktop.ini
 *.swo
 
 # ------------------------------------------------------------
-# Node / Frontend tooling
+# Node / Frontend Tooling
 # ------------------------------------------------------------
 
 node_modules/
@@ -119,11 +144,3 @@ build/
 
 coverage/
 .nyc_output/
-
-# ------------------------------------------------------------
-# Miscellaneous generated files
-# ------------------------------------------------------------
-
-*.bak
-*.backup
-*.orig

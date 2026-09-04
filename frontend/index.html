@@ -1,954 +1,2843 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Revenue Recovery Dashboard</title>
-<link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Revenue Recovery Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/style.css"
+    >
+
+    <!-- =====================================================
+         RECOVERY AI CHAT STYLES
+    ====================================================== -->
+
+    <style>
+        .ai-panel {
+            overflow: hidden;
+        }
+
+        /* =================================================
+           CHAT LAYOUT
+        ================================================== */
+
+        .ai-chat-layout {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            min-height: 500px;
+            border-top: 1px solid #edf2f7;
+        }
+
+        /* =================================================
+           LEFT HISTORY
+        ================================================== */
+
+        .ai-chat-history {
+            background: #f8fafc;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .ai-history-header {
+            padding: 14px 12px 10px;
+        }
+
+        .ai-history-new {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            border: 1px solid #dbe3ef;
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: 9px;
+            padding: 9px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ai-history-new:hover {
+            background: #f1f5f9;
+        }
+
+        .ai-history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 8px 12px;
+        }
+
+        .ai-history-group {
+            margin-bottom: 16px;
+        }
+
+        .ai-history-group-title {
+            padding: 8px 8px 6px;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .ai-history-item {
+            width: 100%;
+            display: block;
+            border: 0;
+            background: transparent;
+            color: #475569;
+            text-align: left;
+            border-radius: 8px;
+            padding: 9px 10px;
+            margin-bottom: 2px;
+            font-size: 11px;
+            line-height: 1.4;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ai-history-item:hover {
+            background: #eef2ff;
+            color: #3730a3;
+        }
+
+        .ai-history-item.active {
+            background: #e8eaff;
+            color: #3730a3;
+            font-weight: 700;
+        }
+
+        .ai-history-empty {
+            padding: 12px 9px;
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* =================================================
+           RIGHT CHAT
+        ================================================== */
+
+        .ai-chat-main {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            min-height: 500px;
+        }
+
+        #ai-chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            min-height: 390px;
+            max-height: 500px;
+        }
+
+        /* =================================================
+           EMPTY STATE
+        ================================================== */
+
+        .ai-empty-state {
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .ai-empty-state-inner {
+            max-width: 420px;
+        }
+
+        .ai-empty-state-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .ai-empty-state strong {
+            display: block;
+            color: #1e293b;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .ai-empty-state span {
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* =================================================
+           MESSAGES
+        ================================================== */
+
+        .ai-message {
+            display: flex;
+            margin-bottom: 18px;
+        }
+
+        .ai-message.user {
+            justify-content: flex-end;
+        }
+
+        .ai-message.assistant {
+            justify-content: flex-start;
+        }
+
+        .ai-message-bubble {
+            max-width: 82%;
+            border-radius: 12px;
+            padding: 11px 14px;
+            font-size: 12px;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .ai-message.user .ai-message-bubble {
+            background: #4f46e5;
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message.assistant .ai-message-bubble {
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 4px;
+        }
+
+        .ai-message-label {
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        /* =================================================
+           INPUT
+        ================================================== */
+
+        .ai-input-area {
+            border-top: 1px solid #edf2f7;
+            padding: 14px 18px;
+            background: #ffffff;
+        }
+
+        .ai-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ai-input input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ai-input .primary-btn {
+            flex-shrink: 0;
+        }
+
+        /* =================================================
+           SUGGESTIONS
+        ================================================== */
+
+        .ai-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 9px;
+        }
+
+        .ai-suggestions button {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            color: #475569;
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .ai-suggestions button:hover {
+            background: #eef2ff;
+            color: #4338ca;
+            border-color: #c7d2fe;
+        }
+
+        /* =================================================
+           RECENTLY RECOVERED HIGH PRIORITY
+        ================================================== */
+
+        .recovered-high-priority {
+            margin-top: 20px;
+        }
+
+        .recovered-high-priority-note {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .recovered-high-priority-empty {
+            padding: 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .recovered-high-priority-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 8px;
+            margin-right: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        .recovered-high-priority-badge.high {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .recovered-high-priority-badge.recovered {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        /* =================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 850px) {
+            .ai-chat-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-chat-history {
+                border-right: 0;
+                border-bottom: 1px solid #e5e7eb;
+                max-height: 180px;
+            }
+
+            .ai-history-list {
+                max-height: 110px;
+            }
+
+            .ai-chat-main {
+                min-height: 430px;
+            }
+
+            #ai-chat {
+                min-height: 300px;
+                max-height: 430px;
+            }
+
+            .ai-message-bubble {
+                max-width: 92%;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <div class="app" id="app">
 
-<div class="app" id="app">
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
 
-    <!-- =====================================================
-         SIDEBAR
-    ====================================================== -->
-
-    <aside class="sidebar">
-
-        <div class="brand">
-            <div class="brand-mark">R</div>
-
-            <div class="brand-copy">
-                <strong>Recovery AI</strong>
-                <span>Revenue Operations</span>
-            </div>
-        </div>
-
-        <button
-            class="sidebar-toggle"
-            id="sidebar-toggle"
-            type="button"
-            aria-label="Collapse sidebar"
-            title="Collapse sidebar"
-        >
-            <span class="toggle-icon">‹</span>
-        </button>
-
-        <nav class="sidebar-nav">
-
-            <a
-                class="nav-item active"
-                href="/"
-            >
-                <span class="nav-icon">▦</span>
-                <span class="nav-text">Dashboard</span>
-            </a>
-
-            <a
-                class="nav-item"
-                href="/recovery-cases.html"
-            >
-                <span class="nav-icon">◉</span>
-                <span class="nav-text">Recovery Cases</span>
-            </a>
-
-            <a
-                class="nav-item"
-                href="/customers.html"
-            >
-                <span class="nav-icon">●</span>
-                <span class="nav-text">Customers</span>
-            </a>
-
-            <a
-                class="nav-item"
-                href="/analytics.html"
-            >
-                <span class="nav-icon">◌</span>
-                <span class="nav-text">Analytics</span>
-            </a>
-
-        </nav>
-<a class="nav-item" href="/recovery-agent.html"><span class="nav-icon">✦</span><span class="nav-text">Recovery Agent</span></a>
-
-
-        <div class="sidebar-bottom">
-
-            <div class="system-status">
-
-                <span class="status-dot"></span>
-
-                <div class="status-text">
-                    <strong>System Online</strong>
-                    <small>AI Agent Active</small>
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-mark">
+                    R
                 </div>
 
-            </div>
+                <div class="brand-copy">
+                    <strong>
+                        Recovery AI
+                    </strong>
 
-        </div>
-
-    </aside>
-
-
-    <!-- =====================================================
-         MAIN CONTENT
-    ====================================================== -->
-
-    <main class="main-content">
-
-        <!-- =================================================
-             PAGE HEADER
-        ================================================== -->
-
-        <header class="page-header">
-
-            <div class="page-title">
-
-                <h1>
-                    Revenue Recovery Dashboard
-                </h1>
-
-                <p>
-                    AI-powered recovery prioritization and decision intelligence
-                </p>
-
-            </div>
-
-
-            <div class="header-actions">
-
-                <span class="live-status">
-
-                    <span class="live-dot"></span>
-
-                    <span id="live-text">
-                        Live
+                    <span>
+                        Revenue Operations
                     </span>
+                </div>
+            </div>
 
+            <button
+                class="sidebar-toggle"
+                id="sidebar-toggle"
+                type="button"
+                aria-label="Collapse sidebar"
+                title="Collapse sidebar"
+            >
+                <span class="toggle-icon">
+                    ‹
                 </span>
+            </button>
 
-                <button
-                    class="refresh-btn"
-                    id="refresh-button"
-                    type="button"
+            <nav class="sidebar-nav">
+                <a
+                    class="nav-item active"
+                    href="/"
                 >
-                    ↻ Refresh
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <!-- =================================================
-             TOP METRICS
-        ================================================== -->
-
-        <section class="metrics-grid">
-
-            <div class="metric-card">
-
-                <div class="metric-top">
-
-                    <span class="metric-label">
-                        Total Revenue at Risk
+                    <span class="nav-icon">
+                        ▦
                     </span>
 
-                    <div class="metric-icon">
-                        ₹
-                    </div>
+                    <span class="nav-text">
+                        Dashboard
+                    </span>
+                </a>
 
-                </div>
-
-                <div
-                    id="total-risk"
-                    class="metric-value"
+                <a
+                    class="nav-item"
+                    href="/recovery-cases.html"
                 >
-                    —
-                </div>
-
-                <div class="metric-desc">
-                    Current recovery population value
-                </div>
-
-            </div>
-
-
-            <div class="metric-card">
-
-                <div class="metric-top">
-
-                    <span class="metric-label">
-                        Expected Recovery
+                    <span class="nav-icon">
+                        ◉
                     </span>
 
-                    <div class="metric-icon">
-                        ↗
-                    </div>
+                    <span class="nav-text">
+                        Recovery Cases
+                    </span>
+                </a>
 
-                </div>
-
-                <div
-                    id="expected-recovery"
-                    class="metric-value"
+                <a
+                    class="nav-item"
+                    href="/customers.html"
                 >
-                    —
-                </div>
-
-                <div class="metric-desc">
-                    AI-estimated recovery value
-                </div>
-
-            </div>
-
-
-            <div class="metric-card">
-
-                <div class="metric-top">
-
-                    <span class="metric-label">
-                        Recovery Rate
+                    <span class="nav-icon">
+                        ●
                     </span>
 
-                    <div class="metric-icon">
-                        %
-                    </div>
-
-                </div>
-
-                <div
-                    id="recovery-rate"
-                    class="metric-value"
-                >
-                    —
-                </div>
-
-                <div class="metric-desc">
-                    Recovered cases + dataset cases
-                </div>
-
-            </div>
-
-
-            <div class="metric-card">
-
-                <div class="metric-top">
-
-                    <span class="metric-label">
-                        High Priority Cases
-                    </span>
-
-                    <div class="metric-icon">
-                        !
-                    </div>
-
-                </div>
-
-                <div
-                    id="high-priority"
-                    class="metric-value"
-                >
-                    —
-                </div>
-
-                <div class="metric-desc">
-                    Active cases requiring attention
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             OVERALL PERFORMANCE
-        ================================================== -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Overall Recovery Performance
-                    </h3>
-
-                    <p>
-                        Dataset-wide performance across all transactions
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="performance-grid">
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Total Transactions
-                    </div>
-
-                    <div
-                        id="total-transactions"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        All transactions
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Total Transaction Value
-                    </div>
-
-                    <div
-                        id="total-transaction-value"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Complete transaction value
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Recovered Cases
-                    </div>
-
-                    <div
-                        id="overall-recovered-cases"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Recovered transactions
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Money Recovered
-                    </div>
-
-                    <div
-                        id="overall-money-recovered"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Recovered revenue
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Overall Recovery Rate
-                    </div>
-
-                    <div
-                        id="overall-recovery-rate"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Cases recovered
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Unrecovered Cases
-                    </div>
-
-                    <div
-                        id="overall-unrecovered-cases"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Cases still needing action
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
-                        Recovery Value Rate
-                    </div>
-
-                    <div
-                        id="recovery-value-rate"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Recovered value ÷ transaction value
-                    </div>
-
-                </div>
-
-
-                <div class="performance-card">
-
-                    <div class="label">
+                    <span class="nav-text">
                         Customers
-                    </div>
-
-                    <div
-                        id="overall-customers"
-                        class="value"
-                    >
-                        —
-                    </div>
-
-                    <div class="desc">
-                        Unique customers
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             ANALYTICS SUMMARY
-        ================================================== -->
-
-        <section class="analytics-grid">
-
-
-            <!-- RECOVERY OVERVIEW -->
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h3>
-                            Recovery Overview
-                        </h3>
-
-                        <p>
-                            Active-case priority distribution
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="overview-content">
-
-                    <div
-                        class="donut"
-                        id="priority-chart"
-                    >
-
-                        <span id="priority-total">
-                            0
-                        </span>
-
-                    </div>
-
-
-                    <div class="legend">
-
-                        <div class="legend-item">
-
-                            <span class="legend-dot high"></span>
-
-                            <span id="high-legend">
-                                High Priority (—)
-                            </span>
-
-                        </div>
-
-
-                        <div class="legend-item">
-
-                            <span class="legend-dot medium"></span>
-
-                            <span id="medium-legend">
-                                Medium Priority (—)
-                            </span>
-
-                        </div>
-
-
-                        <div class="legend-item">
-
-                            <span class="legend-dot low"></span>
-
-                            <span id="low-legend">
-                                Low Priority (—)
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- RECOVERY STRATEGY -->
-
-            <div class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-
-                        <h3>
-                            Recovery Strategy
-                        </h3>
-
-                        <p>
-                            Recommended agent strategy distribution
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="strategy-list">
-
-
-                    <div class="strategy-row">
-
-                        <div>
-
-                            <strong>
-                                Aggressive Recovery
-                            </strong>
-
-                            <small>
-                                High-priority opportunities
-                            </small>
-
-                        </div>
-
-                        <div
-                            id="aggressive-count"
-                            class="strategy-count"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="strategy-row">
-
-                        <div>
-
-                            <strong>
-                                Assisted Recovery
-                            </strong>
-
-                            <small>
-                                Agent-assisted cases
-                            </small>
-
-                        </div>
-
-                        <div
-                            id="assisted-count"
-                            class="strategy-count"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="strategy-row">
-
-                        <div>
-
-                            <strong>
-                                Standard Recovery
-                            </strong>
-
-                            <small>
-                                Normal payment recovery
-                            </small>
-
-                        </div>
-
-                        <div
-                            id="standard-count"
-                            class="strategy-count"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-
-                    <div class="strategy-row">
-
-                        <div>
-
-                            <strong>
-                                Low Cost Recovery
-                            </strong>
-
-                            <small>
-                                Low-priority follow-up
-                            </small>
-
-                        </div>
-
-                        <div
-                            id="low-cost-count"
-                            class="strategy-count"
-                        >
-                            —
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             RECOVERY AI
-        ================================================== -->
-
-        <section class="panel ai-panel">
-
-
-            <div class="ai-header">
-
-                <div class="ai-title">
-
-                    <div class="ai-icon">
+                    </span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/analytics.html"
+                >
+                    <span class="nav-icon">
+                        ◌
+                    </span>
+
+                    <span class="nav-text">
+                        Analytics
+                    </span>
+                </a>
+
+                <a
+                    class="nav-item"
+                    href="/recovery-agent.html"
+                >
+                    <span class="nav-icon">
                         ✦
-                    </div>
+                    </span>
 
-                    <div>
+                    <span class="nav-text">
+                        Recovery Agent
+                    </span>
+                </a>
 
+                <a
+                    class="nav-item"
+                    href="/human-intervention.html"
+                >
+                    <span class="nav-icon">
+                        !
+                    </span>
+
+                    <span class="nav-text">
+                        Human Intervention
+                    </span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="system-status">
+                    <span class="status-dot"></span>
+
+                    <div class="status-text">
                         <strong>
-                            Ask Recovery AI
+                            System Online
                         </strong>
 
-                        <span>
-                            Ask follow-up questions and keep the conversation going
-                        </span>
-
+                        <small>
+                            AI Agent Active
+                        </small>
                     </div>
-
                 </div>
-
-
-                <div>
-
-                    <button
-                        class="new-chat"
-                        type="button"
-                        onclick="newAIChat()"
-                    >
-                        New chat
-                    </button>
-
-                    <span
-                        class="ai-status"
-                        id="ai-status"
-                    >
-                        Online
-                    </span>
-
-                </div>
-
             </div>
+        </aside>
 
+        <!-- =====================================================
+             MAIN CONTENT
+        ====================================================== -->
 
-            <div
-                id="ai-chat"
-                class="ai-chat"
-            ></div>
+        <main class="main-content">
 
+            <!-- =================================================
+                 HEADER
+            ================================================== -->
 
-            <div class="ai-input">
-
-                <input
-                    id="ai-question"
-                    type="text"
-                    autocomplete="off"
-                    placeholder="Ask about revenue risk, priorities, strategy, customers, or this recovery system…"
-                >
-
-                <button
-                    id="ai-ask-button"
-                    class="primary-btn"
-                    type="button"
-                >
-                    Ask AI
-                </button>
-
-            </div>
-
-
-            <div class="ai-suggestions">
-
-                <button
-                    type="button"
-                    onclick="useAIQuestion('What should I prioritize first?')"
-                >
-                    What should I prioritize first?
-                </button>
-
-
-                <button
-                    type="button"
-                    onclick="useAIQuestion('Why is revenue at risk?')"
-                >
-                    Why is revenue at risk?
-                </button>
-
-
-                <button
-                    type="button"
-                    onclick="useAIQuestion('Which strategy is performing best?')"
-                >
-                    Which strategy is performing best?
-                </button>
-
-
-                <button
-                    type="button"
-                    onclick="useAIQuestion('How many high priority cases are there?')"
-                >
-                    How many high priority cases?
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             TOP RECOVERY OPPORTUNITIES
-        ================================================== -->
-
-        <section class="panel opportunities">
-
-
-            <div class="panel-header">
-
-                <div>
-
-                    <h3>
-                        Top Recovery Opportunities
-                    </h3>
+            <header class="page-header">
+                <div class="page-title">
+                    <h1>
+                        Revenue Recovery Dashboard
+                    </h1>
 
                     <p>
-                        Highest expected-value recovery cases
+                        AI-powered recovery prioritization and decision intelligence
                     </p>
-
                 </div>
 
+                <div class="header-actions">
+                    <span class="live-status">
+                        <span class="live-dot"></span>
 
-                <div class="table-controls">
+                        <span id="live-text">
+                            Live
+                        </span>
+                    </span>
 
-                    <input
-                        id="opportunity-search"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="Search transaction…"
+                    <button
+                        class="refresh-btn"
+                        id="refresh-button"
+                        type="button"
                     >
+                        ↻ Refresh
+                    </button>
+                </div>
+            </header>
 
+            <!-- =================================================
+                 TOP METRICS
+            ================================================== -->
+
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">
+                            Total Revenue at Risk
+                        </span>
+
+                        <div class="metric-icon">
+                            ₹
+                        </div>
+                    </div>
+
+                    <div
+                        id="total-risk"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
+
+                    <div class="metric-desc">
+                        Current recovery population value
+                    </div>
                 </div>
 
-            </div>
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">
+                            Expected Recovery
+                        </span>
 
+                        <div class="metric-icon">
+                            ↗
+                        </div>
+                    </div>
 
-            <div class="table-wrapper">
+                    <div
+                        id="expected-recovery"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
 
-                <table class="data-table">
+                    <div class="metric-desc">
+                        AI-estimated recovery value
+                    </div>
+                </div>
 
-                    <thead>
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">
+                            Recovery Rate
+                        </span>
 
-                        <tr>
+                        <div class="metric-icon">
+                            %
+                        </div>
+                    </div>
 
-                            <th>
-                                Transaction
-                            </th>
+                    <div
+                        id="recovery-rate"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
 
-                            <th>
-                                Amount
-                            </th>
+                    <div class="metric-desc">
+                        Recovered cases + dataset cases
+                    </div>
+                </div>
 
-                            <th>
-                                Probability
-                            </th>
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">
+                            High Priority Cases
+                        </span>
 
-                            <th>
-                                Priority
-                            </th>
+                        <div class="metric-icon">
+                            !
+                        </div>
+                    </div>
 
-                            <th>
-                                Strategy
-                            </th>
+                    <div
+                        id="high-priority"
+                        class="metric-value"
+                    >
+                        —
+                    </div>
 
-                            <th>
-                                Channel
-                            </th>
+                    <div class="metric-desc">
+                        Active cases requiring attention
+                    </div>
+                </div>
+            </section>
 
-                            <th>
-                                Expected Recovery
-                            </th>
+            <!-- =================================================
+                 OVERALL PERFORMANCE
+            ================================================== -->
 
-                            <!-- NEW ACTION COLUMN -->
-                            <th>
-                                Action
-                            </th>
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3>
+                            Overall Recovery Performance
+                        </h3>
 
-                        </tr>
+                        <p>
+                            Dataset-wide performance across all transactions
+                        </p>
+                    </div>
+                </div>
 
-                    </thead>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <div class="label">
+                            Total Transactions
+                        </div>
 
+                        <div
+                            id="total-transactions"
+                            class="value"
+                        >
+                            —
+                        </div>
 
-                    <tbody id="opportunity-table">
+                        <div class="desc">
+                            All transactions
+                        </div>
+                    </div>
 
-                        <tr>
+                    <div class="performance-card">
+                        <div class="label">
+                            Total Transaction Value
+                        </div>
 
-                            <td
-                                colspan="8"
-                                class="loading"
+                        <div
+                            id="total-transaction-value"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Complete transaction value
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Recovered Cases
+                        </div>
+
+                        <div
+                            id="overall-recovered-cases"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Recovered transactions
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Money Recovered
+                        </div>
+
+                        <div
+                            id="overall-money-recovered"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Recovered revenue
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Overall Recovery Rate
+                        </div>
+
+                        <div
+                            id="overall-recovery-rate"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Cases recovered
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Unrecovered Cases
+                        </div>
+
+                        <div
+                            id="overall-unrecovered-cases"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Cases still needing action
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Recovery Value Rate
+                        </div>
+
+                        <div
+                            id="recovery-value-rate"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Recovered value ÷ transaction value
+                        </div>
+                    </div>
+
+                    <div class="performance-card">
+                        <div class="label">
+                            Customers
+                        </div>
+
+                        <div
+                            id="overall-customers"
+                            class="value"
+                        >
+                            —
+                        </div>
+
+                        <div class="desc">
+                            Unique customers
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================== -->
+
+            <section class="analytics-grid">
+
+                <!-- PRIORITY -->
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>
+                                Recovery Overview
+                            </h3>
+
+                            <p>
+                                Active-case priority distribution
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="overview-content">
+                        <div
+                            class="donut"
+                            id="priority-chart"
+                        >
+                            <span id="priority-total">
+                                0
+                            </span>
+                        </div>
+
+                        <div class="legend">
+                            <div class="legend-item">
+                                <span class="legend-dot high"></span>
+
+                                <span id="high-legend">
+                                    High Priority (—)
+                                </span>
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot medium"></span>
+
+                                <span id="medium-legend">
+                                    Medium Priority (—)
+                                </span>
+                            </div>
+
+                            <div class="legend-item">
+                                <span class="legend-dot low"></span>
+
+                                <span id="low-legend">
+                                    Low Priority (—)
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STRATEGY -->
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>
+                                Recovery Strategy
+                            </h3>
+
+                            <p>
+                                Recommended agent strategy distribution
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="strategy-list">
+                        <div class="strategy-row">
+                            <div>
+                                <strong>
+                                    Aggressive Recovery
+                                </strong>
+
+                                <small>
+                                    High-priority opportunities
+                                </small>
+                            </div>
+
+                            <div
+                                id="aggressive-count"
+                                class="strategy-count"
                             >
-                                Loading recovery opportunities…
-                            </td>
+                                —
+                            </div>
+                        </div>
 
-                        </tr>
+                        <div class="strategy-row">
+                            <div>
+                                <strong>
+                                    Assisted Recovery
+                                </strong>
 
-                    </tbody>
+                                <small>
+                                    Agent-assisted cases
+                                </small>
+                            </div>
 
-                </table>
+                            <div
+                                id="assisted-count"
+                                class="strategy-count"
+                            >
+                                —
+                            </div>
+                        </div>
 
-            </div>
+                        <div class="strategy-row">
+                            <div>
+                                <strong>
+                                    Standard Recovery
+                                </strong>
 
-        </section>
+                                <small>
+                                    Normal payment recovery
+                                </small>
+                            </div>
 
+                            <div
+                                id="standard-count"
+                                class="strategy-count"
+                            >
+                                —
+                            </div>
+                        </div>
 
-    </main>
+                        <div class="strategy-row">
+                            <div>
+                                <strong>
+                                    Low Cost Recovery
+                                </strong>
 
-</div>
+                                <small>
+                                    Low-priority follow-up
+                                </small>
+                            </div>
 
+                            <div
+                                id="low-cost-count"
+                                class="strategy-count"
+                            >
+                                —
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-<!-- =========================================================
-     MAIN APP JAVASCRIPT
-========================================================= -->
+            <!-- =================================================
+                 RECOVERY AI
+            ================================================== -->
 
-<script src="/js/app.js"></script>
+            <section class="panel ai-panel">
+                <div class="ai-header">
+                    <div class="ai-title">
+                        <div class="ai-icon">
+                            ✦
+                        </div>
 
+                        <div>
+                            <strong>
+                                Ask Recovery AI
+                            </strong>
 
-<!-- =========================================================
-     OPPORTUNITY SEARCH
-========================================================= -->
+                            <span>
+                                Ask follow-up questions and keep the conversation going
+                            </span>
+                        </div>
+                    </div>
 
-<script>
+                    <div>
+                        <button
+                            class="new-chat"
+                            id="top-new-chat"
+                            type="button"
+                        >
+                            New chat
+                        </button>
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+                        <span
+                            class="ai-status"
+                            id="ai-status"
+                        >
+                            Online
+                        </span>
+                    </div>
+                </div>
 
-        const input =
-            document.getElementById(
-                "opportunity-search"
-            );
+                <!-- =================================================
+                     CHAT LAYOUT
+                ================================================== -->
 
-        if (!input) {
-            return;
+                <div class="ai-chat-layout">
+
+                    <!-- =================================================
+                         CHAT HISTORY
+                    ================================================== -->
+
+                    <aside class="ai-chat-history">
+                        <div class="ai-history-header">
+                            <button
+                                type="button"
+                                class="ai-history-new"
+                                id="history-new-chat"
+                            >
+                                <span>
+                                    +
+                                </span>
+
+                                <span>
+                                    New chat
+                                </span>
+                            </button>
+                        </div>
+
+                        <div
+                            id="ai-history-list"
+                            class="ai-history-list"
+                        ></div>
+                    </aside>
+
+                    <!-- =================================================
+                         CURRENT CHAT
+                    ================================================== -->
+
+                    <div class="ai-chat-main">
+                        <div
+                            id="ai-chat"
+                            class="ai-chat"
+                        ></div>
+
+                        <div class="ai-input-area">
+                            <div class="ai-input">
+                                <input
+                                    id="ai-question"
+                                    type="text"
+                                    autocomplete="off"
+                                    placeholder="Ask about revenue risk, priorities, strategy, customers, or this recovery system..."
+                                >
+
+                                <button
+                                    id="ai-ask-button"
+                                    class="primary-btn"
+                                    type="button"
+                                >
+                                    Ask AI
+                                </button>
+                            </div>
+
+                            <div class="ai-suggestions">
+                                <button
+                                    type="button"
+                                    onclick="useAIQuestion('What should I prioritize first?')"
+                                >
+                                    What should I prioritize first?
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onclick="useAIQuestion('Why is revenue at risk?')"
+                                >
+                                    Why is revenue at risk?
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onclick="useAIQuestion('Which strategy is performing best?')"
+                                >
+                                    Which strategy is performing best?
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onclick="useAIQuestion('How many high priority cases are there?')"
+                                >
+                                    How many high priority cases?
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 RECENTLY RECOVERED — HIGH PRIORITY
+            ================================================== -->
+
+            <section class="panel recovered-high-priority">
+                <div class="panel-header">
+                    <div>
+                        <h3>
+                            Recently Recovered — High Priority
+                        </h3>
+
+                        <p class="recovered-high-priority-note">
+                            Historical agent executions only. These cases are already recovered
+                            and are not part of the active recovery queue.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Transaction
+                                </th>
+
+                                <th>
+                                    Scenario
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                                <th>
+                                    Attempts
+                                </th>
+
+                                <th>
+                                    Money Recovered
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recovered-high-priority-table">
+                            <tr>
+                                <td
+                                    colspan="6"
+                                    class="loading"
+                                >
+                                    Loading recovered high-priority cases...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- =================================================
+                 TOP RECOVERY OPPORTUNITIES
+            ================================================== -->
+
+            <section class="panel opportunities">
+                <div class="panel-header">
+                    <div>
+                        <h3>
+                            Top Recovery Opportunities
+                        </h3>
+
+                        <p>
+                            Highest expected-value recovery cases
+                        </p>
+                    </div>
+
+                    <div class="table-controls">
+                        <input
+                            id="opportunity-search"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="Search transaction..."
+                        >
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Transaction
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Probability
+                                </th>
+
+                                <th>
+                                    Priority
+                                </th>
+
+                                <th>
+                                    Strategy
+                                </th>
+
+                                <th>
+                                    Channel
+                                </th>
+
+                                <th>
+                                    Expected Recovery
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="opportunity-table">
+                            <tr>
+                                <td
+                                    colspan="8"
+                                    class="loading"
+                                >
+                                    Loading recovery opportunities...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- =========================================================
+         MAIN APP JS
+    ========================================================= -->
+
+    <script src="/js/app.js"></script>
+
+    <!-- =========================================================
+         OPPORTUNITY SEARCH
+    ========================================================= -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                const input =
+                    document.getElementById(
+                        "opportunity-search"
+                    );
+
+                if (!input) {
+                    return;
+                }
+
+                input.addEventListener(
+                    "input",
+                    function () {
+                        const query =
+                            input.value
+                                .toLowerCase()
+                                .trim();
+
+                        document
+                            .querySelectorAll(
+                                "#opportunity-table tr"
+                            )
+                            .forEach(
+                                function (row) {
+                                    const matches =
+                                        row.textContent
+                                            .toLowerCase()
+                                            .includes(
+                                                query
+                                            );
+
+                                    row.style.display =
+                                        matches
+                                            ? ""
+                                            : "none";
+                                }
+                            );
+                    }
+                );
+            }
+        );
+    </script>
+
+    <!-- =========================================================
+         RECOVERY AI
+    ========================================================= -->
+
+    <script>
+        /* =========================================================
+           CONFIG
+        ========================================================= */
+
+        const RECOVERY_AI_ENDPOINT =
+            "/ai/analyze";
+
+        /*
+         * v3 deliberately starts a clean AI history.
+         * This avoids restoring old corrupted messages.
+         */
+
+        const RECOVERY_AI_STORAGE_KEY =
+            "recovery_ai_chat_history_v3";
+
+        const RECOVERY_AI_ACTIVE_KEY =
+            "recovery_ai_active_chat_v3";
+
+        /* =========================================================
+           STORAGE
+        ========================================================= */
+
+        function getAIChats() {
+            try {
+                const raw =
+                    localStorage.getItem(
+                        RECOVERY_AI_STORAGE_KEY
+                    );
+
+                if (!raw) {
+                    return [];
+                }
+
+                const parsed =
+                    JSON.parse(
+                        raw
+                    );
+
+                if (!Array.isArray(parsed)) {
+                    return [];
+                }
+
+                return parsed;
+            } catch (error) {
+                console.error(
+                    "Recovery AI history load error:",
+                    error
+                );
+
+                return [];
+            }
         }
 
-        input.addEventListener(
-            "input",
-            () => {
-
-                const query =
-                    input.value
-                        .toLowerCase()
-                        .trim();
-
-                document
-                    .querySelectorAll(
-                        "#opportunity-table tr"
+        function saveAIChats(
+            chats
+        ) {
+            try {
+                localStorage.setItem(
+                    RECOVERY_AI_STORAGE_KEY,
+                    JSON.stringify(
+                        chats
                     )
-                    .forEach(
-                        row => {
+                );
+            } catch (error) {
+                console.error(
+                    "Recovery AI history save error:",
+                    error
+                );
+            }
+        }
 
-                            const matches =
-                                row.textContent
-                                    .toLowerCase()
-                                    .includes(
-                                        query
+        function getActiveAIChatId() {
+            return localStorage.getItem(
+                RECOVERY_AI_ACTIVE_KEY
+            );
+        }
+
+        function setActiveAIChatId(
+            chatId
+        ) {
+            if (chatId) {
+                localStorage.setItem(
+                    RECOVERY_AI_ACTIVE_KEY,
+                    chatId
+                );
+            } else {
+                localStorage.removeItem(
+                    RECOVERY_AI_ACTIVE_KEY
+                );
+            }
+        }
+
+        /* =========================================================
+           CREATE CHAT
+        ========================================================= */
+
+        function createAIChat() {
+            return {
+                id:
+                    "chat_" +
+                    Date.now() +
+                    "_" +
+                    Math.random()
+                        .toString(36)
+                        .slice(2, 9),
+
+                title:
+                    "New conversation",
+
+                messages:
+                    [],
+
+                createdAt:
+                    Date.now(),
+
+                updatedAt:
+                    Date.now()
+            };
+        }
+
+        /* =========================================================
+           CURRENT CHAT
+        ========================================================= */
+
+        function getCurrentAIChat() {
+            const chats =
+                getAIChats();
+
+            const activeId =
+                getActiveAIChatId();
+
+            if (!activeId) {
+                return null;
+            }
+
+            return (
+                chats.find(
+                    function (chat) {
+                        return (
+                            chat.id === activeId
+                        );
+                    }
+                ) || null
+            );
+        }
+
+        /* =========================================================
+           ENSURE CHAT
+        ========================================================= */
+
+        function ensureAIChat() {
+            const chats =
+                getAIChats();
+
+            const activeId =
+                getActiveAIChatId();
+
+            let current =
+                chats.find(
+                    function (chat) {
+                        return (
+                            chat.id === activeId
+                        );
+                    }
+                );
+
+            if (!current) {
+                current =
+                    createAIChat();
+
+                chats.unshift(
+                    current
+                );
+
+                saveAIChats(
+                    chats
+                );
+
+                setActiveAIChatId(
+                    current.id
+                );
+            }
+
+            return current;
+        }
+
+        /* =========================================================
+           SAFE ENCODING
+        ========================================================= */
+
+        /*
+         * IMPORTANT:
+         *
+         * The backend is now returning valid UTF-8.
+         *
+         * We must NOT use TextDecoder over charCodeAt()
+         * and we must NOT use "& 0xff".
+         *
+         * Doing that would corrupt legitimate Unicode
+         * characters such as ₹.
+         *
+         * We only replace known legacy mojibake values.
+         */
+
+        function fixCurrencyEncoding(
+            value
+        ) {
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return "";
+            }
+
+            let text =
+                String(value);
+
+            const rupee =
+                "\u20B9";
+
+            const arrowRight =
+                "\u2192";
+
+            const arrowLeft =
+                "\u2190";
+
+            const arrowUp =
+                "\u2191";
+
+            const arrowDown =
+                "\u2193";
+
+            const bullet =
+                "\u2022";
+
+            const apostrophe =
+                "\u2019";
+
+            const quoteLeft =
+                "\u201C";
+
+            const quoteRight =
+                "\u201D";
+
+            const enDash =
+                "\u2013";
+
+            const emDash =
+                "\u2014";
+
+            /*
+             * Legacy rupee encodings.
+             */
+
+            text =
+                text.replaceAll(
+                    "â‚¹",
+                    rupee
+                );
+
+            text =
+                text.replaceAll(
+                    "â¹",
+                    rupee
+                );
+
+            text =
+                text.replaceAll(
+                    "Ã¢â‚¬Â¹",
+                    rupee
+                );
+
+            text =
+                text.replaceAll(
+                    "ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¹",
+                    rupee
+                );
+
+            /*
+             * Legacy arrows.
+             */
+
+            text =
+                text.replaceAll(
+                    "â†’",
+                    arrowRight
+                );
+
+            text =
+                text.replaceAll(
+                    "â†",
+                    arrowLeft
+                );
+
+            text =
+                text.replaceAll(
+                    "â†‘",
+                    arrowUp
+                );
+
+            text =
+                text.replaceAll(
+                    "â†“",
+                    arrowDown
+                );
+
+            /*
+             * Legacy punctuation.
+             */
+
+            text =
+                text.replaceAll(
+                    "â€™",
+                    apostrophe
+                );
+
+            text =
+                text.replaceAll(
+                    "â€œ",
+                    quoteLeft
+                );
+
+            text =
+                text.replaceAll(
+                    "â€",
+                    quoteRight
+                );
+
+            text =
+                text.replaceAll(
+                    "â€“",
+                    enDash
+                );
+
+            text =
+                text.replaceAll(
+                    "â€”",
+                    emDash
+                );
+
+            text =
+                text.replaceAll(
+                    "â€¢",
+                    bullet
+                );
+
+            return text;
+        }
+
+        /* =========================================================
+           DATE GROUP
+        ========================================================= */
+
+        function getChatDateGroup(
+            timestamp
+        ) {
+            const date =
+                new Date(
+                    timestamp
+                );
+
+            const today =
+                new Date();
+
+            today.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+            const yesterday =
+                new Date(
+                    today
+                );
+
+            yesterday.setDate(
+                yesterday.getDate() - 1
+            );
+
+            if (
+                date >= today
+            ) {
+                return "TODAY";
+            }
+
+            if (
+                date >= yesterday
+            ) {
+                return "YESTERDAY";
+            }
+
+            return "OLDER";
+        }
+
+        /* =========================================================
+           CHAT TITLE
+        ========================================================= */
+
+        function makeAIChatTitle(
+            question
+        ) {
+            const clean =
+                String(
+                    question || ""
+                )
+                    .replace(
+                        /\s+/g,
+                        " "
+                    )
+                    .trim();
+
+            if (!clean) {
+                return "New conversation";
+            }
+
+            if (
+                clean.length <= 34
+            ) {
+                return clean;
+            }
+
+            return (
+                clean
+                    .slice(
+                        0,
+                        34
+                    )
+                    .trim() +
+                "..."
+            );
+        }
+
+        /* =========================================================
+           RENDER HISTORY
+        ========================================================= */
+
+        function renderAIHistory() {
+            const history =
+                document.getElementById(
+                    "ai-history-list"
+                );
+
+            if (!history) {
+                return;
+            }
+
+            const chats =
+                getAIChats();
+
+            const activeId =
+                getActiveAIChatId();
+
+            history.innerHTML =
+                "";
+
+            if (!chats.length) {
+                history.innerHTML = `
+                    <div class="ai-history-empty">
+                        Your Recovery AI conversations
+                        will appear here.
+                    </div>
+                `;
+
+                return;
+            }
+
+            const groups = {
+                TODAY: [],
+                YESTERDAY: [],
+                OLDER: []
+            };
+
+            chats.forEach(
+                function (chat) {
+                    const group =
+                        getChatDateGroup(
+                            chat.updatedAt ||
+                            chat.createdAt ||
+                            Date.now()
+                        );
+
+                    if (
+                        groups[group]
+                    ) {
+                        groups[group].push(
+                            chat
+                        );
+                    }
+                }
+            );
+
+            [
+                "TODAY",
+                "YESTERDAY",
+                "OLDER"
+            ].forEach(
+                function (groupName) {
+                    if (
+                        !groups[groupName].length
+                    ) {
+                        return;
+                    }
+
+                    const group =
+                        document.createElement(
+                            "div"
+                        );
+
+                    group.className =
+                        "ai-history-group";
+
+                    const title =
+                        document.createElement(
+                            "div"
+                        );
+
+                    title.className =
+                        "ai-history-group-title";
+
+                    title.textContent =
+                        groupName;
+
+                    group.appendChild(
+                        title
+                    );
+
+                    groups[groupName].forEach(
+                        function (chat) {
+                            const button =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            button.type =
+                                "button";
+
+                            button.className =
+                                "ai-history-item";
+
+                            if (
+                                chat.id === activeId
+                            ) {
+                                button.classList.add(
+                                    "active"
+                                );
+                            }
+
+                            button.textContent =
+                                fixCurrencyEncoding(
+                                    chat.title ||
+                                    "New conversation"
+                                );
+
+                            button.title =
+                                fixCurrencyEncoding(
+                                    chat.title ||
+                                    "New conversation"
+                                );
+
+                            button.addEventListener(
+                                "click",
+                                function () {
+                                    openAIChat(
+                                        chat.id
                                     );
+                                }
+                            );
 
-                            row.style.display =
-                                matches
-                                    ? ""
-                                    : "none";
-
+                            group.appendChild(
+                                button
+                            );
                         }
                     );
 
+                    history.appendChild(
+                        group
+                    );
+                }
+            );
+        }
+
+        /* =========================================================
+           RENDER CURRENT CHAT
+        ========================================================= */
+
+        function renderCurrentAIChat() {
+            const container =
+                document.getElementById(
+                    "ai-chat"
+                );
+
+            if (!container) {
+                return;
+            }
+
+            const chat =
+                getCurrentAIChat();
+
+            container.innerHTML =
+                "";
+
+            if (
+                !chat ||
+                !Array.isArray(
+                    chat.messages
+                ) ||
+                !chat.messages.length
+            ) {
+                container.innerHTML = `
+                    <div class="ai-empty-state">
+                        <div class="ai-empty-state-inner">
+                            <div class="ai-empty-state-icon">
+                                ✦
+                            </div>
+
+                            <strong>
+                                How can Recovery AI help?
+                            </strong>
+
+                            <span>
+                                Ask about revenue risk,
+                                recovery priorities,
+                                strategy performance,
+                                customers, or why
+                                the agent made a decision.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+                return;
+            }
+
+            chat.messages.forEach(
+                function (message) {
+                    const wrapper =
+                        document.createElement(
+                            "div"
+                        );
+
+                    wrapper.className =
+                        "ai-message " +
+                        (
+                            message.role === "user"
+                                ? "user"
+                                : "assistant"
+                        );
+
+                    const bubble =
+                        document.createElement(
+                            "div"
+                        );
+
+                    bubble.className =
+                        "ai-message-bubble";
+
+                    const label =
+                        document.createElement(
+                            "div"
+                        );
+
+                    label.className =
+                        "ai-message-label";
+
+                    label.textContent =
+                        message.role === "user"
+                            ? "YOU"
+                            : "RECOVERY AI";
+
+                    const content =
+                        document.createElement(
+                            "div"
+                        );
+
+                    content.textContent =
+                        fixCurrencyEncoding(
+                            message.content
+                        );
+
+                    bubble.appendChild(
+                        label
+                    );
+
+                    bubble.appendChild(
+                        content
+                    );
+
+                    wrapper.appendChild(
+                        bubble
+                    );
+
+                    container.appendChild(
+                        wrapper
+                    );
+                }
+            );
+
+            requestAnimationFrame(
+                function () {
+                    container.scrollTop =
+                        container.scrollHeight;
+                }
+            );
+        }
+
+        /* =========================================================
+           OPEN CHAT
+        ========================================================= */
+
+        function openAIChat(
+            chatId
+        ) {
+            const chats =
+                getAIChats();
+
+            const exists =
+                chats.some(
+                    function (chat) {
+                        return (
+                            chat.id === chatId
+                        );
+                    }
+                );
+
+            if (!exists) {
+                return;
+            }
+
+            setActiveAIChatId(
+                chatId
+            );
+
+            renderAIHistory();
+
+            renderCurrentAIChat();
+
+            const input =
+                document.getElementById(
+                    "ai-question"
+                );
+
+            if (input) {
+                input.value =
+                    "";
+
+                input.focus();
+            }
+        }
+
+        /* =========================================================
+           NEW CHAT
+        ========================================================= */
+
+        function newAIChat() {
+            const chats =
+                getAIChats();
+
+            const current =
+                getCurrentAIChat();
+
+            /*
+             * Don't create endless empty chats.
+             */
+
+            if (
+                current &&
+                Array.isArray(
+                    current.messages
+                ) &&
+                current.messages.length === 0
+            ) {
+                openAIChat(
+                    current.id
+                );
+
+                return;
+            }
+
+            const chat =
+                createAIChat();
+
+            chats.unshift(
+                chat
+            );
+
+            saveAIChats(
+                chats
+            );
+
+            setActiveAIChatId(
+                chat.id
+            );
+
+            renderAIHistory();
+
+            renderCurrentAIChat();
+
+            const input =
+                document.getElementById(
+                    "ai-question"
+                );
+
+            if (input) {
+                input.value =
+                    "";
+
+                input.focus();
+            }
+        }
+
+        /* =========================================================
+           ADD MESSAGE
+        ========================================================= */
+
+        function addAIMessage(
+            role,
+            content
+        ) {
+            const chats =
+                getAIChats();
+
+            const activeId =
+                getActiveAIChatId();
+
+            const chat =
+                chats.find(
+                    function (item) {
+                        return (
+                            item.id === activeId
+                        );
+                    }
+                );
+
+            if (!chat) {
+                console.error(
+                    "Recovery AI active chat not found."
+                );
+
+                return;
+            }
+
+            const cleanContent =
+                fixCurrencyEncoding(
+                    content
+                );
+
+            chat.messages.push({
+                role:
+                    role,
+
+                content:
+                    cleanContent,
+
+                timestamp:
+                    Date.now()
+            });
+
+            /*
+             * First user question becomes title.
+             */
+
+            if (
+                role === "user" &&
+                (
+                    !chat.title ||
+                    chat.title === "New conversation"
+                )
+            ) {
+                chat.title =
+                    makeAIChatTitle(
+                        cleanContent
+                    );
+            }
+
+            chat.updatedAt =
+                Date.now();
+
+            saveAIChats(
+                chats
+            );
+
+            renderAIHistory();
+
+            renderCurrentAIChat();
+        }
+
+        /* =========================================================
+           DASHBOARD CONTEXT
+        ========================================================= */
+
+        function getDashboardAIContext() {
+            function text(id) {
+                const element =
+                    document.getElementById(
+                        id
+                    );
+
+                return element
+                    ? fixCurrencyEncoding(
+                        element.textContent.trim()
+                    )
+                    : null;
+            }
+
+            return {
+                revenue_at_risk:
+                    text(
+                        "total-risk"
+                    ),
+
+                expected_recovery:
+                    text(
+                        "expected-recovery"
+                    ),
+
+                recovery_rate:
+                    text(
+                        "recovery-rate"
+                    ),
+
+                high_priority_cases:
+                    text(
+                        "high-priority"
+                    ),
+
+                total_transactions:
+                    text(
+                        "total-transactions"
+                    ),
+
+                total_transaction_value:
+                    text(
+                        "total-transaction-value"
+                    ),
+
+                recovered_cases:
+                    text(
+                        "overall-recovered-cases"
+                    ),
+
+                money_recovered:
+                    text(
+                        "overall-money-recovered"
+                    ),
+
+                unrecovered_cases:
+                    text(
+                        "overall-unrecovered-cases"
+                    ),
+
+                strategies: {
+                    aggressive:
+                        text(
+                            "aggressive-count"
+                        ),
+
+                    assisted:
+                        text(
+                            "assisted-count"
+                        ),
+
+                    standard:
+                        text(
+                            "standard-count"
+                        ),
+
+                    low_cost:
+                        text(
+                            "low-cost-count"
+                        )
+                },
+
+                page:
+                    "merchant revenue recovery dashboard"
+            };
+        }
+
+        /* =========================================================
+           SUGGESTION
+        ========================================================= */
+
+        function useAIQuestion(
+            question
+        ) {
+            const input =
+                document.getElementById(
+                    "ai-question"
+                );
+
+            if (!input) {
+                return;
+            }
+
+            input.value =
+                question;
+
+            input.focus();
+        }
+
+        /* =========================================================
+           ASK RECOVERY AI
+        ========================================================= */
+
+        async function askRecoveryAI() {
+            const input =
+                document.getElementById(
+                    "ai-question"
+                );
+
+            const button =
+                document.getElementById(
+                    "ai-ask-button"
+                );
+
+            const status =
+                document.getElementById(
+                    "ai-status"
+                );
+
+            if (
+                !input ||
+                !button
+            ) {
+                return;
+            }
+
+            const question =
+                input.value
+                    .trim();
+
+            if (!question) {
+                input.focus();
+
+                return;
+            }
+
+            /*
+             * Make sure there is an active chat.
+             */
+
+            ensureAIChat();
+
+            /*
+             * IMPORTANT:
+             *
+             * Read the previous conversation BEFORE adding
+             * the current question.
+             *
+             * This is what fixes:
+             *
+             * "What should I prioritize first?"
+             * ->
+             * "tell me more"
+             *
+             * The backend now sees the previous question
+             * as the last user question.
+             */
+
+            const currentChatBeforeQuestion =
+                getCurrentAIChat();
+
+            const previousConversation =
+                currentChatBeforeQuestion &&
+                Array.isArray(
+                    currentChatBeforeQuestion.messages
+                )
+                    ? currentChatBeforeQuestion.messages
+                        .slice(-20)
+                        .map(
+                            function (message) {
+                                return {
+                                    role:
+                                        message.role,
+
+                                    content:
+                                        fixCurrencyEncoding(
+                                            message.content
+                                        )
+                                };
+                            }
+                        )
+                    : [];
+
+            /*
+             * Show/save the current question.
+             */
+
+            addAIMessage(
+                "user",
+                question
+            );
+
+            input.value =
+                "";
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "Thinking...";
+
+            if (status) {
+                status.textContent =
+                    "Analyzing...";
+            }
+
+            try {
+                const response =
+                    await fetch(
+                        RECOVERY_AI_ENDPOINT,
+                        {
+                            method:
+                                "POST",
+
+                            headers:
+                                {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                            body:
+                                JSON.stringify({
+                                    /*
+                                     * Current question is separate.
+                                     */
+
+                                    question:
+                                        question,
+
+                                    /*
+                                     * Previous conversation only.
+                                     */
+
+                                    conversation:
+                                        previousConversation,
+
+                                    context:
+                                        getDashboardAIContext()
+                                })
+                        }
+                    );
+
+                const data =
+                    await response
+                        .json()
+                        .catch(
+                            function () {
+                                return {};
+                            }
+                        );
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.detail ||
+                        data.error ||
+                        (
+                            "AI request failed (" +
+                            response.status +
+                            ")"
+                        )
+                    );
+                }
+
+                const answer =
+                    data.answer ||
+                    data.response ||
+                    data.message ||
+                    data.analysis;
+
+                if (!answer) {
+                    throw new Error(
+                        "The AI endpoint returned no answer."
+                    );
+                }
+
+                /*
+                 * Save assistant response.
+                 */
+
+                addAIMessage(
+                    "assistant",
+                    answer
+                );
+
+                if (status) {
+                    status.textContent =
+                        "Online";
+                }
+            } catch (error) {
+                console.error(
+                    "Recovery AI request error:",
+                    error
+                );
+
+                addAIMessage(
+                    "assistant",
+                    "I couldn't generate the Recovery AI analysis right now. Please try again."
+                );
+
+                if (status) {
+                    status.textContent =
+                        "AI unavailable";
+                }
+            } finally {
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "Ask AI";
+
+                input.focus();
+            }
+        }
+
+        /* =========================================================
+           INITIALIZE
+        ========================================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+                /*
+                 * Restore current chat after refresh.
+                 */
+
+                ensureAIChat();
+
+                renderAIHistory();
+
+                renderCurrentAIChat();
+
+                /*
+                 * Ask button.
+                 */
+
+                const askButton =
+                    document.getElementById(
+                        "ai-ask-button"
+                    );
+
+                if (askButton) {
+                    askButton.addEventListener(
+                        "click",
+                        askRecoveryAI
+                    );
+                }
+
+                /*
+                 * Enter key.
+                 */
+
+                const input =
+                    document.getElementById(
+                        "ai-question"
+                    );
+
+                if (input) {
+                    input.addEventListener(
+                        "keydown",
+                        function (event) {
+                            if (
+                                event.key === "Enter" &&
+                                !event.shiftKey
+                            ) {
+                                event.preventDefault();
+
+                                askRecoveryAI();
+                            }
+                        }
+                    );
+                }
+
+                /*
+                 * Top New Chat.
+                 */
+
+                const topNewChat =
+                    document.getElementById(
+                        "top-new-chat"
+                    );
+
+                if (topNewChat) {
+                    topNewChat.addEventListener(
+                        "click",
+                        newAIChat
+                    );
+                }
+
+                /*
+                 * Left New Chat.
+                 */
+
+                const historyNewChat =
+                    document.getElementById(
+                        "history-new-chat"
+                    );
+
+                if (historyNewChat) {
+                    historyNewChat.addEventListener(
+                        "click",
+                        newAIChat
+                    );
+                }
             }
         );
+    </script>
 
-    }
-);
+    <!-- =========================================================
+         RECENTLY RECOVERED HIGH PRIORITY JS
+    ========================================================= -->
 
-</script>
+    <script>
+        (function () {
+            async function loadRecoveredHighPriority() {
+                const table =
+                    document.getElementById(
+                        "recovered-high-priority-table"
+                    );
 
+                if (!table) {
+                    return;
+                }
+
+                try {
+                    const response =
+                        await fetch(
+                            "/recovery-agent/summary"
+                        );
+
+                    const data =
+                        await response.json();
+
+                    if (
+                        !response.ok ||
+                        !data.success
+                    ) {
+                        throw new Error(
+                            data.detail ||
+                            data.error ||
+                            "Unable to load recovery history."
+                        );
+                    }
+
+                    const audits =
+                        Array.isArray(
+                            data.recent_audits
+                        )
+                            ? data.recent_audits
+                            : [];
+
+                    /*
+                     * Only show historical executions that:
+                     *
+                     * 1. were HIGH priority
+                     * 2. were actually recovered
+                     *
+                     * These remain separate from the active queue.
+                     */
+
+                    const rows =
+                        audits
+                            .filter(
+                                function (item) {
+                                    return (
+                                        String(
+                                            item.priority ||
+                                            ""
+                                        )
+                                            .toUpperCase() ===
+                                        "HIGH" &&
+                                        Boolean(
+                                            item.recovered
+                                        ) === true
+                                    );
+                                }
+                            )
+                            .sort(
+                                function (a, b) {
+                                    return String(
+                                        b.timestamp ||
+                                        ""
+                                    ).localeCompare(
+                                        String(
+                                            a.timestamp ||
+                                            ""
+                                        )
+                                    );
+                                }
+                            )
+                            .slice(
+                                0,
+                                10
+                            );
+
+                    if (!rows.length) {
+                        table.innerHTML = `
+                            <tr>
+                                <td
+                                    colspan="6"
+                                    class="recovered-high-priority-empty"
+                                >
+                                    No recently recovered HIGH-priority
+                                    agent executions found.
+                                </td>
+                            </tr>
+                        `;
+
+                        return;
+                    }
+
+                    table.innerHTML =
+                        "";
+
+                    rows.forEach(
+                        function (item) {
+                            const row =
+                                document.createElement(
+                                    "tr"
+                                );
+
+                            const money =
+                                Number(
+                                    item.money_recovered ||
+                                    0
+                                );
+
+                            row.innerHTML = `
+                                <td>
+                                    ${escapeRecoveredHTML(
+                                        item.transaction_id ||
+                                        "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeRecoveredHTML(
+                                        item.scenario ||
+                                        "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${escapeRecoveredHTML(
+                                        item.recovery_action ||
+                                        "—"
+                                    )}
+                                </td>
+
+                                <td>
+                                    ${Number(
+                                        item.attempt_count ||
+                                        0
+                                    )}
+                                </td>
+
+                                <td>
+                                    ₹${money.toLocaleString(
+                                        "en-IN",
+                                        {
+                                            minimumFractionDigits:
+                                                2,
+
+                                            maximumFractionDigits:
+                                                2
+                                        }
+                                    )}
+                                </td>
+
+                                <td>
+                                    <span
+                                        class="recovered-high-priority-badge high"
+                                    >
+                                        HIGH
+                                    </span>
+
+                                    <span
+                                        class="recovered-high-priority-badge recovered"
+                                    >
+                                        ${escapeRecoveredHTML(
+                                            item.stopping_reason ||
+                                            "PAYMENT_SUCCESS"
+                                        )}
+                                    </span>
+                                </td>
+                            `;
+
+                            table.appendChild(
+                                row
+                            );
+                        }
+                    );
+                } catch (error) {
+                    console.error(
+                        "Recovered high-priority history load error:",
+                        error
+                    );
+
+                    table.innerHTML = `
+                        <tr>
+                            <td
+                                colspan="6"
+                                class="recovered-high-priority-empty"
+                            >
+                                Recovery history is temporarily unavailable.
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            /*
+             * Escape historical values before inserting
+             * them into table HTML.
+             */
+
+            function escapeRecoveredHTML(
+                value
+            ) {
+                return String(
+                    value
+                )
+                    .replaceAll(
+                        "&",
+                        "&amp;"
+                    )
+                    .replaceAll(
+                        "<",
+                        "&lt;"
+                    )
+                    .replaceAll(
+                        ">",
+                        "&gt;"
+                    )
+                    .replaceAll(
+                        '"',
+                        "&quot;"
+                    )
+                    .replaceAll(
+                        "'",
+                        "&#039;"
+                    );
+            }
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                loadRecoveredHighPriority
+            );
+        })();
+    </script>
 </body>
 </html>
