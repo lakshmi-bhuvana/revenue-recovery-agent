@@ -3505,6 +3505,134 @@ async def recovery_agent_llm_explain_api(
             ],
         },
     }
+
+
+@app.get("/recovery-agent/llm/message/{transaction_id}")
+async def recovery_agent_llm_message_api(
+    transaction_id: str,
+):
+    """
+    Generate a customer-facing message for an already-authorized
+    Recovery Agent action.
+    The LLM cannot select or change the recovery action.
+    """
+    txid = safe_string(transaction_id).strip()
+    if not txid:
+        raise HTTPException(
+            status_code=400,
+            detail="transaction_id is required.",
+        )
+    event = PROCESSED_RECOVERY_EVENTS.get(txid)
+    if not isinstance(event, dict):
+        raise HTTPException(
+            status_code=404,
+            detail=(
+                "No persisted Recovery Agent execution "
+                "found for this transaction."
+            ),
+        )
+    (
+        diagnosis,
+        score,
+        action,
+        execution,
+        stopping,
+        escalation,
+    ) = _agent_result_parts(event)
+    context = {
+        "scenario": safe_string(
+            event.get(
+                "scenario",
+                action.get(
+                    "scenario",
+                    "payment_failure",
+                ),
+            )
+        ),
+        "selected_action": safe_string(
+            action.get(
+                "recovery_action",
+                "",
+            )
+        ),
+        "channel": safe_string(
+            action.get(
+                "channel",
+                score.get(
+                    "recommended_channel",
+                    "",
+                ),
+            )
+        ),
+        "language": "English",
+    }
+    message = generate_recovery_message(context)
+    llm_status = get_llm_status()
+    return {
+        "success": True,
+        "transaction_id": txid,
+        "message": message,
+        "llm": llm_status,
+        "authorized_action": {
+            "action": context["selected_action"],
+            "channel": context["channel"],
+            "scenario": context["scenario"],
+        },
+    }
+
+
+@app.post("/recovery-agent/llm/interpret/{transaction_id}")
+async def recovery_agent_llm_interpret_api(
+    transaction_id: str,
+    customer_response: str,
+):
+    txid = safe_string(transaction_id).strip()
+    response_text = safe_string(customer_response).strip()
+    if not txid:
+        raise HTTPException(
+            status_code=400,
+            detail="transaction_id is required",
+        )
+    if not response_text:
+        raise HTTPException(
+            status_code=400,
+            detail="customer_response is required",
+        )
+    event = PROCESSED_RECOVERY_EVENTS.get(txid)
+    if not isinstance(event, dict):
+        raise HTTPException(
+            status_code=404,
+            detail="Transaction not found",
+        )
+    scenario = safe_string(
+        event.get(
+            "scenario",
+            "payment_failure",
+        )
+    )
+    channel = safe_string(
+        event.get(
+            "preferred_channel",
+            event.get(
+                "channel",
+                "whatsapp",
+            ),
+        )
+    )
+    context = {
+        "customer_response": response_text,
+        "channel": channel,
+        "scenario": scenario,
+    }
+    interpretation = interpret_customer_response(context)
+    llm_status = get_llm_status()
+    return {
+        "success": True,
+        "transaction_id": txid,
+        "customer_response": response_text,
+        "interpretation": interpretation,
+        "llm": llm_status,
+    }
 @app.get("/recovery-agent/health")
 async def recovery_agent_health_api():
     """Small readiness endpoint for demos and deployment checks."""
@@ -6804,6 +6932,98 @@ def _attach_adaptive_batch_trace(
             agent_result,
         )
     )
+    llm_context = {
+        "customer_response": safe_string(
+            customer_response.get(
+                "response",
+                "",
+            )
+        ),
+        "channel": safe_string(
+            (
+                agent_result.get(
+                    "action",
+                    {},
+                ).get(
+                    "channel",
+                    "",
+                )
+                if isinstance(
+                    agent_result.get(
+                        "action"
+                    ),
+                    dict,
+                )
+                else ""
+            )
+            or row.get("preferred_channel")
+            or row.get("channel")
+            or "whatsapp"
+        ),
+        "scenario": safe_string(
+            row.get("scenario")
+            or agent_result.get("scenario")
+            or "payment_failure"
+        ),
+    }
+    llm_result = {}
+    try:
+        result = interpret_customer_response(
+            llm_context
+        )
+        if isinstance(result, dict):
+            llm_result = result
+    except Exception:
+        llm_result = {}
+    llm_label = safe_string(
+        llm_result.get(
+            "interpretation",
+            "",
+        )
+    ).upper()
+    llm_map = {
+        "PAYMENT_SUCCESS": "payment_completed",
+        "PROMISE_TO_PAY": "promise_to_pay",
+        "PAYMENT_DIFFICULTY": "no_response",
+        "NO_RESPONSE": "no_response",
+        "CHANNEL_CHANGE_REQUEST": "no_response",
+        "UNCLEAR": "no_response",
+    }
+    mapped_response_type = llm_map.get(
+        llm_label
+    )
+    if mapped_response_type:
+        customer_response["response_type"] = (
+            mapped_response_type
+        )
+        customer_response["interpretation"] = (
+            llm_label
+        )
+    customer_response["llm_interpretation"] = {
+        "interpretation": (
+            llm_label
+            or safe_string(
+                customer_response.get(
+                    "interpretation",
+                    "UNRESOLVED",
+                )
+            ).upper()
+        ),
+        "confidence": safe_float(
+            llm_result.get(
+                "confidence"
+            ),
+            0.0,
+        ),
+        "source": safe_string(
+            llm_result.get(
+                "source",
+                "deterministic_fallback",
+            ),
+            "deterministic_fallback",
+        ),
+        "status": get_llm_status(),
+    }
     reassessment = (
         _adaptive_reassessment(
             row,
@@ -7070,6 +7290,23 @@ async def run_recovery_batch(
                     "recovered"
                 )
             )
+            execution_stop = (
+                agent_result.get(
+                    "stopping"
+                )
+                if isinstance(
+                    agent_result.get("stopping"),
+                    dict,
+                )
+                else {}
+            )
+            execution_state = (
+                "STOPPED_CURRENT_ATTEMPT"
+                if normalize_bool(
+                    execution_stop.get("stop")
+                )
+                else "COMPLETED_CURRENT_ATTEMPT"
+            )
             if recovered:
                 recovered_count += 1
             reassessment = (
@@ -7137,6 +7374,7 @@ async def run_recovery_batch(
                     ),
                     0.0,
                 ),
+                "execution_state": execution_state,
                 "adaptive_state": (
                     reassessment.get(
                         "state"
