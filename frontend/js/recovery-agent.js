@@ -473,7 +473,7 @@ function renderExecutions(
               <td class="execution-tx">
                 <a
                   class="case-link"
-                  href="/recovery-case.html?transaction_id=${encodeURIComponent(tx)}"
+                  href="/recovery-case.html?transaction_id=${encodeURIComponent(tx)}&from=recovery-agent"
                 >
                   <strong>
                     ${esc(tx)}

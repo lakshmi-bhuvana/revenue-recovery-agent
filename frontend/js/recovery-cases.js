@@ -40,14 +40,15 @@ async function loadRecoveryCases(search = "") {
             window.location.origin
         );
 
-        // Changed from 5000 to 500
         url.searchParams.set("limit", "500");
 
         if (search) {
             url.searchParams.set("search", search);
         }
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            cache: "no-store"
+        });
 
         if (!response.ok) {
             throw new Error(
@@ -59,7 +60,11 @@ async function loadRecoveryCases(search = "") {
 
         console.log("Recovery cases loaded:", data);
 
-        renderCases(data.cases || []);
+        renderCases(
+            Array.isArray(data.cases)
+                ? data.cases
+                : []
+        );
 
         // Load the REAL dashboard totals separately
         await loadDashboardSummary();
@@ -85,7 +90,12 @@ async function loadDashboardSummary() {
 
     try {
 
-        const response = await fetch("/dashboard-summary");
+        const response = await fetch(
+            "/dashboard-summary",
+            {
+                cache: "no-store"
+            }
+        );
 
         if (!response.ok) {
             throw new Error(
@@ -95,25 +105,62 @@ async function loadDashboardSummary() {
 
         const data = await response.json();
 
-        document.getElementById("total-cases").textContent =
-            Number(data.at_risk_cases).toLocaleString();
+        const totalCases =
+            document.getElementById("total-cases");
 
-        document.getElementById("high-cases").textContent =
-            Number(
-                data.priority_distribution.find(
-                    item => item.priority === "HIGH"
-                )?.cases || 0
-            ).toLocaleString();
+        if (totalCases) {
+            totalCases.textContent =
+                Number(
+                    data.at_risk_cases || 0
+                ).toLocaleString("en-IN");
+        }
 
-        document.getElementById("recovered-cases").textContent =
-            Number(data.recovered_cases).toLocaleString();
+        const highCases =
+            document.getElementById("high-cases");
 
-        document.getElementById("money-recovered").textContent =
-            formatCurrency(data.actual_recovered_value);
+        if (highCases) {
+
+            const highPriority =
+                Array.isArray(
+                    data.priority_distribution
+                )
+                    ? data.priority_distribution.find(
+                          item => item.priority === "HIGH"
+                      )
+                    : null;
+
+            highCases.textContent =
+                Number(
+                    highPriority?.cases || 0
+                ).toLocaleString("en-IN");
+        }
+
+        const recoveredCases =
+            document.getElementById("recovered-cases");
+
+        if (recoveredCases) {
+            recoveredCases.textContent =
+                Number(
+                    data.recovered_cases || 0
+                ).toLocaleString("en-IN");
+        }
+
+        const moneyRecovered =
+            document.getElementById("money-recovered");
+
+        if (moneyRecovered) {
+            moneyRecovered.textContent =
+                formatCurrency(
+                    data.actual_recovered_value
+                );
+        }
 
     } catch (error) {
 
-        console.error("Dashboard summary error:", error);
+        console.error(
+            "Dashboard summary error:",
+            error
+        );
 
     }
 }
@@ -121,13 +168,14 @@ async function loadDashboardSummary() {
 
 function renderCases(cases) {
 
-    const table = document.getElementById("cases-table");
+    const table =
+        document.getElementById("cases-table");
 
     if (!table) {
         return;
     }
 
-    if (cases.length === 0) {
+    if (!cases.length) {
 
         table.innerHTML = `
             <tr>
@@ -143,34 +191,57 @@ function renderCases(cases) {
     table.innerHTML = cases.map(caseData => {
 
         const priority =
-            String(caseData.priority || "").toUpperCase();
+            String(
+                caseData.priority || ""
+            ).toUpperCase();
 
         const probability =
-            Number(caseData.recovery_probability || 0) * 100;
+            Number(
+                caseData.recovery_probability || 0
+            ) * 100;
 
         const recovered =
-            caseData.recovered === true;
+            caseData.recovered === true ||
+            caseData.recovered === 1;
+
+        const transactionId =
+            String(
+                caseData.transaction_id || ""
+            );
+
+        const customerId =
+            String(
+                caseData.customer_id || ""
+            );
 
         return `
             <tr>
 
                 <td>
-                    <strong>
-                        ${escapeHtml(caseData.transaction_id)}
-                    </strong>
+                    <a
+                        class="transaction-link"
+                        href="/recovery-case.html?transaction_id=${encodeURIComponent(transactionId)}&from=recovery-cases"
+                        title="Open recovery case"
+                    >
+                        <strong>
+                            ${escapeHtml(transactionId)}
+                        </strong>
+                    </a>
                 </td>
 
                 <td>
-                    ${escapeHtml(caseData.customer_id)}
+                    ${escapeHtml(customerId)}
                 </td>
 
                 <td>
-                    ${formatCurrency(caseData.transaction_amount)}
+                    ${formatCurrency(
+                        caseData.transaction_amount
+                    )}
                 </td>
 
                 <td>
                     <span class="priority-badge ${priority.toLowerCase()}">
-                        ${escapeHtml(priority)}
+                        ${escapeHtml(priority || "—")}
                     </span>
                 </td>
 
