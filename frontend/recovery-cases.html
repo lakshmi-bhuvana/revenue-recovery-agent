@@ -1,938 +1,459 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Recovery Cases - Recovery AI</title>
 
-    <link
-        rel="stylesheet"
-        href="/css/style.css"
-    >
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 
 <body>
 
-    <div class="app" id="app">
+<div class="app" id="app">
 
-        <aside class="sidebar">
 
-            <div class="brand">
-                <div class="brand-mark">R</div>
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
 
-                <div class="brand-copy">
-                    <strong>Recovery AI</strong>
-                    <span>Revenue Operations</span>
-                </div>
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                R
             </div>
 
-            <button
-                class="sidebar-toggle"
-                id="sidebar-toggle"
-                type="button"
+            <div class="brand-text">
+
+                <strong>
+                    Recovery AI
+                </strong>
+
+                <small>
+                    Revenue Operations
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="sidebar-toggle"
+            class="sidebar-toggle"
+            type="button"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+        >
+            ‹
+        </button>
+
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="/"
+                class="nav-item"
             >
-                <span class="toggle-icon">‹</span>
-            </button>
+                <span class="nav-icon">▦</span>
 
-            <nav class="sidebar-nav">
+                <span class="nav-text">
+                    Dashboard
+                </span>
+            </a>
 
-                <a
-                    class="nav-item"
-                    href="/"
-                >
-                    <span class="nav-icon">▦</span>
-                    <span class="nav-text">Dashboard</span>
-                </a>
 
-                <a
-                    class="nav-item active"
-                    href="/recovery-cases.html"
-                >
-                    <span class="nav-icon">◉</span>
-                    <span class="nav-text">Recovery Cases</span>
-                </a>
+            <a
+                href="/recovery-cases.html"
+                class="nav-item active"
+            >
+                <span class="nav-icon">◉</span>
 
-                <a
-                    class="nav-item"
-                    href="/customers.html"
-                >
-                    <span class="nav-icon">●</span>
-                    <span class="nav-text">Customers</span>
-                </a>
+                <span class="nav-text">
+                    Recovery Cases
+                </span>
+            </a>
 
-                <a
-                    class="nav-item"
-                    href="/analytics.html"
-                >
-                    <span class="nav-icon">◌</span>
-                    <span class="nav-text">Analytics</span>
-                </a>
 
-                <a
-                    class="nav-item"
-                    href="/recovery-agent.html"
-                >
-                    <span class="nav-icon">✦</span>
-                    <span class="nav-text">Recovery Agent</span>
-                </a>
+            <a
+                href="/customers.html"
+                class="nav-item"
+            >
+                <span class="nav-icon">◇</span>
 
-                <a
-                    class="nav-item"
-                    href="/human-intervention.html"
-                >
-                    <span class="nav-icon">!</span>
-                    <span class="nav-text">Human Intervention</span>
-                </a>
+                <span class="nav-text">
+                    Customers
+                </span>
+            </a>
 
-            </nav>
 
-            <div class="sidebar-bottom">
+            <a
+                href="/analytics.html"
+                class="nav-item"
+            >
+                <span class="nav-icon">◌</span>
 
-                <div class="system-status">
+                <span class="nav-text">
+                    Analytics
+                </span>
+            </a>
 
-                    <span class="status-dot"></span>
+        </nav>
 
-                    <div class="status-text">
-                        <strong>System Online</strong>
-                        <small>AI Agent Active</small>
-                    </div>
+
+        <div class="sidebar-footer">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div class="system-status-text">
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <span>
+                        AI Agent Active
+                    </span>
 
                 </div>
 
             </div>
 
-        </aside>
+        </div>
 
-        <main class="main-content">
+    </aside>
 
-            <header class="page-header">
 
-                <div class="page-title">
-                    <h1>Recovery Cases</h1>
-                    <p>
-                        Filter, select and process active recovery cases
-                    </p>
-                </div>
 
-                <div class="header-actions">
-                    <span class="live-status">
-                        <span class="live-dot"></span>
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main
+        class="main-content"
+        id="main"
+    >
+
+
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+            <div class="page-title">
+
+                <h1>
+                    Recovery Cases
+                </h1>
+
+                <p>
+                    Review and prioritize revenue recovery opportunities
+                </p>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <span class="live-status">
+
+                    <span class="live-dot"></span>
+
+                    <span id="live-text">
                         Live
                     </span>
-                </div>
 
-            </header>
+                </span>
 
-            <section class="panel">
 
-                <div class="panel-header">
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    id="refresh-button"
+                >
+                    ↻
 
-                    <div>
-                        <h3>Active Recovery Queue</h3>
+                    <span>
+                        Refresh
+                    </span>
 
-                        <p>
-                            Process cases individually or select a priority
-                            segment for batch recovery.
-                        </p>
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             KPI CARDS
+        ================================================== -->
+
+        <section class="metrics-grid">
+
+
+            <!-- TOTAL CASES -->
+
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        Total Cases
+                    </span>
+
+                    <div class="metric-card-icon">
+                        #
                     </div>
 
                 </div>
 
-                <div style="padding: 18px 20px;">
 
-                    <div class="cases-toolbar">
+                <div
+                    class="metric-card-value"
+                    id="total-cases"
+                >
+                    —
+                </div>
 
-                        <div
-                            id="count-label"
-                            class="muted"
-                        >
-                            Loading cases…
-                        </div>
 
-                        <div class="cases-actions">
+                <div class="metric-card-description">
+                    Revenue-at-risk cases
+                </div>
 
-                            <button
-                                class="batch-btn"
-                                id="select-all"
-                                type="button"
-                            >
-                                Select All
-                            </button>
+            </div>
 
-                            <button
-                                class="batch-btn"
-                                id="clear-all"
-                                type="button"
-                            >
-                                Clear Selection
-                            </button>
 
-                            <button
-                                class="primary-btn"
-                                id="run-selected"
-                                type="button"
-                            >
-                                Run Selected
-                            </button>
 
-                        </div>
+            <!-- HIGH PRIORITY -->
 
+            <div class="metric-card">
+
+                <div class="metric-card-top">
+
+                    <span class="metric-card-label">
+                        High Priority
+                    </span>
+
+                    <div class="metric-card-icon danger">
+                        !
                     </div>
-
-                    <div class="filter-row">
-
-                        <input
-                            id="search"
-                            type="text"
-                            placeholder="Search transaction or customer…"
-                        >
-
-                        <select id="priority">
-
-                            <option value="">
-                                All priorities
-                            </option>
-
-                            <option value="HIGH">
-                                HIGH priority
-                            </option>
-
-                            <option value="MEDIUM">
-                                MEDIUM priority
-                            </option>
-
-                            <option value="LOW">
-                                LOW priority
-                            </option>
-
-                        </select>
-
-                        <select id="strategy">
-
-                            <option value="">
-                                All strategies
-                            </option>
-
-                            <option value="aggressive_recovery">
-                                Aggressive Recovery
-                            </option>
-
-                            <option value="assisted_recovery">
-                                Assisted Recovery
-                            </option>
-
-                            <option value="standard_recovery">
-                                Standard Recovery
-                            </option>
-
-                            <option value="low_cost_recovery">
-                                Low Cost Recovery
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                    <div class="table-wrapper">
-
-                        <table class="data-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th class="select-cell">
-                                        <input
-                                            id="master-checkbox"
-                                            type="checkbox"
-                                            title="Select visible cases"
-                                        >
-                                    </th>
-
-                                    <th>
-                                        Transaction
-                                    </th>
-
-                                    <th>
-                                        Amount
-                                    </th>
-
-                                    <th>
-                                        Probability
-                                    </th>
-
-                                    <th>
-                                        Priority
-                                    </th>
-
-                                    <th>
-                                        Strategy
-                                    </th>
-
-                                    <th>
-                                        Expected Recovery
-                                    </th>
-
-                                    <th>
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="cases-body">
-
-                                <tr>
-                                    <td
-                                        colspan="8"
-                                        class="loading"
-                                    >
-                                        Loading recovery cases…
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                    <div
-                        class="result-box"
-                        id="result-box"
-                    ></div>
 
                 </div>
 
-            </section>
 
-        </main>
+                <div
+                    class="metric-card-value"
+                    id="high-cases"
+                >
+                    —
+                </div>
 
-    </div>
 
-    <script>
-        const esc = (value) => {
-            const div = document.createElement("div");
+                <div class="metric-card-description">
+                    Cases requiring attention
+                </div>
 
-            div.textContent =
-                value == null
-                    ? ""
-                    : String(value);
+            </div>
 
-            return div.innerHTML;
-        };
 
-        const money = (value) =>
-            new Intl.NumberFormat("en-IN", {
-                style: "currency",
-                currency: "INR",
-                maximumFractionDigits: 2
-            }).format(
-                Number(value || 0)
-            );
 
-        const pct = (value) =>
-            `${(
-                Number(value || 0) * 100
-            ).toFixed(1)}%`;
+            <!-- RECOVERED -->
 
-        let cases = [];
-        let selected = new Set();
+            <div class="metric-card">
 
-        function sidebar() {
-            const app =
-                document.getElementById("app");
+                <div class="metric-card-top">
 
-            const button =
-                document.getElementById("sidebar-toggle");
+                    <span class="metric-card-label">
+                        Recovered
+                    </span>
 
-            if (!app || !button) {
-                return;
-            }
+                    <div class="metric-card-icon">
+                        ✓
+                    </div>
 
-            if (
-                localStorage.getItem(
-                    "sidebarCollapsed"
-                ) === "true"
-            ) {
-                app.classList.add(
-                    "sidebar-collapsed"
-                );
-            }
+                </div>
 
-            const syncToggleIcon = () => {
-                const icon =
-                    button.querySelector(
-                        ".toggle-icon"
-                    );
 
-                if (!icon) {
-                    return;
-                }
+                <div
+                    class="metric-card-value"
+                    id="recovered-cases"
+                >
+                    —
+                </div>
 
-                icon.textContent =
-                    app.classList.contains(
-                        "sidebar-collapsed"
-                    )
-                        ? "›"
-                        : "‹";
-            };
 
-            button.onclick = () => {
-                app.classList.toggle(
-                    "sidebar-collapsed"
-                );
+                <div class="metric-card-description">
+                    Successfully recovered cases
+                </div>
 
-                localStorage.setItem(
-                    "sidebarCollapsed",
-                    app.classList.contains(
-                        "sidebar-collapsed"
-                    )
-                        ? "true"
-                        : "false"
-                );
+            </div>
 
-                syncToggleIcon();
-            };
 
-            syncToggleIcon();
-        }
 
-        function formatLabel(value) {
-            return String(value || "")
-                .replaceAll("_", " ")
-                .replace(
-                    /\b\w/g,
-                    (match) =>
-                        match.toUpperCase()
-                );
-        }
+            <!-- MONEY RECOVERED -->
 
-        function render() {
-            const body =
-                document.getElementById(
-                    "cases-body"
-                );
+            <div class="metric-card">
 
-            const countLabel =
-                document.getElementById(
-                    "count-label"
-                );
+                <div class="metric-card-top">
 
-            if (!body || !countLabel) {
-                return;
-            }
+                    <span class="metric-card-label">
+                        Money Recovered
+                    </span>
 
-            countLabel.textContent =
-                `${cases.length.toLocaleString(
-                    "en-IN"
-                )} active cases · ` +
-                `${selected.size.toLocaleString(
-                    "en-IN"
-                )} selected`;
+                    <div class="metric-card-icon">
+                        ₹
+                    </div>
 
-            if (!cases.length) {
-                body.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="8"
-                            class="loading"
-                        >
-                            No active cases found.
-                        </td>
-                    </tr>
-                `;
+                </div>
 
-                return;
-            }
 
-            body.innerHTML = cases
-                .map((caseItem) => {
+                <div
+                    class="metric-card-value"
+                    id="money-recovered"
+                >
+                    —
+                </div>
 
-                    const priority =
-                        String(
-                            caseItem.priority || "LOW"
-                        ).toUpperCase();
 
-                    const transactionId =
-                        String(
-                            caseItem.transaction_id || ""
-                        );
+                <div class="metric-card-description">
+                    Actual recovered revenue
+                </div>
 
-                    const customerId =
-                        String(
-                            caseItem.customer_id || ""
-                        );
+            </div>
 
-                    const selectedState =
-                        selected.has(
-                            transactionId
-                        )
-                            ? "checked"
-                            : "";
+        </section>
 
-                    return `
+
+
+        <!-- =================================================
+             RECOVERY CASE QUEUE
+        ================================================== -->
+
+        <section class="panel opportunities">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h3>
+                        Recovery Case Queue
+                    </h3>
+
+                    <p>
+                        Cases ordered by AI priority score
+                    </p>
+
+                </div>
+
+
+                <div class="table-controls">
+
+                    <input
+                        type="text"
+                        id="case-search"
+                        placeholder="Search customer or transaction..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
                         <tr>
 
-                            <td class="select-cell">
+                            <th>
+                                Transaction
+                            </th>
 
-                                <input
-                                    type="checkbox"
-                                    data-id="${esc(
-                                        transactionId
-                                    )}"
-                                    ${selectedState}
-                                >
+                            <th>
+                                Customer
+                            </th>
 
-                            </td>
+                            <th>
+                                Amount
+                            </th>
 
-                            <td>
+                            <th>
+                                Priority
+                            </th>
 
-                                <a
-                                    class="case-link"
-                                    href="/recovery-case.html?transaction_id=${encodeURIComponent(
-                                        transactionId
-                                    )}"
-                                >
-                                    <strong>
-                                        ${esc(
-                                            transactionId
-                                        )}
-                                    </strong>
-                                </a>
+                            <th>
+                                Probability
+                            </th>
 
-                                <div class="muted">
-                                    ${esc(customerId)}
-                                </div>
+                            <th>
+                                Strategy
+                            </th>
 
-                            </td>
+                            <th>
+                                Action
+                            </th>
 
-                            <td class="amount">
-                                ${money(
-                                    caseItem.transaction_amount
-                                )}
-                            </td>
+                            <th>
+                                Recovered
+                            </th>
 
-                            <td class="probability">
-                                ${pct(
-                                    caseItem.recovery_probability
-                                )}
-                            </td>
+                            <th>
+                                Expected Recovery
+                            </th>
 
-                            <td>
+                        </tr>
 
-                                <span
-                                    class="badge badge-${esc(
-                                        priority.toLowerCase()
-                                    )}"
-                                >
-                                    ${esc(priority)}
-                                </span>
+                    </thead>
 
-                            </td>
 
-                            <td>
-                                ${esc(
-                                    formatLabel(
-                                        caseItem.strategy
-                                    )
-                                )}
-                            </td>
+                    <tbody id="cases-table">
 
-                            <td class="amount">
-                                ${money(
-                                    caseItem.expected_recovery_value
-                                )}
-                            </td>
+                        <tr>
 
-                            <td>
-
-                                <a
-                                    class="view-btn"
-                                    href="/recovery-case.html?transaction_id=${encodeURIComponent(
-                                        transactionId
-                                    )}"
-                                >
-                                    View Case
-                                </a>
-
+                            <td
+                                colspan="9"
+                                class="loading"
+                            >
+                                Loading recovery cases...
                             </td>
 
                         </tr>
-                    `;
-                })
-                .join("");
 
-            document
-                .querySelectorAll(
-                    "#cases-body input[type='checkbox']"
-                )
-                .forEach((checkbox) => {
+                    </tbody>
 
-                    checkbox.onchange = () => {
+                </table>
 
-                        const id =
-                            checkbox.dataset.id;
+            </div>
 
-                        if (checkbox.checked) {
-                            selected.add(id);
-                        } else {
-                            selected.delete(id);
-                        }
+        </section>
 
-                        render();
-                    };
-                });
 
-            const master =
-                document.getElementById(
-                    "master-checkbox"
-                );
+    </main>
 
-            if (master) {
+</div>
 
-                master.checked =
-                    cases.length > 0 &&
-                    cases.every((caseItem) =>
-                        selected.has(
-                            caseItem.transaction_id
-                        )
-                    );
 
-                master.indeterminate =
-                    selected.size > 0 &&
-                    !master.checked;
-            }
-        }
 
-        async function load() {
-            const searchInput =
-                document.getElementById("search");
+<!-- =====================================================
+     PAGE JAVASCRIPT
+====================================================== -->
 
-            const priorityInput =
-                document.getElementById("priority");
+<script src="/js/recovery-cases.js"></script>
 
-            const strategyInput =
-                document.getElementById("strategy");
-
-            const body =
-                document.getElementById(
-                    "cases-body"
-                );
-
-            if (
-                !searchInput ||
-                !priorityInput ||
-                !strategyInput ||
-                !body
-            ) {
-                return;
-            }
-
-            const search =
-                searchInput.value.trim();
-
-            const priority =
-                priorityInput.value;
-
-            const strategy =
-                strategyInput.value;
-
-            const query =
-                new URLSearchParams({
-                    limit: "500"
-                });
-
-            if (search) {
-                query.set(
-                    "search",
-                    search
-                );
-            }
-
-            if (priority) {
-                query.set(
-                    "priority",
-                    priority
-                );
-            }
-
-            if (strategy) {
-                query.set(
-                    "strategy",
-                    strategy
-                );
-            }
-
-            try {
-
-                const response =
-                    await fetch(
-                        `/recovery-cases?${query.toString()}`,
-                        {
-                            cache: "no-store"
-                        }
-                    );
-
-                const data =
-                    await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.detail ||
-                        `Recovery Cases API ${response.status}`
-                    );
-                }
-
-                cases =
-                    Array.isArray(data.cases)
-                        ? data.cases
-                        : [];
-
-                selected =
-                    new Set(
-                        [...selected].filter(
-                            (id) =>
-                                cases.some(
-                                    (caseItem) =>
-                                        caseItem.transaction_id === id
-                                )
-                        )
-                    );
-
-                render();
-
-            } catch (error) {
-
-                body.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="8"
-                            class="loading"
-                        >
-                            ${esc(error.message)}
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        async function runSelected() {
-
-            if (!selected.size) {
-                alert(
-                    "Select at least one case."
-                );
-
-                return;
-            }
-
-            const button =
-                document.getElementById(
-                    "run-selected"
-                );
-
-            const resultBox =
-                document.getElementById(
-                    "result-box"
-                );
-
-            if (!button || !resultBox) {
-                return;
-            }
-
-            button.disabled = true;
-            button.textContent = "Running…";
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/recovery/run-batch",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-                            body: JSON.stringify({
-                                transaction_ids:
-                                    [...selected]
-                            })
-                        }
-                    );
-
-                const data =
-                    await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.detail ||
-                        "Batch recovery failed"
-                    );
-                }
-
-                resultBox.style.display =
-                    "block";
-
-                resultBox.textContent =
-                    `Batch recovery completed.\n` +
-                    `Requested: ${
-                        data.requested ??
-                        selected.size
-                    }\n` +
-                    `Processed: ${
-                        data.processed ?? "—"
-                    }\n` +
-                    `Succeeded: ${
-                        data.succeeded ?? "—"
-                    }\n` +
-                    `Failed: ${
-                        data.failed ?? "—"
-                    }`;
-
-                selected.clear();
-
-                await load();
-
-            } catch (error) {
-
-                resultBox.style.display =
-                    "block";
-
-                resultBox.textContent =
-                    "Batch recovery error: " +
-                    error.message;
-
-            } finally {
-
-                button.disabled = false;
-                button.textContent =
-                    "Run Selected";
-            }
-        }
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            () => {
-
-                sidebar();
-
-                const selectAllButton =
-                    document.getElementById(
-                        "select-all"
-                    );
-
-                const clearAllButton =
-                    document.getElementById(
-                        "clear-all"
-                    );
-
-                const masterCheckbox =
-                    document.getElementById(
-                        "master-checkbox"
-                    );
-
-                const runSelectedButton =
-                    document.getElementById(
-                        "run-selected"
-                    );
-
-                if (selectAllButton) {
-                    selectAllButton.onclick =
-                        () => {
-
-                            cases.forEach(
-                                (caseItem) => {
-                                    selected.add(
-                                        caseItem.transaction_id
-                                    );
-                                }
-                            );
-
-                            render();
-                        };
-                }
-
-                if (clearAllButton) {
-                    clearAllButton.onclick =
-                        () => {
-
-                            selected.clear();
-                            render();
-                        };
-                }
-
-                if (masterCheckbox) {
-                    masterCheckbox.onchange =
-                        (event) => {
-
-                            if (
-                                event.target.checked
-                            ) {
-
-                                cases.forEach(
-                                    (caseItem) => {
-                                        selected.add(
-                                            caseItem.transaction_id
-                                        );
-                                    }
-                                );
-
-                            } else {
-
-                                cases.forEach(
-                                    (caseItem) => {
-                                        selected.delete(
-                                            caseItem.transaction_id
-                                        );
-                                    }
-                                );
-                            }
-
-                            render();
-                        };
-                }
-
-                if (runSelectedButton) {
-                    runSelectedButton.onclick =
-                        runSelected;
-                }
-
-                ["search", "priority", "strategy"]
-                    .forEach((id) => {
-
-                        const element =
-                            document.getElementById(
-                                id
-                            );
-
-                        if (!element) {
-                            return;
-                        }
-
-                        element.addEventListener(
-                            id === "search"
-                                ? "input"
-                                : "change",
-                            load
-                        );
-                    });
-
-                load();
-
-                setInterval(
-                    load,
-                    30000
-                );
-            }
-        );
-    </script>
 
 </body>
 
